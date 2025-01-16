@@ -25,6 +25,6 @@ router.post(
   ],
   loginUser
 );
-router.get("/profile/:id", authorize, getUserProfile);
+router.get("/profile/:id",authorize, getUserProfile);
 
 export default router;
