@@ -2,17 +2,17 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
-import passport from 'passport';
+import passport from "passport";
 import session from 'express-session';
-import initializePassport from './config/passport.js'; 
+import initializePassport from './api/config/passport.js'; 
 
 // Load environment variables
 dotenv.config();
 
 // Import routes
-import userRoutes from "./routes/userRoutes.js";
-import vendorRoutes from "./routes/vendorRoutes.js";
-import sessionRoutes from "./routes/sessionRoutes.js";
+import userRoutes from "./api/routes/userRoutes.js";
+import vendorRoutes from "./api/routes/vendorRoutes.js";
+import sessionRoutes from "./api/routes/sessionRoutes.js";
 
 // Initialize Express app
 const app = express();

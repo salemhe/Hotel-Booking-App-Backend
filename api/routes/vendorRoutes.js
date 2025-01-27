@@ -1,30 +1,32 @@
 import express from "express";
 import { body } from "express-validator";
-import {registerUser,loginUser,getUserProfile,} from "../controllers/userController.js";
+import { registerVendor } from "../vendors/register.js";
+import { loginVendor } from "../vendors/login.js";
+import { getVendors } from "../vendors/getvendors.js";
 import { authorize } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
 const validation = [
-  body("firstName").notEmpty().withMessage("First name is required."),
-  body("lastName").notEmpty().withMessage("Last name is required."),
+  body("name").notEmpty().withMessage("Name is required."),
   body("email").isEmail().withMessage("Valid email is required."),
   body("password")
     .isLength({ min: 6 })
     .withMessage("Password must be at least 6 characters long."),
 ];
-router.post( "/register",validation,registerUser);
 
-router.post(
-  "/login",
+router.post("/register", validation, registerVendor);
+
+router.post("/login",
   [
     body("email").isEmail().withMessage("Valid email is required."),
     body("password")
       .isLength({ min: 6 })
       .withMessage("Password must be at least 6 characters long."),
   ],
-  loginUser
+  loginVendor
 );
-router.get("/profile/:id",authorize, getUserProfile);
+
+router.get("/",authorize, getVendors);
 
 export default router;
