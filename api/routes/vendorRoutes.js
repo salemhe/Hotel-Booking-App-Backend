@@ -15,7 +15,7 @@ const validation = [
     .withMessage("Password must be at least 6 characters long."),
 ];
 
-router.post("/register", validation, registerVendor);
+router.post("/register", registerVendor);
 
 router.post("/login",
   [
