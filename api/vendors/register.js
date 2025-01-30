@@ -5,13 +5,13 @@ import Vendor from "../models/Vendor.js";
 // import Vendor from "../models/Vendor.js";
 import bcrypt from "bcrypt";
 
-export const addVendor = async (req, res) => {
+export const registerVendor = async (req, res) => {
   try {
-    const { firstName, lastName, email, phone, address, password, services } =
+    const { name, email, phone, address, password, services } =
       req.body;
 
     // Validate input
-    if (!firstName || !lastName || !email || !phone || !address || !password) {
+    if ( !name || !email || !phone || !address || !password) {
       return res.status(400).json({ message: "All fields are required." });
     }
 
@@ -36,8 +36,7 @@ export const addVendor = async (req, res) => {
 
     // Create new vendor
     const newVendor = new Vendor({
-      firstName,
-      lastName,
+      name,
       email,
       phone,
       address,
@@ -61,32 +60,5 @@ export const addVendor = async (req, res) => {
 };
 
 
-export const loginVendor = (req, res, next) => {
-  passport.authenticate(
-    "vendor-login",
-    { session: false },
-    (err, vendor, info) => {
-      if (err || !vendor) {
-        return res
-          .status(400)
-          .json({ message: info ? info.message : "Login failed." });
-      }
 
-      const token = jwt.sign({ id: vendor.id }, process.env.JWT_SECRET, {
-        expiresIn: "1h",
-      });
-      res.status(200).json({ message: "Login successful.", token });
-    }
-  )(req, res, next);
-};
 
-export const getVendors = async (req, res) => {
-  try {
-    const vendors = await Vendor.find();
-
-    res.status(200).json(vendors);
-  } catch (error) {
-    console.error("Error fetching vendors:", error);
-    res.status(500).json({ message: "Error fetching vendors.", error });
-  }
-};

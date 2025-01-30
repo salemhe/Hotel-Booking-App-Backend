@@ -37,35 +37,3 @@ export const registerUser = async (req, res) => {
   }
 };
 
-export const loginUser = (req, res, next) => {
-  passport.authenticate("user-login", { session: false }, (err, user, info) => {
-    if (err || !user) {
-      return res
-        .status(400)
-        .json({ message: info ? info.message : "Login failed." });
-    }
-
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-    res.status(200).json({ message: "Login successful.", token });
-  })(req, res, next);
-};
-
-export const getUserProfile = async (req, res) => {
-  const { id } = req.params;
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Invalid User ID." });
-  }
-
-
-  try {
-    const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ message: "User not found." });
-
-    res.status(200).json(user);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching user profile.", error });
-  }
-};
