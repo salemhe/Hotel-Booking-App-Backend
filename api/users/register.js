@@ -1,9 +1,8 @@
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import mongoose from "mongoose";
-import passport from "passport";
 import { validationResult } from "express-validator";
+import { generateOTP } from "../../utils/otpUtils.js";
+import { sendOTPEmail } from "../../utils/emailService.js";
 
 export const registerUser = async (req, res) => {
   const errors = validationResult(req);
@@ -13,6 +12,7 @@ export const registerUser = async (req, res) => {
 
   try {
     const { firstName, lastName, email, password, phone } = req.body;
+    const profileImage = req.file ? req.file.filename : null;
 
     // Checking if user already exists here
     const existingUser = await User.findOne({ email });
@@ -23,11 +23,26 @@ export const registerUser = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Generate OTP
+    const otp = generateOTP();
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); //OTP expires in 10sec
+
     // Create the user
     const newUser = new User({
-      firstName, lastName, email, password: hashedPassword,phone
+      firstName,
+      lastName,
+      email,
+      password: hashedPassword,
+      phone,
+      profileImage,
+      otp,
+      otpExpires,
+      isVerified: false,
     });
     await newUser.save();
+
+    // Send OTP email
+    await sendOTPEmail(email, otp);
 
     res
       .status(201)

@@ -23,6 +23,9 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.12.0",
     "mongoose": "^8.9.3",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.10.0",
+    "otp-generator": "^4.0.1",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0"
   },
