@@ -1,9 +1,11 @@
 import express from "express";
 import { body } from "express-validator";
+import upload from "../middlewares/uploadMiddleware.js";
 import { registerVendor } from "../vendors/register.js";
 import { loginVendor } from "../vendors/login.js";
 import { getVendors } from "../vendors/getvendors.js";
 import { authorize } from "../middlewares/authMiddleware.js";
+import { verifyOTP } from "../otp/verifyOTP.js";
 
 const router = express.Router();
 
@@ -15,7 +17,7 @@ const validation = [
     .withMessage("Password must be at least 6 characters long."),
 ];
 
-router.post("/register", registerVendor);
+router.post("/register",upload.single("profileImage"), registerVendor);
 
 router.post("/login",
   [
@@ -28,5 +30,7 @@ router.post("/login",
 );
 
 router.get("/",authorize, getVendors);
+
+router.post("/verify-otp", verifyOTP);
 
 export default router;

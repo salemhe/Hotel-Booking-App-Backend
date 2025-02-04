@@ -7,7 +7,10 @@ const UserSchema = new Schema(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     phone: { type: String },
-    role: { type: String, enum: ["guest", "admin"], default: "guest" },
+    profileImage: { type: String },
+    otp: String, 
+    otpExpires: Date,
+    isVerified: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now },
   },
   { timestamps: true } 

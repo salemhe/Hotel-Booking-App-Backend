@@ -8,9 +8,7 @@ import bcrypt from "bcrypt";
 
 
 export const loginVendor = (req, res, next) => {
-  passport.authenticate(
-    "vendor-login",
-    { session: false },
+  passport.authenticate("vendor-login",{ session: false },
     (err, vendor, info) => {
       if (err || !vendor) {
         return res
@@ -21,7 +19,15 @@ export const loginVendor = (req, res, next) => {
       const token = jwt.sign({ id: vendor.id }, process.env.JWT_SECRET, {
         expiresIn: "1h",
       });
-      res.status(200).json({ message: "Login successful.", token });
+      const vendorProfile = {
+        id: vendor.id,
+        name: vendor.name,
+        email: vendor.email,
+        image: vendor.image,
+        services: vendor.services,
+        token: token,
+      }
+      res.status(200).json({ message: "Login successful.", profile: vendorProfile,  });
     }
   )(req, res, next);
 };
