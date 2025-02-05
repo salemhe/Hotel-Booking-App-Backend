@@ -64,7 +64,7 @@ export const registerVendor = async (req, res) => {
       .status(201)
       .json({ message: "Vendor added successfully.", vendor: newVendor });
   } catch (error) {
-
+    console.log(error)
     if (error.code === 11000) {
       return res.status(409).json({ message: "Duplicate email error." });
     }
