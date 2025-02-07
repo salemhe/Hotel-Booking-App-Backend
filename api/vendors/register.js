@@ -38,7 +38,7 @@ export const registerVendor = async (req, res) => {
 
     // Generate OTP
     const otp = generateOTP();
-    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); //OTP expires in 10sec
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); //OTP expires in 10min
 
     // Create new vendor
     const newVendor = new Vendor({
@@ -58,7 +58,7 @@ export const registerVendor = async (req, res) => {
     await newVendor.save();
 
     // Send OTP email
-    await sendOTPEmail(email, otp);
+    await sendOTPEmail(email, otp, otpExpires);
 
     res
       .status(201)
