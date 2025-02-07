@@ -5,7 +5,8 @@ import { registerVendor } from "../vendors/register.js";
 import { loginVendor } from "../vendors/login.js";
 import { getVendors } from "../vendors/getvendors.js";
 import { authorize } from "../middlewares/authMiddleware.js";
-import { verifyOTP } from "../otp/verifyOTP.js";
+import { verifyVendorOTP } from "../otp/verifyOTP.js";
+import { resendVendorOTP } from "../otp/resendOTP.js";
 
 const router = express.Router();
 
@@ -31,6 +32,8 @@ router.post("/login",
 
 router.get("/",authorize, getVendors);
 
-router.post("/verify-otp", verifyOTP);
+router.post("/verify-otp", verifyVendorOTP);
+
+router.post("/resend-otp", resendVendorOTP);
 
 export default router;

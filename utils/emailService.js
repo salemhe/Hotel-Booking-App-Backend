@@ -13,19 +13,18 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export const sendOTPEmail = async (email, otp) => {
+export const sendOTPEmail = async (email, otp, otpExpires) => {
   try {
     const mailOptions = {
       from: `"Hotel Booking App" <${process.env.SMTP_USER}>`,
       to: email,
       subject: "Your OTP Code",
-      text: `Your OTP code is: ${otp}`,
+      text: `Your OTP code is: ${otp} .
+      This OTP code will expire in ${otpExpires} minutes.`,
     };
 
     await transporter.sendMail(mailOptions);
- 
   } catch (error) {
-
     throw new Error("Failed to send OTP");
   }
 };

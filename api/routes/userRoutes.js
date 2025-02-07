@@ -5,7 +5,9 @@ import { registerUser } from "../users/register.js";
 import { loginUser } from "../users/login.js";
 import { getUserProfile } from "../users/profile.js";
 import { authorize } from "../middlewares/authMiddleware.js";
-import { verifyOTP } from "../otp/verifyOTP.js";
+import { verifyUserOTP } from "../otp/verifyOTP.js";
+import { resendUserOTP } from "../otp/resendOTP.js"
+
 
 
 const router = express.Router();
@@ -32,6 +34,7 @@ router.post(
 );
 router.get("/profile/:id",authorize, getUserProfile);
 
-router.post("/verify-otp", verifyOTP);
+router.post("/verify-otp", verifyUserOTP);
+router.post("/resend-otp", resendUserOTP);
 
 export default router;

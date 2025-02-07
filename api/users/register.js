@@ -42,7 +42,7 @@ export const registerUser = async (req, res) => {
     await newUser.save();
 
     // Send OTP email
-    await sendOTPEmail(email, otp);
+    await sendOTPEmail(email, otp, otpExpires);
 
     res
       .status(201)
