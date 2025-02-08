@@ -1,19 +1,17 @@
-import passport from "passport";
-import jwt from "jsonwebtoken";
+
 import Vendor from "../models/Vendor.js";
 import { generateOTP } from "../../utils/otpUtils.js";
 import { sendOTPEmail } from "../../utils/emailService.js";
 
-// import Vendor from "../models/Vendor.js";
 import bcrypt from "bcrypt";
 
 export const registerVendor = async (req, res) => {
   try {
-    const { name, email, phone, address, password, services } = req.body;
+    const { name, email, phone, address, password, role, services } = req.body;
     const profileImage = req.file ? req.file.filename : null;
 
     // Validate input
-    if (!name || !email || !phone || !address || !password) {
+    if (!name || !email || !phone || !address || !password || !role) {
       return res.status(400).json({ message: "All fields are required." });
     }
 
@@ -47,6 +45,7 @@ export const registerVendor = async (req, res) => {
       phone,
       address,
       password: hashedPassword,
+      role,
       profileImage,
       services,
       otp,

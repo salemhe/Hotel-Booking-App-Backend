@@ -7,6 +7,7 @@ const VendorSchema = new Schema(
     phone: { type: String },
     address: { type: String },
     password: { type: String },
+    role: { type: String },
     profileImage: { type: String },
     services: { type: [String], default: [] }, // List of services the vendor provides
     otp: String, 
