@@ -24,6 +24,7 @@ export const loginVendor = (req, res, next) => {
         name: vendor.name,
         email: vendor.email,
         image: vendor.image,
+        role: vendor.role,
         services: vendor.services,
         token: token,
       }

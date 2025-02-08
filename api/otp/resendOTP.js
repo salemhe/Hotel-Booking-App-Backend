@@ -13,13 +13,18 @@ export const resendUserOTP = async (req, res) => {
     if (!user) return res.status(400).json({ message: "User not found." });
 
     // Check if OTP is valid
-    if (user.otp === otp || user.otpExpires > Date.now()) {
+    if (user.otpExpires > Date.now()) {
       return res.status(400).json({ message: "OTP still valid and active" });
     }
 
     //regenerate OTP
     const otp = generateOTP();
     const otpExpires = new Date(Date.now() + 10 * 60 * 1000); //OTP expires in 10sec
+
+
+    user.otp = otp;
+    user.otpExpires = otpExpires;
+    await user.save();
 
     await sendOTPEmail(email, otp, otpExpires);
 
@@ -42,13 +47,17 @@ export const resendVendorOTP = async (req, res) => {
     if (!vendor) return res.status(400).json({ message: "User not found." });
 
     // Check if OTP is valid
-    if (vendor.otp === otp || vendor.otpExpires > Date.now()) {
+    if (vendor.otpExpires > Date.now()) {
       return res.status(400).json({ message: "OTP still valid and active" });
     }
 
     //regenerate OTP
     const otp = generateOTP();
     const otpExpires = new Date(Date.now() + 10 * 60 * 1000); //OTP expires in 10sec
+
+    vendor.otp = otp;
+    vendor.otpExpires = otpExpires;
+    await vendor.save();
 
     await sendOTPEmail(email, otp, otpExpires);
 
