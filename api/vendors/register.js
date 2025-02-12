@@ -7,11 +7,11 @@ import bcrypt from "bcrypt";
 
 export const registerVendor = async (req, res) => {
   try {
-    const { name, email, phone, address, password, role, services } = req.body;
+    const { name, businessName, email, phone, address, branch, password, role, services } = req.body;
     const profileImage = req.file ? req.file.filename : null;
 
     // Validate input
-    if (!name || !email || !phone || !address || !password || !role) {
+    if (!name || !businessName || !email || !phone || !address || !password || !role) {
       return res.status(400).json({ message: "All fields are required." });
     }
 
@@ -36,14 +36,17 @@ export const registerVendor = async (req, res) => {
 
     // Generate OTP
     const otp = generateOTP();
-    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); //OTP expires in 10min
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); //OTP expires in 
+    const minutesLeft = Math.round((otpExpires - Date.now()) / (60 * 1000)); 
 
     // Create new vendor
     const newVendor = new Vendor({
       name,
+      businessName,
       email,
       phone,
       address,
+      branch,
       password: hashedPassword,
       role,
       profileImage,
@@ -57,7 +60,7 @@ export const registerVendor = async (req, res) => {
     await newVendor.save();
 
     // Send OTP email
-    await sendOTPEmail(email, otp, otpExpires);
+    await sendOTPEmail(email, otp, minutesLeft);
 
     res
       .status(201)
