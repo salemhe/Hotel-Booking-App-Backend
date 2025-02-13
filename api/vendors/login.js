@@ -1,9 +1,7 @@
 import passport from "passport";
 import jwt from "jsonwebtoken";
-import Vendor from "../models/Vendor.js";
-
-// import Vendor from "../models/Vendor.js";
-import bcrypt from "bcrypt";
+import dotenv from "dotenv";
+dotenv.config();
 
 
 
