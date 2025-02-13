@@ -1,9 +1,7 @@
 import passport from "passport";
 import jwt from "jsonwebtoken";
-import Vendor from "../models/Vendor.js";
-
-// import Vendor from "../models/Vendor.js";
-import bcrypt from "bcrypt";
+import dotenv from "dotenv";
+dotenv.config();
 
 
 
@@ -22,8 +20,11 @@ export const loginVendor = (req, res, next) => {
       const vendorProfile = {
         id: vendor.id,
         name: vendor.name,
+        businessName: vendor.businessName,
         email: vendor.email,
-        image: vendor.image,
+        address: vendor.address,
+        branch: vendor.branch,
+        profileImage: vendor.profileImage,
         role: vendor.role,
         services: vendor.services,
         token: token,

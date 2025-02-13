@@ -25,7 +25,8 @@ export const registerUser = async (req, res) => {
 
     // Generate OTP
     const otp = generateOTP();
-    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); //OTP expires in 10sec
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); //OTP expires in 10min
+    const minutesLeft = Math.round((otpExpires - Date.now()) / (60 * 1000)); 
 
     // Create the user
     const newUser = new User({
@@ -42,7 +43,7 @@ export const registerUser = async (req, res) => {
     await newUser.save();
 
     // Send OTP email
-    await sendOTPEmail(email, otp, otpExpires);
+    await sendOTPEmail(email, otp, minutesLeft);
 
     res
       .status(201)

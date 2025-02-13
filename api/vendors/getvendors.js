@@ -1,14 +1,23 @@
-import passport from "passport";
-import jwt from "jsonwebtoken";
+
 import Vendor from "../models/Vendor.js";
-
-import bcrypt from "bcrypt";
-
 
 
 export const getVendors = async (req, res) => {
   try {
-    const vendors = await Vendor.find();
+    const { businessName, branch } = req.query; // Extract parameters from the query
+
+    const query = {};
+
+    if (businessName) {
+      query.businessName = new RegExp(businessName, "i"); // Case-insensitive search
+    }
+
+    
+    if (branch) {
+      query.branch = new RegExp(branch, "i"); 
+    }
+
+    const vendors = await Vendor.find(query).select("-password -otp -otpExpires -__v"); 
 
     res.status(200).json(vendors);
   } catch (error) {
@@ -16,3 +25,5 @@ export const getVendors = async (req, res) => {
     res.status(500).json({ message: "Error fetching vendors.", error });
   }
 };
+
+

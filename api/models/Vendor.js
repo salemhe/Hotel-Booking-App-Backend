@@ -3,9 +3,11 @@ import { Schema, model } from "mongoose";
 const VendorSchema = new Schema(
   {
     name: { type: String, required: true },
+    businessName: {type: String, required: true},
     email: { type: String, required: true, unique: true },
     phone: { type: String },
     address: { type: String },
+    branch: { type: String},
     password: { type: String },
     role: { type: String },
     profileImage: { type: String },

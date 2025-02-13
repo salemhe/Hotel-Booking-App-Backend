@@ -19,14 +19,19 @@ export const resendUserOTP = async (req, res) => {
 
     //regenerate OTP
     const otp = generateOTP();
-    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); //OTP expires in 10sec
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); //OTP expires in 10min
+     const minutesLeft = Math.round((otpExpires - Date.now()) / (60 * 1000));
 
 
     user.otp = otp;
     user.otpExpires = otpExpires;
     await user.save();
 
-    await sendOTPEmail(email, otp, otpExpires);
+  try {
+      await sendOTPEmail(email, otp, minutesLeft);
+    } catch (emailError) {
+      return res.status(500).json({ message: "Failed to send OTP email.", error: emailError.message });
+    }
 
 
 
@@ -53,13 +58,18 @@ export const resendVendorOTP = async (req, res) => {
 
     //regenerate OTP
     const otp = generateOTP();
-    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); //OTP expires in 10sec
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); 
+     const minutesLeft = Math.round((otpExpires - Date.now()) / (60 * 1000));
 
     vendor.otp = otp;
     vendor.otpExpires = otpExpires;
     await vendor.save();
 
-    await sendOTPEmail(email, otp, otpExpires);
+      try {
+      await sendOTPEmail(email, otp, minutesLeft);
+    } catch (emailError) {
+      return res.status(500).json({ message: "Failed to send OTP email.", error: emailError.message });
+    }
 
 
 
