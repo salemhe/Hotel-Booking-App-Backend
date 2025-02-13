@@ -20,6 +20,7 @@ import userRoutes from "./api/routes/userRoutes.js";
 import vendorRoutes from "./api/routes/vendorRoutes.js";
 import sessionRoutes from "./api/routes/sessionRoutes.js";
 
+
 // Initialize Express app
 const app = express();
 
@@ -52,6 +53,9 @@ initializePassport(passport);
 app.use("/api/users", userRoutes);
 app.use("/api/vendors", vendorRoutes);
 app.use("/api/sessions", sessionRoutes);
+
+
+
 
 // MongoDB connection
 mongoose

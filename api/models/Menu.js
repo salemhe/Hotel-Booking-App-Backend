@@ -1,8 +1,12 @@
-import mongoose from "mongoose";
+import { Schema, model } from "mongoose";
 
-const MenuSchema = new mongoose.Schema(
+const MenuSchema = new Schema(
   {
-    vendor: {type: mongoose.Schema.Types.ObjectId, ref: "Vendor",required: true},
+    vendor: {
+      type: Schema.Types.ObjectId,
+      ref: "Vendor",
+      required: true,
+    },
     itemName: { type: String, required: true },
     description: { type: String },
     price: { type: Number, required: true },
@@ -12,5 +16,4 @@ const MenuSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("Menu", MenuSchema);
- 
+export default model("Menu", MenuSchema);

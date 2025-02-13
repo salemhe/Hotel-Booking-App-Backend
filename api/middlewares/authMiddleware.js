@@ -3,25 +3,20 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const authorize = (req, res, next) => {
-  let token;
+  const token = req.headers.authorization?.split(" ")[1];
 
-  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
-    try {
+  if (!token) {
+    return res
+      .status(401)
+      .json({ message: "Not authorized, no token provided." });
+  }
 
-      token = req.headers.authorization.split(" ")[1];
-
-    
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-      // Attach the user ID to the request object
-      req.user = decoded.id;
-
-      next();
-    } catch (error) {
-      res.status(401).json({ message: "Not authorized, token failed." });
-    }
-  } else {
-    res.status(401).json({ message: "Not authorized, no token provided." });
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = { vendorId: decoded.id }; // Attach vendor ID
+    next();
+  } catch (error) {
+    res.status(403).json({ message: "Invalid or expired token." });
   }
 };
 

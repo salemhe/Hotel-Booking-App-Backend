@@ -8,7 +8,9 @@ import { authorize } from "../middlewares/authMiddleware.js";
 import { verifyVendorOTP } from "../otp/verifyOTP.js";
 import { resendVendorOTP } from "../otp/resendOTP.js";
 import { createMenu } from "../menus/create.js";
-import { authenticateVendor } from "../middlewares/authMiddleware.js"
+import { authenticateVendor } from "../middlewares/authMiddleware.js";
+import { getMenusByVendor } from "../menus/getMenu.js"
+
 
 const router = express.Router();
 
@@ -39,5 +41,7 @@ router.post("/verify-otp", verifyVendorOTP);
 router.post("/resend-otp", resendVendorOTP);
 
 router.post("/create-menu",upload.single("itemImage"), authenticateVendor, createMenu);
+
+router.get("/menus/:vendorId", authenticateVendor, getMenusByVendor);
 
 export default router;
