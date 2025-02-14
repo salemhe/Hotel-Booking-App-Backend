@@ -1,33 +1,49 @@
-export const loginUser = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
-  try {
-    const { email, password } = req.body;
+export const authorize = (req, res, next) => {
+  let token;
 
-    // Check if user exists
-    const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ message: "User not found." });
+  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
+    try {
 
-    // Validate password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid)
-      return res.status(400).json({ message: "Invalid credentials." });
+      token = req.headers.authorization.split(" ")[1];
 
-    // Generate JWT token
-    const jwtSecret = process.env.JWT_SECRET;
-    if (!jwtSecret) {
-      throw new Error('JWT_SECRET is not defined in the environment variables');
+    
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+      // Attach the user ID to the request object
+      req.user = decoded.id;
+
+      next();
+    } catch (error) {
+      res.status(401).json({ message: "Not authorized, token failed." });
     }
-    const token = jwt.sign({ id: user._id }, jwtSecret, {
-      expiresIn: "1h",
-    });
-
-
-    res.status(200).json({ message: "Login successful.", token, user });
-  } catch (error) {
-    res.status(500).json({ message: "Error logging in.", error });
+  } else {
+    res.status(401).json({ message: "Not authorized, no token provided." });
   }
 };
+
+
+export const authenticateVendor = (req, res, next) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1]; // Get token from Authorization header
+    if (!token)
+      return res
+        .status(401)
+        .json({ message: "Unauthorized: No token provided" });
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify the token
+    req.user = { vendorId: decoded.id }; // Attach vendorId to req.user
+
+    next();
+  } catch (error) {
+    return res.status(403).json({ message: "Invalid or expired token" });
+  }
+};
+
+
+
+
+
