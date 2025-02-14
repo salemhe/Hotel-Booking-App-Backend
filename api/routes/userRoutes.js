@@ -4,9 +4,10 @@ import upload from "../middlewares/uploadMiddleware.js";
 import { registerUser } from "../users/register.js";
 import { loginUser } from "../users/login.js";
 import { getUserProfile } from "../users/profile.js";
-import { authorize } from "../middlewares/authMiddleware.js";
+import { authorize, authenticateUser } from "../middlewares/authMiddleware.js";
 import { verifyUserOTP } from "../otp/verifyOTP.js";
-import { resendUserOTP } from "../otp/resendOTP.js"
+import { resendUserOTP } from "../otp/resendOTP.js";
+import { bookRoomOrTable } from "../bookings/createBooking.js";
 
 
 
@@ -36,5 +37,7 @@ router.get("/profile/:id",authorize, getUserProfile);
 
 router.post("/verify-otp", verifyUserOTP);
 router.post("/resend-otp", resendUserOTP);
+
+router.post("/bookings", authenticateUser, bookRoomOrTable);
 
 export default router;
