@@ -8,6 +8,7 @@ import { authorize, authenticateUser } from "../middlewares/authMiddleware.js";
 import { verifyUserOTP } from "../otp/verifyOTP.js";
 import { resendUserOTP } from "../otp/resendOTP.js";
 import { bookRoomOrTable } from "../bookings/createBooking.js";
+import { getBookings} from "../bookings/getBooking.js"
 
 
 
@@ -39,5 +40,6 @@ router.post("/verify-otp", verifyUserOTP);
 router.post("/resend-otp", resendUserOTP);
 
 router.post("/bookings", authenticateUser, bookRoomOrTable);
+router.get("/bookings", authorize, getBookings);
 
 export default router;
