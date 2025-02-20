@@ -7,11 +7,21 @@ const MenuSchema = new Schema(
       ref: "Vendor",
       required: true,
     },
-    itemName: { type: String, required: true },
-    description: { type: String },
-    price: { type: Number, required: true },
+    addOns: [{ type: String }],
+    availabilityStatus: { type: Boolean },
     category: { type: String, required: true },
-    itemImage: { type: String }, // Optional, store image URL
+    cuisineType: { type: String, required: true },
+    dietaryInfo: [{ type: String }],
+    discountPrice: { type: Number },
+    dishName: { type: String, required: true },
+    description: { type: String, required: true },
+    itemImage: { type: String },
+    maxOrderPerCustomer: { type: Number, required: true },
+    portionSize: { type: String },
+    preparationTime: { type: Number },
+    price: { type: Number, required: true },
+    spicelevel: {type: String},
+    stockQuantity: {type: Number, required: true}
   },
   { timestamps: true }
 );

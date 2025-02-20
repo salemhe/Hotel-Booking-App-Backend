@@ -21,6 +21,7 @@ export const loginVendor = (req, res, next) => {
         id: vendor.id,
         name: vendor.name,
         businessName: vendor.businessName,
+        businessType: vendor.businessType,
         email: vendor.email,
         address: vendor.address,
         branch: vendor.branch,

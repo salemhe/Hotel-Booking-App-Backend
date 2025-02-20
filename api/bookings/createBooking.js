@@ -9,7 +9,7 @@ export const bookRoomOrTable = async (req, res) => {
            .json({ message: "Unauthorized: No user ID found" });
        }
 
-    const { type, vendor, roomNumber, tableNumber, guests, checkIn, checkOut } = req.body;
+    const { type, vendor, menuId, roomNumber, tableNumber, guests, checkIn, checkOut } = req.body;
 
     // Validate required fields
     if (!type || !vendor || !guests) {
@@ -18,6 +18,9 @@ export const bookRoomOrTable = async (req, res) => {
 
     if (type === "restaurant" && !tableNumber) {
       return res.status(400).json({message:"Table number is required for resturant bookings.",});
+    }
+    if (type === "restaurant" && !menuId) {
+      return res.status(400).json({message:"Menu Id is required for resturant bookings.",});
     }
     if (type === "hotel" && !roomNumber) {
       return res.status(400).json({message:"Room number is required for hotel bookings.",});
@@ -32,6 +35,7 @@ export const bookRoomOrTable = async (req, res) => {
       user: req.user.id, // Authenticated user
       type,
       vendor,
+      menuId: type === "restaurant"? menuId : null,
       roomNumber: type === "hotel" ? roomNumber : null,
       tableNumber: type === "restaurant" ? tableNumber : null,
       guests,

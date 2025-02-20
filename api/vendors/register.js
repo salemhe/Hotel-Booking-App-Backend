@@ -7,11 +7,11 @@ import bcrypt from "bcrypt";
 
 export const registerVendor = async (req, res) => {
   try {
-    const { name, businessName, email, phone, address, branch, password, role, services } = req.body;
+    const { name, businessName,businessType, email, phone, address, branch, password, role, services } = req.body;
     const profileImage = req.file ? req.file.filename : null;
 
     // Validate input
-    if (!name || !businessName || !email || !phone || !address || !password || !role) {
+    if (!name || !businessName || !businessType || !email || !phone || !address || !password || !role) {
       return res.status(400).json({ message: "All fields are required." });
     }
 
@@ -43,6 +43,7 @@ export const registerVendor = async (req, res) => {
     const newVendor = new Vendor({
       name,
       businessName,
+      businessType,
       email,
       phone,
       address,
