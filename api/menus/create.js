@@ -10,7 +10,7 @@ export const createMenu = async (req, res) => {
     }
 
     const { vendorId } = req.user; // Assuming authentication middleware sets req.user
-    const { addOns, availabilityStatus, category, cuisineType, dietaryInfo, discountPrice, dishName, description, maxOrderPerCustomer, portionSize, preparationTime, price, spicelevel, stockQuantity } = req.body;
+    const { addOns, availabilityStatus, category, cuisineType, dietaryInfo, discountPrice, dishName, description, maxOrderPerCustomer, portionSize, preparationTime, price, spiceLevel, stockQuantity } = req.body;
     const itemImage = req.file ? req.file.filename : null;
 
     // Check if the vendor exists
@@ -27,7 +27,7 @@ export const createMenu = async (req, res) => {
     }
 
     // Create new menu item
-    const newMenu = new Menu({vendor: vendorId, addOns, availabilityStatus, category, cuisineType, dietaryInfo, discountPrice, dishName, description, itemImage, maxOrderPerCustomer, portionSize, preparationTime, price, spicelevel, stockQuantity });
+    const newMenu = new Menu({vendor: vendorId, addOns, availabilityStatus, category, cuisineType, dietaryInfo, discountPrice, dishName, description, itemImage, maxOrderPerCustomer, portionSize, preparationTime, price, spiceLevel, stockQuantity });
 
     await newMenu.save();
 

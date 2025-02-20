@@ -20,7 +20,7 @@ const MenuSchema = new Schema(
     portionSize: { type: String },
     preparationTime: { type: Number },
     price: { type: Number, required: true },
-    spicelevel: {type: String},
+    spiceLevel: {type: String},
     stockQuantity: {type: Number, required: true}
   },
   { timestamps: true }
