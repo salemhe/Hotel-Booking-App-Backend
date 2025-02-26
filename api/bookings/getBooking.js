@@ -11,7 +11,7 @@ export const getBookings = async (req, res) => {
     if (userId) query.user = userId; // Filter by user
 
     const bookings = await Booking.find(query).select(
-      "_id user vendor type roomNumber tableNumber guest checkIn checkOut status bookingDate"
+      "_id user vendor menuId type roomNumber tableNumber guest checkIn checkOut status bookingDate"
     );
 
     if (!bookings.length) {

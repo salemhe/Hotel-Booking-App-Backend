@@ -10,7 +10,7 @@ export const createMenu = async (req, res) => {
     }
 
     const { vendorId } = req.user; // Assuming authentication middleware sets req.user
-    const { itemName, description, price, category } = req.body;
+    const { addOns, availabilityStatus, category, cuisineType, dietaryInfo, discountPrice, dishName, description, maxOrderPerCustomer, portionSize, preparationTime, price, spiceLevel, stockQuantity } = req.body;
     const itemImage = req.file ? req.file.filename : null;
 
     // Check if the vendor exists
@@ -20,21 +20,14 @@ export const createMenu = async (req, res) => {
     }
 
     // Validate required fields
-    if (!itemName || !price || !category) {
+    if (!price || !category || !cuisineType || !dishName || !description || !availabilityStatus || !maxOrderPerCustomer || !stockQuantity) {
       return res
         .status(400)
         .json({ message: "itemName, price, and category are required" });
     }
 
     // Create new menu item
-    const newMenu = new Menu({
-      vendor: vendorId,
-      itemName,
-      description,
-      price,
-      category,
-      itemImage,
-    });
+    const newMenu = new Menu({vendor: vendorId, addOns, availabilityStatus, category, cuisineType, dietaryInfo, discountPrice, dishName, description, itemImage, maxOrderPerCustomer, portionSize, preparationTime, price, spiceLevel, stockQuantity });
 
     await newMenu.save();
 
