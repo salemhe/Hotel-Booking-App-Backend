@@ -8,7 +8,7 @@ const MenuSchema = new Schema(
       required: true,
     },
     addOns: [{ type: String }],
-    availabilityStatus: { type: Boolean },
+    availabilityStatus: { type: Boolean, required: true },
     category: { type: String, required: true },
     cuisineType: { type: String, required: true },
     dietaryInfo: [{ type: String }],
@@ -20,8 +20,8 @@ const MenuSchema = new Schema(
     portionSize: { type: String },
     preparationTime: { type: Number },
     price: { type: Number, required: true },
-    spiceLevel: {type: String},
-    stockQuantity: {type: Number, required: true}
+    spiceLevel: { type: String },
+    stockQuantity: { type: Number, required: true },
   },
   { timestamps: true }
 );
