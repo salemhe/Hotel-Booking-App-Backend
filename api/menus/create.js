@@ -27,7 +27,24 @@ export const createMenu = async (req, res) => {
     }
 
     // Create new menu item
-    const newMenu = new Menu({vendor: vendorId, addOns, availabilityStatus, category, cuisineType, dietaryInfo, discountPrice, dishName, description, itemImage, maxOrderPerCustomer, portionSize, preparationTime, price, spiceLevel, stockQuantity });
+    const newMenu = new Menu({
+      vendor: vendorId,
+      addOns,
+      availabilityStatus,
+      category,
+      cuisineType,
+      dietaryInfo,
+      discountPrice,
+      dishName,
+      description,
+      itemImage: itemImage,
+      maxOrderPerCustomer,
+      portionSize,
+      preparationTime,
+      price,
+      spiceLevel,
+      stockQuantity,
+    });
 
     await newMenu.save();
 
