@@ -10,6 +10,7 @@ import { resendUserOTP } from "../otp/resendOTP.js";
 import { bookRoomOrTable } from "../bookings/createBooking.js";
 import { getBookings} from "../bookings/getBooking.js"
 import { cancleBooking } from "../bookings/updateBooking.js";
+import { updateBooking } from "../bookings/updateBooking.js";
 
 
 
@@ -43,5 +44,6 @@ router.post("/resend-otp", resendUserOTP);
 router.post("/bookings", authenticateUser, bookRoomOrTable);
 router.get("/bookings", authorize, getBookings);
 router.patch("/bookings/cancel/:bookingId", authenticateUser, cancleBooking);
+router.patch("/bookings/update/:bookingId", authenticateUser, updateBooking);
 
 export default router;
