@@ -1,4 +1,5 @@
-{"message":string,
+{
+  "message":string,
   "booking":{
     "_id":string,
     "user":sting,
