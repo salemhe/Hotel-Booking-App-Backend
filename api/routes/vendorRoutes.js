@@ -42,6 +42,6 @@ router.post("/resend-otp", resendVendorOTP);
 
 router.post("/create-menu",upload.single("itemImage"), authenticateVendor, createMenu);
 
-router.get("/menus/:vendorId", authenticateVendor, getMenusByVendor);
+router.get("/menus/", authenticateVendor, getMenusByVendor);
 
 export default router;
