@@ -13,6 +13,12 @@ const VendorSchema = new Schema(
     role: { type: String },
     profileImage: { type: String },
     services: { type: [String], default: [] }, // List of services the vendor provides
+    paymentDetails: {
+      business_name: { type: String },
+      bank_code: { type: String },
+      account_number: { type: String },
+      paystackSubAccount: { type: String },
+    },
     otp: String, 
     otpExpires: Date,
     isVerified: { type: Boolean, default: false },
@@ -20,5 +26,6 @@ const VendorSchema = new Schema(
   },
   { timestamps: true }
 );
+
 
 export default model("Vendor", VendorSchema);

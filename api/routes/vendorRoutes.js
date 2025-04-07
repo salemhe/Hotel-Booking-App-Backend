@@ -10,6 +10,7 @@ import { resendVendorOTP } from "../otp/resendOTP.js";
 import { createMenu } from "../menus/create.js";
 import { authenticateVendor } from "../middlewares/authMiddleware.js";
 import { getMenusByVendor } from "../menus/getMenu.js"
+import { createPaymentDetails } from "../payments/createPaymentDetails.js";
 
 
 const router = express.Router();
@@ -43,5 +44,8 @@ router.post("/resend-otp", resendVendorOTP);
 router.post("/create-menu",upload.single("itemImage"), authenticateVendor, createMenu);
 
 router.get("/menus/", authenticateVendor, getMenusByVendor);
+
+router.patch("/save-payment", authenticateVendor, createPaymentDetails);
+
 
 export default router;
