@@ -1,10 +1,11 @@
-# 💳 Payment API Documentation
+# 💳 Payment and Search API Documentation
 
 This documentation outlines three key endpoints for handling payments using the **Paystack** API:
 
 1. `POST /api/users/verify-payment` - Verify a payment after transaction completion.
 2. `POST /api/users/make-payment` - Initialize a new payment.
 3. `POST /api/vendors/save-payment` - Create and store vendor payment (subaccount) details.
+4. `POST /api/users/restaurant-search` - Search for restaurants
 
 All endpoints require authentication and a valid Paystack secret key stored in `process.env.PAYSTACK_SECRET_KEY`.
 
@@ -124,6 +125,37 @@ Creates a **subaccount** on Paystack for the vendor, allowing split payments. Al
 - `403 Unauthorized`: Vendor not logged in.
 - `400 Bad Request`: Missing required payment info.
 - `500 Server Error`: Paystack or database error.
+
+
+---
+
+## 📌 `GET /api/users/restauraant-search?query="search query"`
+
+### Description
+Search for restaurants by query
+
+### Authorization
+🔒 Requires the user to be authenticated.
+
+
+### Response
+#### ✅ Success (HTTP 200)
+```json
+{
+  "message": "Search Results",
+  "data": [
+    {
+      "email": "string",
+      "_id": "string",
+      ...
+    }
+  ]
+}
+```
+
+#### ❌ Error Responses
+- `403 Unauthorized`: User not logged in.
+- `500 Server Error`: Search error or server misconfiguration.
 
 
 ---
