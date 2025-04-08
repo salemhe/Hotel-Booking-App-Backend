@@ -5,7 +5,13 @@ export const getRestaurants = async (req, res) => {
     const { query } = req.query; // Extract parameters from the query
 
     if (!query) {
-      return res.status(400).json({ message: "Invalid query parameter." });
+      const vendors = await Vendor.find({}).select(
+        "-password -otp -otpExpires -__v"
+      );
+      if (vendors.length === 0) {
+        return res.status(404).json({ message: "No restaurants found." });
+      }
+      return res.status(200).json({message: "Search Results", data: vendors});
     }
 
     const regex = new RegExp(query, "i");
