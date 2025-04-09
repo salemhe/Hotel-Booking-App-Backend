@@ -3,7 +3,7 @@ import Vendor from "../models/Vendor.js";
 import { generateOTP } from "../../utils/otpUtils.js";
 import { sendOTPEmail } from "../../utils/emailService.js";
 
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 export const registerVendor = async (req, res) => {
   try {

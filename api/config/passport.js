@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { Strategy as LocalStrategy } from "passport-local";
 import User from "../models/User.js"; // Adjust the path as per your folder structure
 import Vendor from "../models/Vendor.js";
