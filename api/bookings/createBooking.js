@@ -33,6 +33,10 @@ export const bookRoomOrTable = async (req, res) => {
     const parsedCheckIn = new Date(checkIn);
 const parsedCheckOut = new Date(checkOut);
 
+if (isNaN(parsedCheckIn.getTime()) || isNaN(parsedCheckOut.getTime())) {
+  return res.status(400).json({ error: "Invalid date format" });
+}
+
     // Create booking
     const newBooking = new Booking({
       user: req.user.id, // Authenticated user
@@ -43,7 +47,7 @@ const parsedCheckOut = new Date(checkOut);
       tableNumber: type === "restaurant" ? tableNumber : null,
       guests,
       checkIn: type === "hotel" ? parsedCheckIn : null,
-      checkOut: type === "hotel" ? parsedCheckIn : null,
+      checkOut: type === "hotel" ? parsedCheckOut : null,
     });
 
     await newBooking.save();
