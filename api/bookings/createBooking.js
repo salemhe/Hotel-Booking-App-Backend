@@ -30,6 +30,9 @@ export const bookRoomOrTable = async (req, res) => {
       return res.status(400).json({message:"Check-in and Check-out dates are required for hotel bookings.",});
     }
 
+    const parsedCheckIn = new Date(checkIn);
+const parsedCheckOut = new Date(checkOut);
+
     // Create booking
     const newBooking = new Booking({
       user: req.user.id, // Authenticated user
@@ -39,8 +42,8 @@ export const bookRoomOrTable = async (req, res) => {
       roomNumber: type === "hotel" ? roomNumber : null,
       tableNumber: type === "restaurant" ? tableNumber : null,
       guests,
-      checkIn: type === "hotel" ? checkIn : null,
-      checkOut: type === "hotel" ? checkOut : null,
+      checkIn: type === "hotel" ? parsedCheckIn : null,
+      checkOut: type === "hotel" ? parsedCheckIn : null,
     });
 
     await newBooking.save();
