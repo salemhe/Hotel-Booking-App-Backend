@@ -1,0 +1,10 @@
+MONGO_URI=mongodb+srv://testingsalem71:uGl9ElE9Xk1SIMdc@hotel-booking-app-clust.fq6pa.mongodb.net/?retryWrites=true&w=majority&appName=Hotel-Booking-App-Cluster0
+PORT=5000
+JWT_SECRET=diys684iyu2hpre87u386
+JWT_EXPIRES_IN=30d
+
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=salemsalemhe@gmail.com
+SMTP_PASS=xmqd xcjj mquu gdmh
+PAYSTACK_SECRET_KEY=sk_test_d01ec3e248cdabc4fe6f02d7ab1ce0f35f9d2e84
