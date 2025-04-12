@@ -58,6 +58,6 @@ const parsedCheckOut = new Date(checkOut);
     console.error("Booking Error:", error);
     res
       .status(500)
-      .json({ message: "Error creating booking.", error: error.message });
+      .json({ message: "Error creating new booking.", error: error.message });
   }
 };
