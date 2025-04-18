@@ -15,12 +15,11 @@ export const bookRoomOrTable = async (req, res) => {
     if (!type || !vendor || !guests) {
       return res.status(400).json({ message: "Add all required fields." });
     }
-
     if (type === "restaurant" && !tableNumber) {
       return res.status(400).json({message:"Table number is required for resturant bookings.",});
     }
     if (type === "restaurant" && !menuId) {
-      return res.status(400).json({message:"Menu Id is required for resturant bookings.",});
+      return res.status(400).json({message:"Menu Id is required for resturant bookings always.",});
     }
     if (type === "hotel" && !roomNumber) {
       return res.status(400).json({message:"Room number is required for hotel bookings.",});
