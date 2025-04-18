@@ -1,3 +1,4 @@
+import { CursorTimeoutMode } from "mongodb";
 import Vendor from "../models/Vendor.js";
 
 export const createPaymentDetails = async (req, res) => {
@@ -8,8 +9,8 @@ export const createPaymentDetails = async (req, res) => {
       .json({ message: "Paystack secret key not configured." });
   }
   
-  const createSubAccountOnPaystack = async (data) => {
-    const response = await fetch("https://api.paystack.co/subaccount", {
+  const createAccountOnPaystack = async (data) => {
+    const response = await fetch("https://api.paystack.co/transferrecipient", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
@@ -35,10 +36,10 @@ export const createPaymentDetails = async (req, res) => {
 
     const { vendorId } = req.user;
 
-    const { business_name, bank_code, account_number, percentage_charge } =
+    const { bank_code, account_number, name } =
       req.body;
 
-    if (!business_name || !bank_code || !account_number || !percentage_charge) {
+    if ( !bank_code || !account_number || !name) {
       return res
         .status(400)
         .json({ message: "All Account details are required." });
@@ -46,14 +47,15 @@ export const createPaymentDetails = async (req, res) => {
 
 
 
-    const subAccountData = {
-      business_name,
-      bank_code,
+    const accountData = {
+      type: "nuban",
+      name,
       account_number,
-      percentage_charge,
+      bank_code,
+      currency: "NGN",
     };
 
-    const paystackResponse = await createSubAccountOnPaystack(subAccountData);
+    const paystackResponse = await createAccountOnPaystack(accountData);
     if (paystackResponse.status === false) {
       return res.status(500).json({ message: paystackResponse.message });
     }
@@ -62,10 +64,9 @@ export const createPaymentDetails = async (req, res) => {
       vendorId,
       {
         paymentDetails: {
-          business_name,
           bank_code,
           account_number,
-          paystackSubAccount: paystackResponse.data.subaccount_code,
+          paystackCode: paystackResponse.data.recipient_code,
         },
       },
       { new: true }
