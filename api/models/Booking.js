@@ -5,7 +5,7 @@ const bookingSchema = new Schema(
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     type: { type: String, enum: ["hotel", "restaurant"], required: true },
     vendor: { type: Schema.Types.ObjectId, ref: "Vendor", required: true },
-    menuId: [{ type: Schema.Types.ObjectId, ref: "Menu", required: function () { return this.type === "restaurant"; } }],
+    menuId: { type: Schema.Types.ObjectId, ref: "Menu", required: function () { return this.type === "restaurant"; } },
     roomNumber: { type: Number, required: function () { return this.type === "hotel"; } }, 
     tableNumber: { type: Number, required: function () { return this.type === "restaurant"; } }, 
     guests: { type: Number, required: true },
