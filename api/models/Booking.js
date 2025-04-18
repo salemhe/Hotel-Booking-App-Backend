@@ -10,7 +10,6 @@ const bookingSchema = new Schema(
     tableNumber: { type: Number, required: function () { return this.type === "restaurant"; } }, 
     guests: { type: Number, required: true },
     date: { type: Date, required: function () { return this.type === "restaurant"; } },
-    time: { type: String, required: function () { return this.type === "restaurant"; } },
     checkIn: { type: Date, required: function () { return this.type === "hotel"; } }, // Only required for hotels
     checkOut: { type: Date, required: function () { return this.type === "hotel"; } }, // just for hotels
     // checkIn: { type: Date, required: true },
