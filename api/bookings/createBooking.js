@@ -37,7 +37,7 @@ export const bookRoomOrTable = async (req, res) => {
 const parsedCheckOut = new Date(checkOut);
 const parsedDate = new Date(date);
 
-if (isNaN(parsedCheckIn.getTime()) || isNaN(parsedCheckOut.getTime())) {
+if (isNaN(parsedDate.getTime()) || isNaN(parsedDate.getTime())) {
   return res.status(400).json({ error: "Invalid date format" });
 }
 
