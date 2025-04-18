@@ -1,3 +1,4 @@
+
 export const initializePayment = async (req, res) => {
   const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
   try {
@@ -7,12 +8,12 @@ export const initializePayment = async (req, res) => {
         .json({ message: "Unauthorized: No User ID found" });
     }
 
-    const { amount, email, subaccount } = req.body;
+    const { amount, email } = req.body;
 
-    if (!amount || !email || !subaccount) {
+    if (!amount || !email) {
       return res
         .status(400)
-        .json({ message: "Amount, subAccount and email are required." });
+        .json({ message: "Amount and email are required." });
     }
 
     if (!PAYSTACK_SECRET_KEY) {
@@ -24,7 +25,6 @@ export const initializePayment = async (req, res) => {
     const paymentData = {
       amount: amount * 100, // Paystack expects the amount in kobo
       email,
-      subaccount,
     };
 
     const createPaymentOnPaystack = async (data) => {
@@ -60,6 +60,7 @@ export const initializePayment = async (req, res) => {
         messaage: "success",
         data: {
           authorization_url: paystackResponse.data.authorization_url,
+          access_code: paystackResponse.data.access_code,
           ref: paystackResponse.data.reference,
         },
       });
