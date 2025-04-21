@@ -1,3 +1,4 @@
+import Vendor from "../models/Vendor.js";
 
 export const initializePayment = async (req, res) => {
   const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
@@ -8,9 +9,9 @@ export const initializePayment = async (req, res) => {
         .json({ message: "Unauthorized: No User ID found" });
     }
 
-    const { amount, email } = req.body;
+    const { amount, email, vendorId } = req.body;
 
-    if (!amount || !email) {
+    if (!amount || !email || !vendorId) {
       return res
         .status(400)
         .json({ message: "Amount and email are required." });
@@ -22,10 +23,28 @@ export const initializePayment = async (req, res) => {
         .json({ message: "Paystack secret key not configured." });
     }
 
+    // const paymentData = {
+    //   amount: amount * 100, // Paystack expects the amount in kobo
+    //   email: email,
+    //   currency: "NGN",
+    // };
+    const vendor = await Vendor.findById(vendorId);
+    if (!vendor || !vendor.paymentDetails || !vendor.paymentDetails.paystackSubAccount) {
+      return res.status(404).json({ message: "Vendor not found." });
+    }
+
     const paymentData = {
-      amount: amount * 100, // Paystack expects the amount in kobo
-      email,
-    };
+      email: email,
+      amount: amount * 100, 
+      currency: "NGN",
+      subaccount: vendor.paymentDetails.paystackSubAccount, // vendor's subaccount
+      percentage_charge: vendor.paymentDetails.percentageCharge,
+      // callback_url: "https://yourdomain.com/verify-payment",
+      metadata: {
+        vendorId: vendorId
+      }
+    }
+    
 
     const createPaymentOnPaystack = async (data) => {
       const response = await fetch(
