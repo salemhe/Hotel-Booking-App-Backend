@@ -37,7 +37,7 @@ export default (passport) => {
           if (!vendor)
             return done(null, false, { message: "Vendor not found." });
 
-          const isMatch = await bcrypt.compare(password, vendor.password);
+          const isMatch = bcrypt.compare(password, vendor.password);
           if (!isMatch)
             return done(null, false, { message: "Invalid credentials." });
 
