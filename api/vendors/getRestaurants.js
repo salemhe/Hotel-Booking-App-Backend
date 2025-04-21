@@ -60,6 +60,7 @@ export const getRestaurants = async (req, res) => {
           branch: 1,
           profileImage: 1,
           services: 1,
+          createdAt: 1
         },
       },
     ]);

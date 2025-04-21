@@ -5,7 +5,7 @@ This documentation outlines three key endpoints for handling payments using the 
 1. `POST /api/users/verify-payment` - Verify a payment after transaction completion.
 2. `POST /api/users/make-payment` - Initialize a new payment.
 3. `POST /api/vendors/save-payment` - Create and store vendor payment (subaccount) details.
-4. `POST /api/users/restaurant-search` - Search for restaurants
+4. `GET /api/users/restaurant-search` - Search for restaurants
 
 All endpoints require authentication and a valid Paystack secret key stored in `process.env.PAYSTACK_SECRET_KEY`.
 

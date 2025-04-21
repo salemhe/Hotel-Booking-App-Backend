@@ -9,8 +9,11 @@ const bookingSchema = new Schema(
     roomNumber: { type: Number, required: function () { return this.type === "hotel"; } }, 
     tableNumber: { type: Number, required: function () { return this.type === "restaurant"; } }, 
     guests: { type: Number, required: true },
-    checkIn: { type: Date, required: true },
-    checkOut: { type: Date, required:true }, 
+    date: { type: Date, required: function () { return this.type === "restaurant"; } },
+    checkIn: { type: Date, required: function () { return this.type === "hotel"; } }, // Only required for hotels
+    checkOut: { type: Date, required: function () { return this.type === "hotel"; } }, // just for hotels
+    // checkIn: { type: Date, required: true },
+    // checkOut: { type: Date, required:true }, 
     bookingDate: { type: Date, default: Date.now },
     status: { type: String, enum: ["pending", "confirmed", "updated", "cancelled"], default: "pending" },
   },

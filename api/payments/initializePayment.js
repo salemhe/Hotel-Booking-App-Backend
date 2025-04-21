@@ -79,6 +79,7 @@ export const initializePayment = async (req, res) => {
         messaage: "success",
         data: {
           authorization_url: paystackResponse.data.authorization_url,
+          access_code: paystackResponse.data.access_code,
           ref: paystackResponse.data.reference,
         },
       });
