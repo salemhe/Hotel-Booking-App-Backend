@@ -9,32 +9,32 @@ export const bookRoomOrTable = async (req, res) => {
            .json({ message: "Unauthorized: No user ID found" });
        }
 
-    const { type, vendor, menuId, roomNumber, tableNumber, guests, checkIn, checkOut, date } = req.body;
-
+    const { vendorId, businessName, location, partySize, menuId, tableNumber,tableType,  meal, pricePerTable, guests,totalPrice,specialRequest, date } = req.body;
+    const image = req.file ? req.file.filename : req.body.image || null;  
     // Validate required fields
-    if (!type || !vendor || !guests) {
-      return res.status(400).json({ message: "Add all required fields." });
+    if ( !vendorId || !businessName || !location || !partySize || !menuId || !tableType || !meal || !pricePerTable || !totalPrice || !date ) {
+      return res.status(400).json({ message: "fill the required fields." });
     }
-    if (type === "restaurant" && !tableNumber) {
-      return res.status(400).json({message:"Table number is required for resturant bookings.",});
-    }
-    if (type === "restaurant" && !menuId) {
-      return res.status(400).json({message:"Menu Id is required for resturant bookings.",});
-    }
-    if (type === "restaurant" && !date) {
-      return res.status(400).json({message:"Date is required for resturant bookings.",});
-    }
+    // if (type === "restaurant" && !tableNumber) {
+    //   return res.status(400).json({message:"Table number is required for resturant bookings.",});
+    // }
+    // if (type === "restaurant" && !menuId) {
+    //   return res.status(400).json({message:"Menu Id is required for resturant bookings.",});
+    // }
+    // if (type === "restaurant" && !date) {
+    //   return res.status(400).json({message:"Date is required for resturant bookings.",});
+    // }
 
-    if (type === "hotel" && !roomNumber) {
-      return res.status(400).json({message:"Room number is required for hotel bookings.",});
-    }
+    // if (type === "hotel" && !roomNumber) {
+    //   return res.status(400).json({message:"Room number is required for hotel bookings.",});
+    // }
 
-    if (type === "hotel" && (!checkIn || !checkOut)) {
-      return res.status(400).json({message:"Check-in and Check-out dates are required for hotel bookings.",});
-    }
+    // if (type === "hotel" && (!checkIn || !checkOut)) {
+    //   return res.status(400).json({message:"Check-in and Check-out dates are required for hotel bookings.",});
+    // }
 
-    const parsedCheckIn = new Date(checkIn);
-const parsedCheckOut = new Date(checkOut);
+//     const parsedCheckIn = new Date(checkIn);
+// const parsedCheckOut = new Date(checkOut);
 const parsedDate = new Date(date);
 
 if (isNaN(parsedDate.getTime()) || isNaN(parsedDate.getTime())) {
@@ -43,16 +43,29 @@ if (isNaN(parsedDate.getTime()) || isNaN(parsedDate.getTime())) {
 
     // Create booking
     const newBooking = new Booking({
-      user: req.user.id, // Authenticated user
-      type,
-      vendor,
-      menuId: type === "restaurant"? menuId : null,
-      roomNumber: type === "hotel" ? roomNumber : null,
-      tableNumber: type === "restaurant" ? tableNumber : null,
-      date: type === "restaurant" ? parsedDate : null,
+      userId: req.user.id, // Authenticated user
+      vendorId: vendorId,
+      businessName, 
+      location,
+      partySize,
+      menuId,
+      tableNumber,
+      tableType,
+      meal,
+      pricePerTable,
       guests,
-      checkIn: type === "hotel" ? parsedCheckIn : null,
-      checkOut: type === "hotel" ? parsedCheckOut : null,
+      totalPrice,
+      specialRequest,
+      image: image,
+      date: parsedDate,
+
+      // menuId: type === "restaurant"? menuId : null,
+      // roomNumber: type === "hotel" ? roomNumber : null,
+      // tableNumber: type === "restaurant" ? tableNumber : null,
+      // date: type === "restaurant" ? parsedDate : null,
+      // guests,
+      // checkIn: type === "hotel" ? parsedCheckIn : null,
+      // checkOut: type === "hotel" ? parsedCheckOut : null,
     });
 
     await newBooking.save();
