@@ -13,11 +13,15 @@ const VendorSchema = new Schema(
     role: { type: String },
     profileImage: { type: String },
     services: { type: [String], default: [] }, // List of services the vendor provides
+
     paymentDetails: {
-      business_name: { type: String },
-      bank_code: { type: String },
-      account_number: { type: String },
+      bankAccountName: { type: String},
+      bankName: { type: String },
+      bankCode: { type: String },
+      accountNumber: { type: String },
       paystackSubAccount: { type: String },
+      recipientCode: { type: String },
+      percentageCharge: { type: Number }
     },
     otp: String, 
     otpExpires: Date,

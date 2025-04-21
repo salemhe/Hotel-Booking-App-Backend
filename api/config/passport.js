@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { Strategy as LocalStrategy } from "passport-local";
 import User from "../models/User.js"; // Adjust the path as per your folder structure
 import Vendor from "../models/Vendor.js";
@@ -37,7 +37,7 @@ export default (passport) => {
           if (!vendor)
             return done(null, false, { message: "Vendor not found." });
 
-          const isMatch = await bcrypt.compare(password, vendor.password);
+          const isMatch = bcrypt.compare(password, vendor.password);
           if (!isMatch)
             return done(null, false, { message: "Invalid credentials." });
 
