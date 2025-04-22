@@ -16,10 +16,7 @@ export const getBookings = async (req, res) => {
     }
 
 
-    const bookings = await Booking.find(query).select(
-      "_id user vendor menuId type roomNumber tableNumber guest checkIn checkOut status bookingDate"
-    );
-
+    const bookings = await Booking.find(query);
     res.status(200).json(bookings);
   } catch (error) {
     console.error("Error fetching bookings:", error);
