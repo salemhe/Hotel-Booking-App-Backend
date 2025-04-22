@@ -15,7 +15,6 @@ export const getBookings = async (req, res) => {
       query.user = new mongoose.Types.ObjectId(userId);
     }
 
-    console.log("Booking Query:", query); // helpful for debugging
 
     const bookings = await Booking.find(query).select(
       "_id user vendor menuId type roomNumber tableNumber guest checkIn checkOut status bookingDate"
