@@ -1,22 +1,25 @@
 import Booking from "../models/Booking.js";
+import mongoose from "mongoose";
 
 export const getBookings = async (req, res) => {
   try {
     const { type, vendorId, userId } = req.query;
 
-    let query = {}; // for fetch all bookings
+    let query = {};
 
-    if (type) query.type = type; // Filter by type (hotel/restaurant)
-    if (vendorId) query.vendor = vendorId; // Filter by vendor
-    if (userId) query.user = userId; // Filter by user
+    if (type) query.type = type;
+    if (vendorId && mongoose.Types.ObjectId.isValid(vendorId)) {
+      query.vendor = new mongoose.Types.ObjectId(vendorId);
+    }
+    if (userId && mongoose.Types.ObjectId.isValid(userId)) {
+      query.user = new mongoose.Types.ObjectId(userId);
+    }
+
+    console.log("Booking Query:", query); // helpful for debugging
 
     const bookings = await Booking.find(query).select(
       "_id user vendor menuId type roomNumber tableNumber guest checkIn checkOut status bookingDate"
     );
-
-    if (!bookings.length) {
-      return res.status(404).json({ message: "No bookings found" });
-    }
 
     res.status(200).json(bookings);
   } catch (error) {
@@ -24,3 +27,4 @@ export const getBookings = async (req, res) => {
     res.status(500).json({ message: "Error fetching bookings.", error });
   }
 };
+
