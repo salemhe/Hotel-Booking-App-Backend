@@ -15,7 +15,7 @@ const MenuSchema = new Schema(
     discountPrice: { type: Number },
     dishName: { type: String, required: true },
     description: { type: String, required: true },
-    itemImage: { type: String },
+    dishImage: { type: String },
     maxOrderPerCustomer: { type: Number, required: true },
     portionSize: { type: String },
     preparationTime: { type: Number },
