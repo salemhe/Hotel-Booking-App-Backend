@@ -7,8 +7,8 @@ import bcrypt from "bcryptjs";
 
 export const registerVendor = async (req, res) => {
   try {
-    const {businessName,businessType, email, phone, address, branch, password, role, services } = req.body;
-    const profileImage = req.file ? req.file.filename : null;
+    const {businessName,businessType, email, phone, address, branch, password, role,image, services } = req.body;
+    const vendorImage = req.file ? req.file.filename :image || null;
 
     // Validate input
     if ( !businessName || !businessType || !email || !phone || !address || !password || !role) {
@@ -41,7 +41,6 @@ export const registerVendor = async (req, res) => {
 
     // Create new vendor
     const newVendor = new Vendor({
-    
       businessName,
       businessType,
       email,
@@ -50,7 +49,7 @@ export const registerVendor = async (req, res) => {
       branch,
       password: hashedPassword,
       role,
-      profileImage,
+      profileImage:`https://hotel-booking-app-backend-30q1.onrender.com/uploads/${vendorImage}`,
       services,
       otp,
       otpExpires,
