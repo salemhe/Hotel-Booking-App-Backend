@@ -1,35 +1,37 @@
-import { Schema, model } from "mongoose";
+import mongoose from "mongoose";
 
-const VendorSchema = new Schema(
-  {
-   
-    businessName: {type: String, required: true},
-    businessType: {type: String, required: true},
-    email: { type: String, required: true, unique: true },
-    phone: { type: String },
-    address: { type: String },
-    branch: { type: String},
-    password: { type: String },
-    role: { type: String },
-    profileImage: { type: String },
-    services: { type: [String], default: [] }, // List of services the vendor provides
+const paymentDetailsSchema = new mongoose.Schema({
+  bankName: String,
+  accountNumber: String,
+  accountName: String,
+  subaccountCode: String,
+  recipientCode: String,
+  splitCode: String,
+});
 
-    paymentDetails: {
-      bankAccountName: { type: String},
-      bankName: { type: String },
-      bankCode: { type: String },
-      accountNumber: { type: String },
-      paystackSubAccount: { type: String },
-      recipientCode: { type: String },
-      percentageCharge: { type: Number }
-    },
-    otp: String, 
-    otpExpires: Date,
-    isVerified: { type: Boolean, default: false },
-    createdAt: { type: Date, default: Date.now },
-  },
-  { timestamps: true }
-);
+const withdrawalSchema = new mongoose.Schema({
+  amount: Number,
+  date: { type: Date, default: Date.now },
+  reference: String,
+});
 
+const vendorSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  profileImage: String,
 
-export default model("Vendor", VendorSchema);
+  // Payment & split details
+  paymentDetails: paymentDetailsSchema,
+
+  // Balance and history
+  balance: { type: Number, default: 0 },
+  withdrawals: [withdrawalSchema],
+
+  // Platform commission per vendor (optional override)
+  platformCommission: { type: Number, default: 10 }, // percent
+});
+
+const Vendor = mongoose.model("Vendor", vendorSchema);
+
+export default Vendor;

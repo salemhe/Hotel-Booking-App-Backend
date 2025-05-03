@@ -10,8 +10,8 @@ export const createMenu = async (req, res) => {
     }
 
     const { vendorId } = req.user; // Assuming authentication middleware sets req.user
-    const { addOns, availabilityStatus, category, cuisineType, dietaryInfo, discountPrice, dishName, description, image, maxOrderPerCustomer, portionSize, preparationTime, price, spiceLevel, stockQuantity } = req.body;
-    const itemImage = req.file ? req.file.filename : image || null;  
+    const { addOns, availabilityStatus, category, cuisineType, dietaryInfo, discountPrice, dishName, description, maxOrderPerCustomer, portionSize, preparationTime, price, spiceLevel, stockQuantity } = req.body;
+    const itemImage = req.file ? req.file.filename : req.body.image || null;  
 
     // Check if the vendor exists
     const vendor = await Vendor.findById(vendorId);
@@ -37,7 +37,7 @@ export const createMenu = async (req, res) => {
       discountPrice,
       dishName,
       description,
-      dishImage: `https://hotel-booking-app-backend-30q1.onrender.com/uploads/${itemImage}`,
+      itemImage: itemImage,
       maxOrderPerCustomer,
       portionSize,
       preparationTime,

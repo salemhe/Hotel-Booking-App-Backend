@@ -1,24 +1,21 @@
 import Menu from "../models/Menu.js";
-import mongoose from "mongoose";
 
 export const getMenusByVendor = async (req, res) => {
   try {
-    const { vendorId, cuisineType, category, dishName } = req.query;
+    const { vendorId, cuisineType, category, dishName } = req.params;
     const query =  {}
 
-    if (vendorId && mongoose.Types.ObjectId.isValid(vendorId)) {
-      query.vendor = vendorId;
+    if (vendorId) {
+       query.vendorId = new RegExp(vendorId, "i")
     }
     if (cuisineType) {
-      query.cuisineType = { $regex: cuisineType, $options: "i" };
+       query.cuisineType = new RegExp(cuisineType, "i")
     }
-
     if (category) {
-      query.category = { $regex: category, $options: "i" };
+       query.category = new RegExp(category, "i")
     }
-
     if (dishName) {
-      query.dishName = { $regex: dishName, $options: "i" };
+       query.dishName = new RegExp(dishName, "i")
     }
 
     const menus = await Menu.find(query);
@@ -32,7 +29,3 @@ export const getMenusByVendor = async (req, res) => {
     res.status(500).json({ message: "Error fetching menus.", error: error.message });
   }
 };
-
-
-
-

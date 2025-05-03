@@ -11,9 +11,10 @@ import { bookRoomOrTable } from "../bookings/createBooking.js";
 import { getBookings} from "../bookings/getBooking.js"
 import { cancleBooking } from "../bookings/updateBooking.js";
 import { updateBooking } from "../bookings/updateBooking.js";
-import { initializePayment } from "../payments/initializePayment.js";
-import { verifyPayment } from "../payments/verifyPayment.js";
+import { initializePayment } from "../controllers/payments/initializePayment.js";
+import { verifyPayment } from '../controllers/payments/verifyPayment.js';
 import { getRestaurants } from "../vendors/getRestaurants.js";
+
 
 
 
