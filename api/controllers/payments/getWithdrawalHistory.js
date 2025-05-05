@@ -1,4 +1,4 @@
-// controllers/withdrawalHistory.js
+
 import Vendor from "../../models/Vendor.js";
 import Transaction from '../../models/Transaction.js';
 
@@ -23,3 +23,4 @@ export const getWithdrawalHistory = async (req, res) => {
     res.status(500).json({ message: "Error fetching withdrawal history" });
   }
 };
+

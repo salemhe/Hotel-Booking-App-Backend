@@ -1,3 +1,4 @@
+
 import express from "express";
  import { body } from "express-validator";
  import upload from "../middlewares/uploadMiddleware.js";
@@ -14,15 +15,19 @@ import express from "express";
  import { makeWithdrawal } from "../payments/withdrawPayment.js";
  import { getTransactions } from "../payments/getTransaction.js";
 
+
 const router = express.Router();
 
 const validation = [
+
   body("name").notEmpty().withMessage("Name is required."),
    body("email").isEmail().withMessage("Valid email is required."),
    body("password")
-    .isLength({ min: 6 })
-    .withMessage('Password must be at least 6 characters long.'),
-];
+=======
+  body('name').notEmpty().withMessage('Name is required.'),
+  body('email').isEmail().withMessage('Valid email is required.'),
+  body('password')
+
 
 router.post('/register', upload.single('profileImage'), registerVendor);
 
@@ -34,7 +39,9 @@ router.post('/login', [
     .withMessage('Password must be at least 6 characters long.'),
 ], loginVendor);
 
-router.post("/verify-otp", verifyVendorOTP);
+// Get all vendors (authorized route)
+router.get('/', authorize, getVendors);
+
 
 router.get('/', authorize, getVendors);
 
@@ -51,5 +58,6 @@ router.patch('/save-payment', authenticateVendor, createPaymentDetails);
 router.post('/withdraw', authenticateVendor, makeWithdrawal); 
 
 router.get('/transactions/', authenticateVendor, getTransactions);
+
 
 export default router;
