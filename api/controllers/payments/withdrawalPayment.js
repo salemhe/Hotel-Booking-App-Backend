@@ -1,5 +1,10 @@
-import Vendor from "../models/Vendor.js";
-import Transaction from "../models/Transaction.js";
+import Vendor from '../../models/Vendor.js';
+import dotenv from 'dotenv';
+import fetch from 'node-fetch'; // ✅ Required for fetch to work in Node.js
+import Transaction from '../../models/Transaction.js';
+
+
+dotenv.config(); // Make sure environment variables are loaded
 
 export const makeWithdrawal = async (req, res) => {
   try {
@@ -18,8 +23,7 @@ export const makeWithdrawal = async (req, res) => {
       return res.status(500).json({ message: "Paystack secret key not configured." });
     }
 
-    const { amount } = req.body;
-    const recipientCode = vendor.paymentDetails.recipientCode;
+    const { recipientCode, amount } = req.body;
 
     const response = await fetch("https://api.paystack.co/transfer", {
       method: "POST",
@@ -39,33 +43,11 @@ export const makeWithdrawal = async (req, res) => {
 
     if (!response.ok) {
       console.error("Paystack Transfer Error:", responseData);
-      console.error("Paystack Transfer Failed Response:", JSON.stringify(responseData, null, 2));
       return res.status(500).json({
         message: "Failed to initiate transfer.",
         error: responseData.message || "Unknown error",
       });
     }
-
-    const withdrawalRecord = {
-      amount: amount,
-      reference: responseData.data.reference,
-      status: responseData.data.status
-    };
-
-    const newTransactionRecord = new Transaction({
-      vendor: vendorId,
-      type: "withdrawal",
-      amount: amount,
-      reference: responseData.data.reference,
-      status: responseData.data.status,
-    });
-    await newTransactionRecord.save();
-
-    vendor.withdrawals.push(withdrawalRecord);
-    await vendor.save();
-
- 
-    console.log("Withdrawal Record:", withdrawalRecord);
 
     res.status(200).json({
       message: "Transfer initiated successfully.",
@@ -74,7 +56,6 @@ export const makeWithdrawal = async (req, res) => {
 
   } catch (err) {
     console.error("Withdrawal Error:", err);
-    
     res.status(500).json({ error: "Failed to initiate transfer" });
   }
 };

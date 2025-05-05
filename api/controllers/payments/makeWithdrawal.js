@@ -1,5 +1,8 @@
-import Vendor from "../models/Vendor.js";
-import Transaction from "../models/Transaction.js";
+// /api/controllers/payments/makeWithdrawal.js
+
+import Vendor from "../../models/Vendor.js";
+import Transaction from '../../models/Transaction.js';
+import fetch from "node-fetch"; // required for making the Paystack API call
 
 export const makeWithdrawal = async (req, res) => {
   try {
@@ -7,8 +10,7 @@ export const makeWithdrawal = async (req, res) => {
       return res.status(403).json({ message: "Unauthorized: No vendor ID found" });
     }
 
-    const { vendorId } = req.user;
-    const vendor = await Vendor.findById(vendorId);
+    const vendor = await Vendor.findById(req.user.vendorId);
     if (!vendor) {
       return res.status(404).json({ message: "Vendor not found" });
     }
@@ -38,34 +40,23 @@ export const makeWithdrawal = async (req, res) => {
     const responseData = await response.json();
 
     if (!response.ok) {
-      console.error("Paystack Transfer Error:", responseData);
-      console.error("Paystack Transfer Failed Response:", JSON.stringify(responseData, null, 2));
       return res.status(500).json({
         message: "Failed to initiate transfer.",
         error: responseData.message || "Unknown error",
       });
     }
 
+    // ✅ The part you shared fits here:
     const withdrawalRecord = {
       amount: amount,
-      reference: responseData.data.reference,
-      status: responseData.data.status
+      transferId: responseData.data.reference,
+      status: responseData.data.status, // "success" or "pending"
+      recipientCode: recipientCode,
+      createdAt: new Date(),
     };
-
-    const newTransactionRecord = new Transaction({
-      vendor: vendorId,
-      type: "withdrawal",
-      amount: amount,
-      reference: responseData.data.reference,
-      status: responseData.data.status,
-    });
-    await newTransactionRecord.save();
 
     vendor.withdrawals.push(withdrawalRecord);
     await vendor.save();
-
- 
-    console.log("Withdrawal Record:", withdrawalRecord);
 
     res.status(200).json({
       message: "Transfer initiated successfully.",
@@ -74,7 +65,6 @@ export const makeWithdrawal = async (req, res) => {
 
   } catch (err) {
     console.error("Withdrawal Error:", err);
-    
     res.status(500).json({ error: "Failed to initiate transfer" });
   }
 };

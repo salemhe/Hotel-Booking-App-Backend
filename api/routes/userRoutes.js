@@ -12,8 +12,9 @@ import { getBookings} from "../bookings/getBooking.js"
 import { cancleBooking } from "../bookings/updateBooking.js";
 import { updateBooking } from "../bookings/updateBooking.js";
 import { initializePayment } from "../payments/initializePayment.js";
-import { verifyPayment } from "../payments/verifyPayment.js";
+ import { verifyPayment } from "../payments/verifyPayment.js";
 import { getRestaurants } from "../vendors/getRestaurants.js";
+import { getTransactions } from "../payments/getTransaction.js";
 
 
 
@@ -51,5 +52,6 @@ router.patch("/bookings/update/:bookingId", authenticateUser, updateBooking);
 router.post("/make-payment", authenticateUser, initializePayment);
 router.post("/verify-payment", authenticateUser, verifyPayment);
 router.get("/restaurant-search",authorize, getRestaurants)
+router.get('/transactions/', authorize, getTransactions);
 
 export default router;
