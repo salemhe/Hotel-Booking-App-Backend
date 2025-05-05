@@ -1,6 +1,6 @@
-import { CursorTimeoutMode } from "mongodb";
-import Vendor from "../models/Vendor.js";
+import Vendor from '../../models/Vendor.js'; 
 import fetch from "node-fetch";
+import Transaction from '../../models/Transaction.js';
 
 export const createPaymentDetails = async (req, res) => {
   const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
