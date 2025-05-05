@@ -32,6 +32,12 @@ const vendorSchema = new mongoose.Schema({
   platformCommission: { type: Number, default: 10 }, // percent
 });
 
+bankDetails: {
+  accountName: String,
+  accountNumber: String,
+  bankName: String,
+},
+
 const Vendor = mongoose.model("Vendor", vendorSchema);
 
 export default Vendor;
