@@ -1,4 +1,3 @@
-// /api/controllers/payments/makeWithdrawal.js
 
 import Vendor from "../../models/Vendor.js";
 import Transaction from '../../models/Transaction.js';

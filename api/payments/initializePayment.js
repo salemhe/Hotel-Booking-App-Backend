@@ -28,6 +28,7 @@ export const initializePayment = async (req, res) => {
     //   email: email,
     //   currency: "NGN",
     // };
+    console.log("Vendor ID:", vendorId);
     const vendor = await Vendor.findById(vendorId);
     if (!vendor || !vendor.paymentDetails || !vendor.paymentDetails.paystackSubAccount) {
       return res.status(404).json({ message: "Vendor not found." });
@@ -39,7 +40,7 @@ export const initializePayment = async (req, res) => {
       currency: "NGN",
       subaccount: vendor.paymentDetails.paystackSubAccount, // vendor's subaccount
       percentage_charge: vendor.paymentDetails.percentageCharge,
-      // callback_url: "https://yourdomain.com/verify-payment",
+      callback_url: "https://hotel-booking-application-git-main-salem-hs-projects.vercel.app/userDashboard/booking",
       metadata: {
         vendorId: vendorId
       }

@@ -1,43 +1,49 @@
-import mongoose from "mongoose";
 
-const paymentDetailsSchema = new mongoose.Schema({
-  bankName: String,
-  accountNumber: String,
-  accountName: String,
-  subaccountCode: String,
-  recipientCode: String,
-  splitCode: String,
+import { Schema, model } from "mongoose";
+
+const withdrawalSchema = new Schema({
+  amount: { type: Number, required: true},
+  reference: { type: String, required: true },
+  status: { type: String, enum: ["pending", "completed", "failed"], default: "pending" },
+  createdAt: { type: Date, default: Date.now },
+
 });
 
-const withdrawalSchema = new mongoose.Schema({
-  amount: Number,
-  date: { type: Date, default: Date.now },
-  reference: String,
-});
 
-const vendorSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  profileImage: String,
+ const VendorSchema = new Schema(
+   {
+    
+     businessName: {type: String, required: true},
+     businessType: {type: String, required: true},
+     email: { type: String, required: true, unique: true },
+     phone: { type: String },
+     address: { type: String },
+     branch: { type: String},
+     password: { type: String },
+     role: { type: String },
+     profileImage: { type: String },
+     services: { type: [String], default: [] }, // List of services the vendor provides
+ 
+     paymentDetails: {
+       bankAccountName: { type: String},
+       bankName: { type: String },
+       bankCode: { type: String },
+       accountNumber: { type: String },
+       paystackSubAccount: { type: String },
+       recipientCode: { type: String },
+       percentageCharge: { type: Number }
+     },
+     balance: { type: Number, default: 0 },
+     withdrawals: [withdrawalSchema],
 
-  // Payment & split details
-  paymentDetails: paymentDetailsSchema,
+     otp: String, 
+     otpExpires: Date,
+     isVerified: { type: Boolean, default: false },
+     createdAt: { type: Date, default: Date.now },
+   },
+   { timestamps: true }
+ );
+ 
+ 
+ export default model("Vendor", VendorSchema);
 
-  // Balance and history
-  balance: { type: Number, default: 0 },
-  withdrawals: [withdrawalSchema],
-
-  // Platform commission per vendor (optional override)
-  platformCommission: { type: Number, default: 10 }, // percent
-});
-
-bankDetails: {
-  accountName: String,
-  accountNumber: String,
-  bankName: String,
-},
-
-const Vendor = mongoose.model("Vendor", vendorSchema);
-
-export default Vendor;

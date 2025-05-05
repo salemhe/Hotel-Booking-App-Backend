@@ -1,7 +1,9 @@
 import Vendor from "../models/Vendor.js";
+import Transaction from '../models/Transaction.js';
 
 export const verifyPayment = async (req, res) => {
     const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
+    const userId = req.user?.id 
     try {
         if (!req.user || !req.user.id) {
             return res.status(403).json({ message: "Unauthorized: No User ID found" });
@@ -60,6 +62,20 @@ export const verifyPayment = async (req, res) => {
     
         const subaccount = vendor.paymentDetails.paystackSubAccount;
         const percentage = vendor.paymentDetails.percentageCharge 
+
+        if (transaction.status === "success") {
+
+          const newTransactionRecord = new Transaction({
+            user: userId,
+            type: "payment",
+            amount: paystackResponse.data.amount / 100,
+            reference: reference,
+            status: "successful",
+          });
+      
+          await newTransactionRecord.save();
+      }
+
     
         // Log or save split details if needed
         return res.status(200).json({
@@ -93,6 +109,8 @@ export const verifyPayment = async (req, res) => {
             subaccountCode: subaccount,
           },
         });
+
+
 
     } catch (error) {
         console.error("Error Verifying Payment:", error);
