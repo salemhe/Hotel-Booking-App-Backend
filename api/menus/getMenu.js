@@ -17,7 +17,6 @@ export const getMenusByVendor = async (req, res) => {
     }
     if (dishName) {
        query.dishName = { $regex: dishName, $options: "i" };
-
     }
 
     const menus = await Menu.find(query);
