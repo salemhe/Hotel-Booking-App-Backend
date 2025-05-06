@@ -8,12 +8,12 @@ dotenv.config();
 
 export const registerVendor = async (req, res) => {
   try {
-    const {businessName,businessType, email, phone, address, branch, password, role,image, services } = req.body;
+    const {businessName,businessType, email, phone, address, branch, password, role,image, services, name } = req.body;
      const vendorImage = req.file ? req.file.filename :image || null;
 
 
     // Validate input
-    if (!businessName || !businessType || !email || !phone || !address || !password || !role) {
+    if (!businessName || !businessType || !email || !phone || !address || !password || !role || !name) {
       return res.status(400).json({ message: "All fields are required." });
     }
 
@@ -42,7 +42,7 @@ export const registerVendor = async (req, res) => {
 
     // Create new vendor
     const newVendor = new Vendor({
-    
+      name,
       businessName,
       businessType,
       email,
