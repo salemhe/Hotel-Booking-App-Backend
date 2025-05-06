@@ -10,11 +10,11 @@ export const bookRoomOrTable = async (req, res) => {
        }
 
     const { vendorId, businessName, location, partySize, menuId, tableNumber, tableType, meal, pricePerTable, guests, totalPrice, specialRequest, date } = req.body;
-    const image = req.file ? req.file.filename : req.body.image || null;  
+    const image = req.file ? req.file.filename : req.body.image || null;
     // Validate required fields
-    // if (!vendorId) {
-    //   return res.status(400).json({ message: "Vendor ID is required." });
-    // }
+    if (!vendorId) {
+      return res.status(400).json({ message: "Vendor ID is required." });
+    }
     if (!businessName) {
       return res.status(400).json({ message: "Business name is required." });
     }
@@ -71,7 +71,7 @@ if (isNaN(parsedDate.getTime()) || isNaN(parsedDate.getTime())) {
     // Create booking
     const newBooking = new Booking({
       userId: req.user.id, // Authenticated user
-      vendorId: "6819d7f7da1c5833fc063eee",
+      vendorId: vendorId,
       businessName, 
       location,
       partySize,
