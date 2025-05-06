@@ -8,8 +8,8 @@ dotenv.config();
 
 export const registerVendor = async (req, res) => {
   try {
-    const {businessName,businessType, email, phone, address, branch, password, role,image, services, name } = req.body;
-     const vendorImage = req.file ? req.file.filename :image || null;
+    const {businessName,businessType, email, phone, address, branch, password, role, services, name } = req.body;
+     const profileImage = req.file ? req.file.filename : req.body.image || null;
 
 
     // Validate input
