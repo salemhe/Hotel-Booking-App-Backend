@@ -72,11 +72,14 @@ mongoose
     const collections = ["bookings","menus", "users", "vendors"];
 
     collections.forEach((collection) => {
-      mongoose.connection
+      mongoose.connection.db
         .collection(collection)
         .watch()
         .on("change", (change) => {
-          io.emit(`${collection}Update`, change.fullDocument);
+          io.emit(`${collection}Update`, {
+            type: change.operationType,
+            data: change.fullDocument,
+          });
         });
     });
 
