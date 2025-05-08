@@ -6,8 +6,13 @@ dotenv.config();
 export const updateVendorProfile = async (req, res) => {
   try {
     const vendorId = req.vendor?.id;
+    const vendorIdFromParams = req.params.id
 
-    if (!vendorId) {
+    if (userId !== vendorIdFromParams) {
+      return res.status(403).json({ message: "Unauthorized: Wrong vendor ID" });
+    }
+
+    if (!vendorId && !vendorIdFromParams) {
       return res.status(403).json({ message: "Unauthorized: No vendor ID found" });
     }
 

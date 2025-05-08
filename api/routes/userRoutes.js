@@ -15,6 +15,7 @@ import { initializePayment } from "../payments/initializePayment.js";
 import { verifyPayment } from "../payments/verifyPayment.js";
 import { getRestaurants } from "../vendors/getRestaurants.js";
 import { getTransactions } from "../payments/getTransaction.js";
+import { updateUserProfile } from "../users/updateUserProfile.js";
 
 
 
@@ -54,5 +55,6 @@ router.post("/make-payment", authenticateUser, initializePayment);
 router.post("/verify-payment", authenticateUser, verifyPayment);
 router.get("/restaurant-search",authorize, getRestaurants)
 router.get('/transactions/', authorize, getTransactions);
+router.patch('/update/:id',upload.single('profileImage'),  authenticateUser, updateUserProfile );
 
 export default router;
