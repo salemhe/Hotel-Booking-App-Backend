@@ -1,23 +1,25 @@
+import mongoose from "mongoose";
 import Menu from "../models/Menu.js";
 
 export const getMenusByVendor = async (req, res) => {
   try {
-    const { vendorId, cuisineType, category, dishName } = req.params;
-    const query =  {}
-
+    const { vendorId, cuisineType, category, dishName } = req.query;
+    const query = {};
 
     if (vendorId && mongoose.Types.ObjectId.isValid(vendorId)) {
-       query.vendor = vendorId
+      query.vendor = new mongoose.Types.ObjectId(vendorId);
     }
-    if (cuisineType) {
-       query.cuisineType = { $regex: cuisineType, $options: "i" };
-    }
-    if (category) {
-       query.category = { $regex: category, $options: "i" };
-    }
-    if (dishName) {
-       query.dishName = { $regex: dishName, $options: "i" };
 
+    if (cuisineType?.trim()) {
+      query.cuisineType = { $regex: cuisineType.trim(), $options: "i" };
+    }
+
+    if (category?.trim()) {
+      query.category = { $regex: category.trim(), $options: "i" };
+    }
+
+    if (dishName?.trim()) {
+      query.dishName = { $regex: dishName.trim(), $options: "i" };
     }
 
     const menus = await Menu.find(query);

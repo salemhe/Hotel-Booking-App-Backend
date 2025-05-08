@@ -18,12 +18,12 @@ import express from "express";
 
 
 const router = express.Router();
-
 const validation = [
 
   body("name").notEmpty().withMessage("Name is required."),
    body("email").isEmail().withMessage("Valid email is required."),
    body("password"),
+
 
 ]
 
