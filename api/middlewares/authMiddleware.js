@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import User from "../models/User.js";
+import Vendor from "../models/Vendor.js";
 dotenv.config();
 
 export const authorize = (req, res, next) => {
@@ -85,7 +86,7 @@ export const authenticateUser = async (req, res, next) => {
 };
 
 
-export const authenticateVendor = (req, res, next) => {
+export const authenticateVendor = async (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(" ")[1]; // Get token from Authorization header
     if (!token)
@@ -94,7 +95,12 @@ export const authenticateVendor = (req, res, next) => {
         .json({ message: "Unauthorized: No token provided" });
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify the token
-    req.user = { vendorId: decoded.id }; // Attach vendorId to req.user
+ 
+    req.vendor = await Vendor.findById(decoded.id).select("_id"); 
+
+    if (!req.vendor) {
+      return res.status(401).json({ message: "Unauthorized: Vendor not found" });
+    }
 
     next();
   } catch (error) {

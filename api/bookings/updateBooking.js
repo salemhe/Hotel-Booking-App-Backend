@@ -51,19 +51,19 @@ export const updateBooking =async (req, res) => {
       return res.status(400).json({ message: "Add all required fields." });
     }
 
-    if (type === "restaurant" && !tableNumber) {
-      return res.status(400).json({message:"Table number is required for resturant bookings.",});
-    }
-    if (type === "restaurant" && !menuIds) {
-      return res.status(400).json({message:"Menu Id is required for resturant bookings.",});
-    }
-    if (type === "hotel" && !roomNumber) {
-      return res.status(400).json({message:"Room number is required for hotel bookings.",});
-    }
+    // if (type === "restaurant" && !tableNumber) {
+    //   return res.status(400).json({message:"Table number is required for resturant bookings.",});
+    // }
+    // if (type === "restaurant" && !menuIds) {
+    //   return res.status(400).json({message:"Menu Id is required for resturant bookings.",});
+    // }
+    // if (type === "hotel" && !roomNumber) {
+    //   return res.status(400).json({message:"Room number is required for hotel bookings.",});
+    // }
 
-    if (type === "hotel" && (!checkIn || !checkOut)) {
-      return res.status(400).json({message:"Check-in and Check-out dates are required for hotel bookings.",});
-    }
+    // if (type === "hotel" && (!checkIn || !checkOut)) {
+    //   return res.status(400).json({message:"Check-in and Check-out dates are required for hotel bookings.",});
+    // }
 
     const booking = await Booking.findById(bookingId)
 
@@ -72,7 +72,7 @@ export const updateBooking =async (req, res) => {
     }
 
     if(type) booking.type = type;
-    if(vendor) booking.vendor = vendor;
+    if(vendor) booking.vendorId = vendor;
     if(menuIds) booking.menuId = menuIds;
     if(roomNumber) booking.roomNumber = roomNumber;
     if(tableNumber) booking.tableNumber = tableNumber;

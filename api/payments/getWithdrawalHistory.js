@@ -1,6 +1,6 @@
-
-import Vendor from "../../models/Vendor.js";
-import Transaction from '../../models/Transaction.js';
+// controllers/withdrawalHistory.js
+import Vendor from "../models/Vendor.js";
+import Transaction from '../models/Transaction.js';
 
 export const getWithdrawalHistory = async (req, res) => {
   try {
