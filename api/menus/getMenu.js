@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import Menu from "../models/Menu.js";
 
 export const getMenusByVendor = async (req, res) => {
@@ -6,8 +5,8 @@ export const getMenusByVendor = async (req, res) => {
     const { vendorId, cuisineType, category, dishName } = req.query;
     const query = {};
 
-    if (vendorId && mongoose.Types.ObjectId.isValid(vendorId)) {
-      query.vendor = new mongoose.Types.ObjectId(vendorId);
+    if (vendorId?.trim()) {
+      query.vendor = vendorId.trim();
     }
 
     if (cuisineType?.trim()) {
