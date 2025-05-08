@@ -1,3 +1,4 @@
+
 import { Schema, model } from "mongoose";
 
 const TransactionSchema = new Schema({
@@ -11,3 +12,4 @@ const TransactionSchema = new Schema({
 });
 
 export default model("Transaction", TransactionSchema);
+

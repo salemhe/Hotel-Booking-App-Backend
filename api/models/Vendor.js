@@ -1,6 +1,5 @@
+
 import { Schema, model } from "mongoose";
-
-
 
 const withdrawalSchema = new Schema({
   amount: { type: Number, required: true},
@@ -11,9 +10,6 @@ const withdrawalSchema = new Schema({
 });
 
 
-
-
- 
  const VendorSchema = new Schema(
    {
     
@@ -50,3 +46,4 @@ const withdrawalSchema = new Schema({
  
  
  export default model("Vendor", VendorSchema);
+

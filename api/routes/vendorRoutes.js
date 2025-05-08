@@ -1,3 +1,4 @@
+
 import express from "express";
  import { body } from "express-validator";
  import upload from "../middlewares/uploadMiddleware.js";
@@ -15,15 +16,16 @@ import express from "express";
  import { getTransactions } from "../payments/getTransaction.js";
  import { updateVendorProfile } from "../vendors/updateVendorProfile.js";
 
+
 const router = express.Router();
 
 const validation = [
+
   body("name").notEmpty().withMessage("Name is required."),
    body("email").isEmail().withMessage("Valid email is required."),
-   body("password")
-    .isLength({ min: 6 })
-    .withMessage('Password must be at least 6 characters long.'),
-];
+   body("password"),
+
+]
 
 router.post('/register', upload.single('profileImage'), registerVendor);
 
@@ -35,7 +37,9 @@ router.post('/login', [
     .withMessage('Password must be at least 6 characters long.'),
 ], loginVendor);
 
-router.post("/verify-otp", verifyVendorOTP);
+// Get all vendors (authorized route)
+router.get('/', authorize, getVendors);
+
 
 router.get('/', authorize, getVendors);
 
