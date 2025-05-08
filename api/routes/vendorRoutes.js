@@ -14,16 +14,18 @@ import express from "express";
  import { createPaymentDetails } from "../payments/createPaymentDetails.js";
  import { makeWithdrawal } from "../payments/withdrawPayment.js";
  import { getTransactions } from "../payments/getTransaction.js";
+ import { updateVendorProfile } from "../vendors/updateVendorProfile.js";
 
 
 const router = express.Router();
 const validation = [
 
-  body('name').notEmpty().withMessage('Name is required.'),
-  body('email').isEmail().withMessage('Valid email is required.'),
-  body('password')
-]
+  body("name").notEmpty().withMessage("Name is required."),
+   body("email").isEmail().withMessage("Valid email is required."),
+   body("password"),
 
+
+]
 
 router.post('/register', upload.single('profileImage'), registerVendor);
 
@@ -55,5 +57,6 @@ router.post('/withdraw', authenticateVendor, makeWithdrawal);
 
 router.get('/transactions/', authenticateVendor, getTransactions);
 
+router.patch('/update/:id',upload.single('profileImage'),  authenticateVendor, updateVendorProfile );
 
 export default router;
