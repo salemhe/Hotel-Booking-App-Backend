@@ -13,6 +13,7 @@ import express from "express";
  import { createPaymentDetails } from "../payments/createPaymentDetails.js";
  import { makeWithdrawal } from "../payments/withdrawPayment.js";
  import { getTransactions } from "../payments/getTransaction.js";
+ import { updateVendorProfile } from "../vendors/updateVendorProfile.js";
 
 const router = express.Router();
 
@@ -51,5 +52,7 @@ router.patch('/save-payment', authenticateVendor, createPaymentDetails);
 router.post('/withdraw', authenticateVendor, makeWithdrawal); 
 
 router.get('/transactions/', authenticateVendor, getTransactions);
+
+router.patch('/update/:id',upload.single('profileImage'),  authenticateVendor, updateVendorProfile );
 
 export default router;
