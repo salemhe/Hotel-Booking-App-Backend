@@ -81,9 +81,15 @@ export const confirmBooking = async (req, res) => {
     const user = await User.findById(booking.userId);
     if (user) {
       const qrText = `Booking ID: ${booking._id}\nName: ${user.firstName} ${user.lastName}`;
-      const qrCodeUrl = await generateQRCode(qrText);
+      const qrCodeFilename = await generateQRCode(qrText);
 
-      await sendBookingConfirmationEmail(user.email, user.firstName, qrCodeUrl, booking._id, booking.guests, booking.date )
+      if (!qrCodeFilename || typeof qrCodeFilename !== "string") {
+        console.error("Invalid QR filename:", qrCodeFilename);
+        return res.status(500).json({ message: "Failed to generate QR code." });
+      }
+      
+
+      await sendBookingConfirmationEmail(user.email, user.firstName, qrCodeFilename, booking._id, booking.guests, booking.date )
 
     }
 

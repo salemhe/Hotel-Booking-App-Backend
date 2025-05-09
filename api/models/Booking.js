@@ -19,8 +19,8 @@ const bookingSchema = new Schema(
     specialRequest: { type: String },
     image: { type: String },
     date: { type: Date, required: true },
-    // checkIn: { type: Date, required: function () { return this.type === "hotel"; } }, // Only required for hotels
-    // checkOut: { type: Date, required: function () { return this.type === "hotel"; } }, // just for hotels
+    checkIn: { type: Date }, // Only required for hotels
+    checkOut: { type: Date }, // just for hotels
     bookingDate: { type: Date, default: Date.now },
     status: { type: String, enum: ["pending", "confirmed", "updated", "cancelled"], default: "pending" },
   },

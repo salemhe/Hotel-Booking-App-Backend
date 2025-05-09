@@ -58,3 +58,6 @@ export const withdrawFunds = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+user = 67c552b2ac00f6d501c7e2c8
+vendor = 6819d7f7da1c5833fc063eee

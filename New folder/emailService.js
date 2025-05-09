@@ -46,12 +46,12 @@ export const sendOTPEmail = async (email, otp, minutesLeft) => {
     throw new Error("Failed to send OTP");
   }
 };
-export const sendBookingConfirmationEmail = async (email, firstName, qrCodeUrl, bookingId, guestCount, date) => {
-  // const qrCid = "qrcode123"; 
-  // const qrPath = path.join("uploads", qrCodeFilename);
-  // const BASE_URL = process.env.BASE_URL || "http://localhost:5000"; // or your deployed domain
-  // const qrUrl = `${BASE_URL}/uploads/${qrCodeFilename}`;
-  console.log("QR Code URL:", qrCodeUrl); // Log the QR code URL for debugging
+export const sendBookingConfirmationEmail = async (email, firstName, qrCodeFilename, bookingId, guestCount, date) => {
+  const qrCid = "qrcode123"; 
+  const qrPath = path.join("uploads", qrCodeFilename);
+  const BASE_URL = process.env.BASE_URL || "http://localhost:5000"; // or your deployed domain
+  const qrUrl = `${BASE_URL}/uploads/${qrCodeFilename}`;
+  console.log("QR Code URL:", qrUrl); // Log the QR code URL for debugging
 
   try {
     const mailOptions = {
@@ -69,7 +69,7 @@ export const sendBookingConfirmationEmail = async (email, firstName, qrCodeUrl, 
             </p>
 
             <div style="text-align: center; margin: 30px 0;">
-              <img src="${qrCodeUrl}" alt="QR Code" style="width: 180px; height: 180px;" />
+              <img src="${qrUrl}" alt="QR Code" style="width: 180px; height: 180px;" />
             </div>
 
             <table style="width: 100%; margin: 20px 0; border-collapse: collapse; font-size: 15px;">
