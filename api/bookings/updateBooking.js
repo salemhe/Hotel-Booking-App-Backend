@@ -43,7 +43,7 @@ export const updateBooking =async (req, res) => {
         .json({ message: "Unauthorized: No user ID found" });
     }
     const {bookingId} = req.params;
-    const {type, vendor, menuIds, roomNumber, tableNumber, guests, checkIn, checkOut, status} = req.body;
+    const {type, vendor, menuId, roomNumber, tableNumber, guests, checkIn, checkOut, status} = req.body;
 
 
       // Validate required fields
@@ -73,7 +73,7 @@ export const updateBooking =async (req, res) => {
 
     if(type) booking.type = type;
     if(vendor) booking.vendorId = vendor;
-    if(menuIds) booking.menuId = menuIds;
+    if(menuId) booking.menuId = menuId;
     if(roomNumber) booking.roomNumber = roomNumber;
     if(tableNumber) booking.tableNumber = tableNumber;
     if(guests) booking.guests = guests;

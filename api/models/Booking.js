@@ -4,6 +4,8 @@ const bookingSchema = new Schema(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     // type: { type: String, enum: ["hotel", "restaurant"], required: true },
+    customerName: { type: String, required: true },
+    customerEmail: { type: String, required: true },
     vendorId: { type: Schema.Types.ObjectId, ref: "Vendor", required: true },
     businessName: { type: String, required: true },
     location: { type: String, required: true },

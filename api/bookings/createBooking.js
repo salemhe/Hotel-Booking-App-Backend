@@ -9,10 +9,10 @@ export const bookRoomOrTable = async (req, res) => {
            .json({ message: "Unauthorized: No user ID found" });
        }
 
-    const { vendorId, businessName, location, partySize, menuId, tableNumber, tableType, image,  meals, pricePerTable, guests,totalPrice,specialRequest, date } = req.body;
+    const { vendorId, businessName, customerEmail, customerName, location, partySize, menuId, tableNumber, tableType, image,  meals, pricePerTable, guests,totalPrice,specialRequest, date } = req.body;
     // const image = req.file ? req.file.filename : req.body.image || null;  
     // Validate required fields
-    if ( !vendorId || !businessName || !location || !partySize || !menuId || !tableType || !meals || !pricePerTable || !totalPrice || !date ) {
+    if ( !customerName || !customerEmail || !vendorId || !businessName || !location || !partySize || !menuId || !tableType || !meals || !pricePerTable || !totalPrice || !date ) {
       return res.status(400).json({ message: "fill the required fields." });
     }
     // if (type === "restaurant" && !tableNumber) {
@@ -45,6 +45,8 @@ if (isNaN(parsedDate.getTime()) || isNaN(parsedDate.getTime())) {
     const newBooking = new Booking({
       userId: req.user.id, // Authenticated user
       vendorId: vendorId,
+      customerName,
+      customerEmail,
       businessName, 
       location,
       partySize,
