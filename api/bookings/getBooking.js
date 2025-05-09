@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 export const getBookings = async (req, res) => {
   try {
-    const { type, vendorId, userId } = req.query;
+    const { type, vendorId, userId, bookingId } = req.query;
 
     let query = {};
 
@@ -13,6 +13,9 @@ export const getBookings = async (req, res) => {
     }
     if (userId && mongoose.Types.ObjectId.isValid(userId)) {
       query.user = new mongoose.Types.ObjectId(userId);
+    }
+    if (bookingId && mongoose.Types.ObjectId.isValid(bookingId)) {
+      query._id = new mongoose.Types.ObjectId(bookingId);
     }
 
 
