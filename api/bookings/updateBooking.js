@@ -1,5 +1,13 @@
 
 import Booking from "../models/Booking.js"; 
+import User from "../models/User.js";
+import {generateQRCode} from "../../utils/generateQRCode.js";
+import {sendBookingConfirmationEmail} from "../../utils/emailService.js"
+import {sendBookingCancelEmail} from "../../utils/emailService.js"
+import  dotenv from "dotenv";
+
+dotenv.config();
+
 
 export const cancleBooking = async (req, res) => {
   try {
@@ -12,7 +20,7 @@ export const cancleBooking = async (req, res) => {
     const userId = req.user.id; 
 
 
-    const booking = await Booking.findOne({ _id: bookingId, user: userId });
+    const booking = await Booking.findOne({ _id: bookingId, userId: userId });
 
     if (!booking) {
       return res
@@ -28,9 +36,60 @@ export const cancleBooking = async (req, res) => {
     booking.status = "cancelled";
     await booking.save();
 
+    const user = await User.findById(userId);
+    if (user) {
+
+      await sendBookingCancelEmail(user.email, user.firstName, booking._id, booking.guests, booking.date)
+
+    }
+
     res.json({ message: "Booking canceled successfully", booking });
   } catch (error) {
     console.error("Error canceling booking:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+export const confirmBooking = async (req, res) => {
+  try {
+    if (!req.vendor || !req.vendor.id) {
+        return res
+        .status(403)
+        .json({ message: "Unauthorized: No vendor ID found" });
+    }
+    const { bookingId } = req.params;
+    const vendorId = req.vendor.id; 
+
+
+    const booking = await Booking.findOne({ _id: bookingId, vendorId: vendorId });
+
+    if (!booking) {
+      return res
+        .status(404)
+        .json({ message: "Booking not found" });
+    }
+
+    if (booking.status === "confirmed") {
+      return res.status(400).json({ message: "Booking is already confirmed" });
+    }
+
+    // Updates booking status
+    booking.status = "confirmed";
+    await booking.save();
+
+    const user = await User.findById(booking.userId);
+    if (user) {
+      const qrText = `Booking ID: ${booking._id}\nName: ${user.firstName} ${user.lastName}`;
+      const qrCodeUrl = await generateQRCode(qrText);
+
+      await sendBookingConfirmationEmail(user.email, user.firstName, qrCodeUrl, booking._id, booking.guests, booking.date )
+
+    }
+
+    res.json({ message: "Booking confirmed successfully", booking });
+  } catch (error) {
+    console.error("Error confirming booking:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
