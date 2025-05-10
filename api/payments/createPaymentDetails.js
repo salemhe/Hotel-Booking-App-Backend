@@ -15,11 +15,11 @@ export const createPaymentDetails = async (req, res) => {
     return res.status(400).json({ message: "All account details are required." });
   }
 
-  if (!req.user || !req.user.vendorId) {
+  if (!req.vendor || !req.vendor._id) {
     return res.status(403).json({ message: "Unauthorized: No vendor ID found" });
   }
 
-  const vendorId = req.user.vendorId;
+  const vendorId = req.vendor._id;
 
   try {
 
