@@ -9,7 +9,11 @@ export const verifyPayment = async (req, res) => {
             return res.status(403).json({ message: "Unauthorized: No User ID found" });
         }
 
-        const { reference } = req.body;
+        const { reference, vendorId } = req.body;
+
+        if(!vendorId) {
+          return res.status(400).json({ message: "Vendor Id is required." });
+        }
 
         if (!reference) {
             return res.status(400).json({ message: "Reference is required." });
@@ -49,10 +53,10 @@ export const verifyPayment = async (req, res) => {
             return res.status(400).json({ message: "Payment not successful." });
         }
 
-        const vendorId = transaction.metadata?.vendorId;
-        if (!vendorId) {
-        return res.status(400).json({ message: "vendor ID is missing from metadata." });
-        }
+        // const vendorId = transaction.metadata?.vendorId;
+        // if (!vendorId) {
+        // return res.status(400).json({ message: "vendor ID is missing from metadata." });
+        // }
 
 
         const vendor = await Vendor.findById(vendorId);
