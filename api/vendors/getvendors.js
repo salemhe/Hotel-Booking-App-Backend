@@ -4,10 +4,14 @@ import Vendor from "../models/Vendor.js";
 
 export const getVendors = async (req, res) => {
   try {
-    const { businessName, businessType, branch } = req.query; // Extract parameters from the query
+    const { businessName, businessType, branch, vendorId } = req.query; // Extract parameters from the query
 
     const query = {};
 
+    if(vendorId) {
+      query._id = vendorId;
+    }
+    
     if (businessName) {
       query.businessName = new RegExp(businessName, "i"); // Case-insensitive search
     }
@@ -16,6 +20,7 @@ export const getVendors = async (req, res) => {
     if (businessType) {
       query.businessType = new RegExp(businessType, "i"); 
     }
+
  
 
     

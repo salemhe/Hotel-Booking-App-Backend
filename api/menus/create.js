@@ -4,11 +4,11 @@ import Vendor from "../models/Vendor.js";
 
 export const createMenu = async (req, res) => {
   try {
-    if (!req.user || !req.user.vendorId) {
+    if (!req.vendor || !req.vendor._id) {
       return res.status(403).json({ message: "Unauthorized: No vendor ID found" });
     }
 
-    const { vendorId } = req.user; // Assuming authentication middleware sets req.user
+    const vendorId = req.vendor._id; // Assuming authentication middleware sets req.user
     const { addOns, availabilityStatus, category, cuisineType, dietaryInfo, discountPrice, dishName, description, maxOrderPerCustomer, portionSize, preparationTime, price, spiceLevel, stockQuantity } = req.body;
     let itemImageUrl = null;
 

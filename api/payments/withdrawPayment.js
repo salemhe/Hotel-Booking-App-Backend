@@ -3,11 +3,11 @@ import Transaction from "../models/Transaction.js";
 
 export const makeWithdrawal = async (req, res) => {
   try {
-    if (!req.user || !req.user.vendorId) {
+    if (!req.vendor || !req.vendor._id) {
       return res.status(403).json({ message: "Unauthorized: No vendor ID found" });
     }
 
-    const { vendorId } = req.user;
+    const vendorId = req.vendor._id;
     const vendor = await Vendor.findById(vendorId);
     if (!vendor) {
       return res.status(404).json({ message: "Vendor not found" });
