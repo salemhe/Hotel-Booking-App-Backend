@@ -20,7 +20,7 @@ export const getBookings = async (req, res) => {
 
 
     const bookings = await Booking.find(query);
-    if (!bookings || bookings.length === 0) {
+    if (!bookings) {
       return res.status(404).json({ message: "No bookings found." });
     }
     res.status(200).json(bookings);
