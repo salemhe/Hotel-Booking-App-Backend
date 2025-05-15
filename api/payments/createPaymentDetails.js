@@ -9,9 +9,9 @@ export const createPaymentDetails = async (req, res) => {
     return res.status(500).json({ message: "Paystack secret key not configured." });
   }
 
-  const { businessName, bankCode, accountNumber, percentageCharge } = req.body;
+  const { businessName, bankCode, accountNumber } = req.body;
 
-  if (!businessName || !bankCode || !accountNumber || !percentageCharge) {
+  if (!businessName || !bankCode || !accountNumber) {
     return res.status(400).json({ message: "All account details are required." });
   }
 

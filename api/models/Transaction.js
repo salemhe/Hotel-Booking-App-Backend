@@ -9,6 +9,7 @@ const TransactionSchema = new Schema({
   reference: {type: String, required: true },
   status: { type: String, default: "pending" },
   createdAt: { type: Date, default: Date.now },
+  transactionCode: { type: String },
 });
 
 export default model("Transaction", TransactionSchema);

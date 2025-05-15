@@ -4,9 +4,9 @@ import { Schema, model } from "mongoose";
 const withdrawalSchema = new Schema({
   amount: { type: Number, required: true},
   reference: { type: String, required: true },
-  status: { type: String, enum: ["pending", "completed", "failed"], default: "pending" },
+  status: { type: String, enum: ["pending", "success", "failed"], default: "pending" },
   createdAt: { type: Date, default: Date.now },
-
+  transactionCode: { type: String, required: true },
 });
 
 
@@ -22,30 +22,27 @@ const withdrawalSchema = new Schema({
      password: { type: String },
      role: { type: String },
      profileImage: {type: String,
-      validate: {
-        validator: function (value) {
-          return /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|svg))$/.test(value);
-        },
-        message: "Profile image must be a valid URL.",
-      },
+      // validate: {
+      //   validator: function (value) {
+      //     return /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|svg))$/.test(value);
+      //   },
+      //   message: "Profile image must be a valid URL.",
+      // },
       default: null,
     },
      services: { type: [String], default: [] }, // List of services the vendor provides
  
      paymentDetails: {
-       bankAccountName: { type: String},
+       bankAccountName: { type: String },
        bankName: { type: String },
        bankCode: { type: String },
        accountNumber: { type: String },
-       paystackSubAccount: { type: String },
        recipientCode: { type: String },
-       percentageCharge: { type: Number }
      },
      balance: { type: Number, default: 0 },
      withdrawals: [withdrawalSchema],
-
-     otp: String, 
-     otpExpires: Date,
+     otp: { type: String },
+     otpExpires: { type: Date },
      isVerified: { type: Boolean, default: false },
      createdAt: { type: Date, default: Date.now },
    },

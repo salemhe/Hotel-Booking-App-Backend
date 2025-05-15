@@ -2,7 +2,7 @@
 import Vendor from "../models/Vendor.js";
 import Transaction from '../models/Transaction.js';
 
-export const getWithdrawalHistory = async (req, res) => {
+export const getBalance = async (req, res) => {
   try {
     if (!req.vendor || !req.vendor.id) {
       return res.status(403).json({ message: "Unauthorized: No vendor ID found" });
@@ -14,13 +14,13 @@ export const getWithdrawalHistory = async (req, res) => {
     }
 
     res.status(200).json({
-      message: "Withdrawal history fetched successfully.",
-      withdrawals: vendor.withdrawals,
+      message: "Vendor's Balance fetched",
+      balance: vendor.balance,
     });
 
   } catch (error) {
-    console.error("Error fetching withdrawal history:", error);
-    res.status(500).json({ message: "Error fetching withdrawal history" });
+    console.error("Error fetching balance:", error);
+    res.status(500).json({ message: "Error fetching balance" });
   }
 };
 

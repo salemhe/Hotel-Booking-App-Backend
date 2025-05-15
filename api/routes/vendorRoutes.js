@@ -16,6 +16,7 @@ import express from "express";
  import { getTransactions } from "../payments/getTransaction.js";
  import { updateVendorProfile } from "../vendors/updateVendorProfile.js";
  import { confirmBooking } from "../bookings/updateBooking.js";
+ import { getBalance } from "../payments/getBalance.js";
 
 
 const router = express.Router();
@@ -57,6 +58,8 @@ router.patch('/save-payment', authenticateVendor, createPaymentDetails);
 router.post('/withdraw', authenticateVendor, makeWithdrawal); 
 
 router.get('/transactions/', authenticateVendor, getTransactions);
+
+router.get('/balance/', authenticateVendor, getBalance);
 
 router.patch('/update/:id',upload.single('profileImage'),  authenticateVendor, updateVendorProfile );
 
