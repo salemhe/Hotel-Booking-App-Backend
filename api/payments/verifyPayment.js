@@ -1,5 +1,4 @@
 import Vendor from "../models/Vendor.js";
-import Booking from "../models/Booking.js";
 import Transaction from "../models/Transaction.js";
 
 export const verifyPayment = async (req, res) => {
@@ -80,12 +79,8 @@ export const verifyPayment = async (req, res) => {
     const existingTransaction = await Transaction.findOne({ reference });
 
     if (transaction.status === "success" && !existingTransaction) {
-      const bookingId = transaction.metadata.bookingId;
-      const booking = await Booking.findById(bookingId);
       vendor.balance += (transaction.amount / 100) * 0.885;
       await vendor.save()
-      booking.status = "confirmed";
-      await booking.save()
 
       const newTransactionRecord = new Transaction({
         userId: transaction.metadata.userId,
