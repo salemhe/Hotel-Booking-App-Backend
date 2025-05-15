@@ -64,6 +64,8 @@ export const makeWithdrawal = async (req, res) => {
 
     if (!response.ok) {
       console.error("Paystack Transfer Error:", responseData);
+          newTransactionRecord.status = "cancelled";
+          newTransactionRecord.save()
       console.error(
         "Paystack Transfer Failed Response:",
         JSON.stringify(responseData, null, 2)
@@ -76,6 +78,8 @@ export const makeWithdrawal = async (req, res) => {
 
     const withdrawalRecord = {
       amount: amount,
+      total: amount + fee,
+      fee: fee,
       reference: responseData.data.reference,
       transactionCode: responseData.data.transaction_code,
       status: responseData.data.status,

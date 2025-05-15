@@ -3,6 +3,8 @@ import { Schema, model } from "mongoose";
 
 const withdrawalSchema = new Schema({
   amount: { type: Number, required: true},
+  total: { type: Number, required: true},
+  fee: { type: Number, required: true},
   reference: { type: String, required: true },
   status: { type: String, enum: ["pending", "success", "failed"], default: "pending" },
   createdAt: { type: Date, default: Date.now },

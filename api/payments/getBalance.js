@@ -1,6 +1,5 @@
 // controllers/withdrawalHistory.js
 import Vendor from "../models/Vendor.js";
-import Transaction from '../models/Transaction.js';
 
 export const getBalance = async (req, res) => {
   try {

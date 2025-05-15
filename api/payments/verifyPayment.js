@@ -77,7 +77,9 @@ export const verifyPayment = async (req, res) => {
         .json({ message: "Vendor or payment details not found." });
     }
 
-    if (transaction.status === "success") {
+    const existingTransaction = await Transaction.findOne({ reference });
+
+    if (transaction.status === "success" && !existingTransaction) {
       const bookingId = transaction.metadata.bookingId;
       const booking = await Booking.findById(bookingId);
       vendor.balance += (transaction.amount / 100) * 0.885;
@@ -89,6 +91,8 @@ export const verifyPayment = async (req, res) => {
         userId: transaction.metadata.userId,
         type: "payment",
         amount: (transaction.amount / 100) * 0.885,
+        totalAmount: transaction.amount / 100,
+        commision: (transaction.amount / 100) * 0.115,
         reference: reference,
         status: "success",
       });
