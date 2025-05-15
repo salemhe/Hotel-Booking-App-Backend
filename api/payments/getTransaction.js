@@ -7,12 +7,12 @@ export const getTransactions = async (req, res) => {
     const { vendorId, userId } = req.query;
     const query = {};
 
-    if (vendorId && mongoose.Types.ObjectId.isValid(vendorId)) {
-      query.vendor = vendorId;
+    if (vendorId?.trim() && mongoose.Types.ObjectId.isValid(vendorId.trim())) {
+      query.vendor = vendorId.trim();
     }
 
-    if (userId && mongoose.Types.ObjectId.isValid(userId)) {
-      query.user = userId;
+    if (userId?.trim() && mongoose.Types.ObjectId.isValid(userId.trim())) {
+      query.user = userId.trim();
     }
 
     const transactions = await Transaction.find(query);
