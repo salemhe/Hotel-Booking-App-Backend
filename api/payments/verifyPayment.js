@@ -79,13 +79,14 @@ export const verifyPayment = async (req, res) => {
     const existingTransaction = await Transaction.findOne({ reference });
 
     if (transaction.status === "success" && !existingTransaction) {
-      vendor.balance += (transaction.amount / 100) * 0.885;
+      vendor.balance += (transaction.amount / 100) * 0.885; // TODO some logic to calaculate the actual amount
       await vendor.save()
 
       const newTransactionRecord = new Transaction({
-        userId: transaction.metadata.userId,
+        user: transaction.metadata.userId,
+        vendor: transaction.metadata.vendorId,
         type: "payment",
-        amount: (transaction.amount / 100) * 0.885,
+        amount: (transaction.amount / 100) * 0.885, 
         totalAmount: transaction.amount / 100,
         commision: (transaction.amount / 100) * 0.115,
         reference: reference,
