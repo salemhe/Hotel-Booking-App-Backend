@@ -23,32 +23,6 @@ export const createPaymentDetails = async (req, res) => {
 
   try {
 
-    const subAccountPayload = {
-      business_name: businessName,
-      settlement_bank: bankCode,
-      account_number: accountNumber,
-      percentage_charge: Number(percentageCharge),
-    };
-    
-    const subaccountResponse = await fetch("https://api.paystack.co/subaccount", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
-        "Content-Type": "application/json",
-      },
-      
-      body: JSON.stringify(subAccountPayload),
-    });
-
-    const subaccountData = await subaccountResponse.json();
-    if (!subaccountResponse.ok || subaccountData.status === false) {
-      console.error("Subaccount Error:", subaccountData);
-      return res.status(500).json({
-        message: "Failed to create subaccount.",
-        error: subaccountData.message || "Unknown error",
-      });
-    }
-
 
     // Create a recipient for the vendor
     // The recipient is like the vendor's bank account where funds will be transferred
@@ -93,37 +67,6 @@ export const createPaymentDetails = async (req, res) => {
     //=================================================================
 
     // Create a split group for the vendor
-    const splitGroupPayload = {
-      name: `${businessName} Split Group`,
-      type: "percentage",
-      currency: "NGN",
-      subaccounts: [
-        {
-          subaccount: subaccountData.data.subaccount_code,
-          share: 100 - percentageCharge,
-        },
-      ],
-    };
-
-    const splitGroupResponse = await fetch("https://api.paystack.co/split", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(splitGroupPayload),
-    });
-
-    const splitGroupDataResponse = await splitGroupResponse.json();
-    
-
-    if (!splitGroupResponse.ok || splitGroupDataResponse.status === false) {
-      console.error("Split Group Error:", splitGroupDataResponse);
-      return res.status(500).json({
-        message: "Failed to create split group.",
-        error: splitGroupDataResponse.message || "Unknown error",
-      });
-    }
 
     // Add the vendor's subaccount to the split group
 
@@ -158,13 +101,10 @@ export const createPaymentDetails = async (req, res) => {
       vendorId,
       {
         paymentDetails: {
-          bankAccountName: subaccountData.data.account_name,
-          bankName: subaccountData.data.settlement_bank,
-          bankCode: bankCode,
-          accountNumber: subaccountData.data.account_number,
-          paystackSubAccount: subaccountData.data.subaccount_code,
+          bankName: recipientData.data.details.bank_name,
+          bankCode: recipientData.data.details.bank_code,
+          accountNumber: recipientData.data.details.account_number,
           recipientCode: recipientData.data.recipient_code,
-          percentageCharge: subaccountData.data.percentage_charge,
         },
       },
       { new: true }
@@ -177,16 +117,10 @@ export const createPaymentDetails = async (req, res) => {
     res.status(201).json({
       message: "Payment details added successfully.",
       data: {
-        bankAccountName: subaccountData.data.account_name,
-        bankName: subaccountData.data.settlement_bank,
-        bankCode: bankCode,
-        accountNumber: subaccountData.data.account_number,
-        paystackSubAccount: subaccountData.data.subaccount_code,
+        bankName: recipientData.data.details.bank_name,
+        bankCode: recipientData.data.details.bank_code,
+        accountNumber: recipientData.data.details.account_number,
         recipientCode: recipientData.data.recipient_code,
-        percentageCharge: subaccountData.data.percentage_charge,
-        splitGroupId: splitGroupDataResponse.data.id,
-        split_code: splitGroupDataResponse.data.split_code,
-        splitGroupName: splitGroupDataResponse.data.name,
       }
     });
 
