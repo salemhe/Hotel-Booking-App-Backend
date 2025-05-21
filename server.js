@@ -20,6 +20,7 @@ dotenv.config();
 import userRoutes from "./api/routes/userRoutes.js";
 import vendorRoutes from "./api/routes/vendorRoutes.js";
 import sessionRoutes from "./api/routes/sessionRoutes.js";
+import adminRoutes from "./api/routes/adminRoutes.js";
 
 // Initialize Express app
 const app = express();
@@ -52,6 +53,7 @@ initializePassport(passport);
 app.use("/api/users", userRoutes);
 app.use("/api/vendors", vendorRoutes);
 app.use("/api/sessions", sessionRoutes);
+app.use("/api/admin", adminRoutes);
 
 // Socket.io connection
 io.on("connection", (socket) => {

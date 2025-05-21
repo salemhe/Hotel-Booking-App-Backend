@@ -13,8 +13,8 @@ const withdrawalSchema = new Schema({
 
 const VendorSchema = new Schema(
   {
-    businessName: {type: String, required: true},
-    businessType: {type: String, required: true},
+    businessName: { type: String, required: true },
+    businessType: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     phone: { type: String },
     address: { type: String },
@@ -40,6 +40,7 @@ const VendorSchema = new Schema(
       accountNumber: { type: String },
       recipientCode: { type: String },
     },
+    percentageCharge: { type: Number, default: 0 },
     balance: { type: Number, default: 0 },
     withdrawals: [withdrawalSchema],
     otp: { type: String },

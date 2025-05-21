@@ -17,10 +17,6 @@ export const getTransactions = async (req, res) => {
 
     const transactions = await Transaction.find(query);
 
-    // if (!transactions.length) {
-    //   return res.status(404).json({ message: "No transactions found" });
-    // }
-
     res.status(200).json({ success: true, transactions });
   } catch (error) {
     console.error("Error fetching transactions:", error);

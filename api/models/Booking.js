@@ -11,12 +11,12 @@ const bookingSchema = new Schema(
     location: { type: String, required: true },
     menuId: { type: Schema.Types.ObjectId, ref: "Menu", required: true },
     partySize: { type: Number },
-    // roomNumber: { type: Number, required: function () { return this.type === "hotel"; } }, 
-    tableNumber: { type: Number}, 
+    // roomNumber: { type: Number, required: function () { return this.type === "hotel"; } },
+    tableNumber: { type: Number },
     tableType: { type: String, required: true },
-    meals: {type: [String], default:[], required: true },
-    pricePerTable: { type: Number,required:true },
-    guests: { type: Number,required: true },
+    meals: { type: [String], default: [], required: true },
+    pricePerTable: { type: Number, required: true },
+    guests: { type: Number, required: true },
     totalPrice: { type: Number, required: true },
     specialRequest: { type: String },
     image: { type: String },
@@ -25,6 +25,7 @@ const bookingSchema = new Schema(
     checkOut: { type: Date }, // just for hotels
     bookingDate: { type: Date, default: Date.now },
     status: { type: String, enum: ["pending", "confirmed", "updated", "cancelled"], default: "pending" },
+    isPaid: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

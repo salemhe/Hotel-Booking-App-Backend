@@ -5,7 +5,7 @@ dotenv.config();
 
 export const updateUserProfile = async (req, res) => {
   try {
-    const userId = req.user?.id;
+    const userId = req.user?.id || req.data.id;
     const userIdFromParams = req.params.id
 
     if (userId !== userIdFromParams) {

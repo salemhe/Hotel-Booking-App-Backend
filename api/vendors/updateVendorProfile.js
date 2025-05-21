@@ -24,7 +24,7 @@ const uploadToCloudinary = async (filePath) => {
 // Vendor Profile Update
 export const updateVendorProfile = async (req, res) => {
   try {
-    const vendorId = req.vendor?.id;
+    const vendorId = req.vendor?.id || req.body.id;
     const vendorIdFromParams = req.params.id;
 
     if (vendorId !== vendorIdFromParams) {
