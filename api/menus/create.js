@@ -10,6 +10,26 @@ export const createMenu = async (req, res) => {
     api_secret: process.env.CLOUDINARY_API_SECRET,
   });
 
+  const uploadToCloudinary = async (buffer) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.v2.uploader.upload_stream(
+      {
+        folder: 'menu_items',
+        public_id: `menu-item-${Date.now()}`,
+        overwrite: true,
+        resource_type: 'image',
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      }
+    );
+
+    stream.end(buffer);
+  });
+};
+
+
   try {
     if (!req.vendor || !req.vendor._id) {
       return res.status(403).json({ message: "Unauthorized: No vendor ID found" });
@@ -25,9 +45,6 @@ export const createMenu = async (req, res) => {
       return res.status(404).json({ message: "Vendor not found" });
     }
 
-    console.log("Items being sent", req.body.addOns);
-    console.log("File being sent", req.file);
-
     // Validate required fields
     if (!price || !category || !cuisineType || !dishName || !description || !availabilityStatus || !maxOrderPerCustomer || !stockQuantity) {
       return res.status(400).json({ message: "price, category, and dishName are required" });
@@ -35,11 +52,7 @@ export const createMenu = async (req, res) => {
 
     // Handle image upload to Cloudinary
     if (req.file) {
-      const cloudinaryResponse = await cloudinary.v2.uploader.upload(req.file.buffer, {
-        folder: 'menu_items', // Optional: you can organize the uploads into folders
-        public_id: `menu-item-${Date.now()}`, // Optional: you can set a custom public ID
-        overwrite: true, // Optional: overwrite existing files with the same public ID
-      });
+      const cloudinaryResponse = await uploadToCloudinary(req.file.buffer);
 
       itemImageUrl = cloudinaryResponse.secure_url; // This will be the URL of the uploaded image
     } else if (req.body.image) {
