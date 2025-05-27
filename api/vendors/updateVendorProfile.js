@@ -56,41 +56,63 @@ export const updateVendorProfile = async (req, res) => {
     let servicesArray = [];
     if (services) {
       try {
-        servicesArray = typeof services === "string" ? JSON.parse(services) : services;
+        servicesArray =
+          typeof services === "string" ? JSON.parse(services) : services;
         if (!Array.isArray(servicesArray)) throw new Error();
       } catch {
-        return res.status(400).json({ message: "Invalid services format. Must be an array or JSON array." });
+        return res
+          .status(400)
+          .json({
+            message: "Invalid services format. Must be an array or JSON array.",
+          });
       }
     }
 
     // Upload profile image to Cloudinary if provided
-    if (req.file) {
-      const cloudinaryUrl = await uploadToCloudinary(req.file.path);
-      vendor.profileImage = cloudinaryUrl;
+    if (req.files && Array.isArray(req.files) && req.files.length > 0) {
+      const imageUrls = [];
+      for (const file of req.files) {
+        const cloudinaryUrl = await uploadToCloudinary(file.path);
+        imageUrls.push(cloudinaryUrl);
+      }
+      vendor.profileImages = imageUrls;
     }
 
     // Paystack subaccount update (optional)
     let subaccountUpdateData = null;
-    if (paystackSubAccount && (bankCode || accountNumber || percentageCharge || businessName)) {
+    if (
+      paystackSubAccount &&
+      (bankCode || accountNumber || percentageCharge || businessName)
+    ) {
       const payload = {
         ...(businessName && { business_name: businessName }),
         ...(bankCode && { settlement_bank: bankCode }),
         ...(accountNumber && { account_number: accountNumber }),
-        ...(percentageCharge && { percentage_charge: Number(percentageCharge) }),
+        ...(percentageCharge && {
+          percentage_charge: Number(percentageCharge),
+        }),
       };
 
-      const response = await fetch(`https://api.paystack.co/subaccount/${paystackSubAccount}`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(
+        `https://api.paystack.co/subaccount/${paystackSubAccount}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
       const result = await response.json();
       if (!result.status) {
-        return res.status(400).json({ message: "Paystack subaccount update failed", error: result.message });
+        return res
+          .status(400)
+          .json({
+            message: "Paystack subaccount update failed",
+            error: result.message,
+          });
       }
       subaccountUpdateData = result.data;
     }
@@ -125,6 +147,8 @@ export const updateVendorProfile = async (req, res) => {
     });
   } catch (error) {
     console.error("Error updating vendor:", error);
-    res.status(500).json({ message: "Internal server error", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 };

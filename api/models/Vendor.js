@@ -21,7 +21,7 @@ const VendorSchema = new Schema(
     branch: { type: String},
     password: { type: String },
     role: { type: String },
-    profileImage: {
+    profileImages: [{
       type: String,
       // validate: {
       //   validator: function (value) {
@@ -30,7 +30,7 @@ const VendorSchema = new Schema(
       //   message: "Profile image must be a valid URL.",
       // },
       default: null,
-    },
+    }],
     services: { type: [String], default: [] }, // List of services the vendor provides
 
     paymentDetails: {

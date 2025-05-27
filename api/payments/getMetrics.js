@@ -18,7 +18,6 @@ export const getMetrics = async (req, res) => {
       {
         $match: {
           status: "confirmed",
-          isPaid: true,
         },
       },
       {
