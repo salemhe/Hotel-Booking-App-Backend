@@ -79,16 +79,16 @@ export const verifyPayment = async (req, res) => {
     const existingTransaction = await Transaction.findOne({ reference });
 
     if (transaction.status === "success" && !existingTransaction) {
-      vendor.balance += (transaction.amount / 100) * 0.885; // TODO some logic to calaculate the actual amount
-      await vendor.save()
+      vendor.balance += transaction.metadata.amount; 
+      await vendor.save() 
 
       const newTransactionRecord = new Transaction({
         user: transaction.metadata.userId,
         vendor: transaction.metadata.vendorId,
         type: "payment",
-        amount: (transaction.amount / 100) * 0.885, 
-        totalAmount: transaction.amount / 100,
-        commision: (transaction.amount / 100) * 0.115,
+        amount: transaction.metadata.amount, 
+        totalAmount: transaction.metadata.total,
+        commision: transaction.metadata.total - transaction.metadata.amount,
         reference: reference,
         status: "success",
       });
@@ -101,7 +101,7 @@ export const verifyPayment = async (req, res) => {
       message: "Transaction verified",
       status: transaction.status,
       transactionId: transaction.id,
-      amount: transaction.amount / 100, // Convert from kobo to Naira
+      amount: transaction.metadata.amount,
       currency: transaction.currency,
       paid_at: transaction.paid_at,
       userId: transaction.metadata.userId,

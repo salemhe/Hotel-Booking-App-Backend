@@ -20,7 +20,6 @@ export const makeWithdrawal = async (req, res) => {
       return res.status(404).json({ message: "Vendor not found" });
     }
     const { amount } = req.body;
-    const fee = amount > 5000 ? 25 : 10;
 
     if (vendor.balance < amount) {
       return res.status(400).json({ message: "Insufficient balance" });
@@ -54,7 +53,7 @@ export const makeWithdrawal = async (req, res) => {
       },
       body: JSON.stringify({
         source: "balance",
-        amount: amount * 100, // Convert Naira to Kobo
+        amount: amount * 100,
         recipient: recipientCode,
         reason: `${vendor.businessName} withdrawal`,
       }),
@@ -78,8 +77,7 @@ export const makeWithdrawal = async (req, res) => {
 
     const withdrawalRecord = {
       amount: amount,
-      total: amount + fee,
-      fee: fee,
+      total: amount,
       reference: responseData.data.reference,
       transactionCode: responseData.data.transaction_code,
       status: responseData.data.status,
@@ -88,12 +86,10 @@ export const makeWithdrawal = async (req, res) => {
     newTransactionRecord.transactionCode = responseData.data.transaction_code;
     await newTransactionRecord.save();
 
-    vendor.balance -= ( amount + fee );
+    vendor.balance -= amount;
 
     vendor.withdrawals.push(withdrawalRecord);
     await vendor.save();
-
-    console.log("Withdrawal Record:", withdrawalRecord);
 
     res.status(200).json({
       message: "Transfer initiated successfully.",
