@@ -35,7 +35,7 @@ export const createMenu = async (req, res) => {
 
     // Handle image upload to Cloudinary
     if (req.file) {
-      const cloudinaryResponse = await cloudinary.v2.uploader.upload(req.file.path, {
+      const cloudinaryResponse = await cloudinary.v2.uploader.upload(req.file.buffer, {
         folder: 'menu_items', // Optional: you can organize the uploads into folders
         public_id: `menu-item-${Date.now()}`, // Optional: you can set a custom public ID
         overwrite: true, // Optional: overwrite existing files with the same public ID
