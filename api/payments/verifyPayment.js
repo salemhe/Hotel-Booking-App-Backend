@@ -83,8 +83,9 @@ export const verifyPayment = async (req, res) => {
       await vendor.save() 
 
       const newTransactionRecord = new Transaction({
-        user: transaction.metadata.userId,
-        vendor: transaction.metadata.vendorId,
+        userId: transaction.metadata.userId,
+        vendorId: transaction.metadata.vendorId,
+        bookingId: transaction.metadata.bookingId,
         type: "payment",
         amount: transaction.metadata.amount, 
         totalAmount: transaction.metadata.total,
