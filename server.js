@@ -10,10 +10,11 @@ import initializePassport from "./api/config/passport.js";
 import path from "path";
 import { fileURLToPath } from "url";
 
+// Support __dirname in ES module
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load environment variables
+// Load env variables
 dotenv.config();
 
 // Import routes
@@ -21,21 +22,23 @@ import userRoutes from "./api/routes/userRoutes.js";
 import vendorRoutes from "./api/routes/vendorRoutes.js";
 import sessionRoutes from "./api/routes/sessionRoutes.js";
 import adminRoutes from "./api/routes/adminRoutes.js";
+import restaurantRoutes from "./api/routes/restaurant.js";
 
-// Initialize Express app
+
+// Initialize app and server
 const app = express();
-const server = createServer(app); // Create HTTP server
-const io = new Server(server, { cors: { origin: "*" } }); // Attach socket.io
+const server = createServer(app);
+const io = new Server(server, { cors: { origin: "*" } });
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files
+// Static file serving
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Session Middleware
+// Session
 app.use(
   session({
     secret: "your-session-secret",
@@ -44,18 +47,19 @@ app.use(
   })
 );
 
-// Passport Middleware
+// Passport
 app.use(passport.initialize());
 app.use(passport.session());
 initializePassport(passport);
 
-// API routes
+// Routes
 app.use("/api/users", userRoutes);
 app.use("/api/vendors", vendorRoutes);
 app.use("/api/sessions", sessionRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/restaurant", restaurantRoutes); // ✅ restaurant route registered once
 
-// Socket.io connection
+// Socket.IO
 io.on("connection", (socket) => {
   console.log("A user connected");
 
@@ -64,15 +68,13 @@ io.on("connection", (socket) => {
   });
 });
 
-// MongoDB connection
+// MongoDB
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB connected");
 
-    // Listen for MongoDB changes (Real-time updates)
-    const collections = ["bookings","menus", "users", "vendors"];
-
+    const collections = ["bookings", "menus", "users", "vendors"];
     collections.forEach((collection) => {
       mongoose.connection.db
         .collection(collection)
@@ -84,10 +86,9 @@ mongoose
           });
         });
     });
-
   })
   .catch((err) => console.error("MongoDB connection error:", err));
 
 // Start server
-const PORT = process.env.PORT ;
+const PORT = process.env.PORT;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
