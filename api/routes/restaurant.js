@@ -4,7 +4,7 @@ import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-import Restaurant from "../../models/Restaurant.js";
+import Restaurant from "../models/Restaurant.js";
 
 const router = express.Router();
 
