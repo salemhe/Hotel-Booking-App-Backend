@@ -23,12 +23,12 @@ const VendorSchema = new Schema(
     role: { type: String },
     profileImages: [{
       type: String,
-      // validate: {
-      //   validator: function (value) {
-      //     return /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|svg))$/.test(value);
-      //   },
-      //   message: "Profile image must be a valid URL.",
-      // },
+      validate: {
+        validator: function (value) {
+          return /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|svg))$/.test(value) || value === null;
+        },
+        message: "Profile image must be a valid URL.",
+      },
       default: null,
     }],
     services: { type: [String], default: [] }, // List of services the vendor provides
