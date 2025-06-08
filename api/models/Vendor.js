@@ -15,6 +15,7 @@ const VendorSchema = new Schema(
   {
     businessName: { type: String, required: true },
     businessType: { type: String, required: true },
+    businessDescription: { types: String },
     email: { type: String, required: true, unique: true },
     phone: { type: String },
     address: { type: String },
