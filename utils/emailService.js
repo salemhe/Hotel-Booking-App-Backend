@@ -139,6 +139,37 @@ export const sendBookingConfirmationEmail = async (email, firstName, qrCodeUrl, 
     </div>
   </div>
 `,
+//another ui Design 
+//  <div style="max-width: 560px; margin: auto; background-color: #ffffff; border-radius: 16px; font-family: 'Segoe UI', sans-serif; padding: 32px; color: #111111; box-shadow: 0 6px 24px rgba(0, 0, 0, 0.05);">
+//   <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+//     <div style="width: 16px; height: 16px; background-color: #5BA8FF; border-radius: 50%;"></div>
+//     <span style="font-size: 22px; font-weight: 700;">Bookies</span>
+//   </div>
+//   <hr style="border: none; border-top: 1px solid #eeeeee; margin-bottom: 24px;">
+//   <div style="background-color: #F0F7FF; border-left: 4px solid #5BA8FF; padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+//     <h2 style="font-size: 20px; margin: 0 0 10px;">🎉 Booking Confirmed</h2>
+//     <p style="margin: 0; font-size: 15px;">Hey <strong>${firstName}</strong>, your reservation at <strong>${hotelName}</strong> has been confirmed. Present your QR code below on arrival.</p>
+//   </div>
+//   <div style="text-align: center; margin: 30px 0;">
+//     <img src="${qrCodeUrl}" alt="QR Code" style="display: inline-block; padding: 10px; border: 2px solid #5BA8FF; border-radius: 12px; box-shadow: 0 0 12px rgba(91, 168, 255, 0.4);" />
+//   </div>
+//   <div style="background-color: #FAFAFA; border-left: 4px solid #60A5FA; padding: 20px; border-radius: 12px; font-size: 15px; line-height: 1.7;">
+//     <p style="margin: 0;">
+//       Your booking ID is <strong>${bookingId}</strong>. You're expected at <strong>${hotelName}</strong>, located at <strong>${location}</strong>, on <strong>${date}</strong> by <strong>${time}</strong> with <strong>${guestCount}</strong> guest(s).
+//     </p>
+//   </div>
+//   <p style="margin-top: 28px; font-size: 15px; line-height: 1.6;">
+//     Please arrive early and have this QR code handy. For help, reach out to our support team anytime.
+//   </p>
+//   <p style="margin-top: 24px; font-size: 15px;">Warm regards,</p>
+//   <p style="font-weight: 600; font-size: 15px;">The Bookies Team</p>
+//   <hr style="border: none; border-top: 1px solid #eeeeee; margin: 30px 0;">
+//   <div style="text-align: center; font-size: 12px; color: #999;">
+//     © ${new Date().getFullYear()} Bookies. All rights reserved.
+//   </div>
+// </div>
+
+
         // attachments: [
         //   {
         //     filename: qrCodeFilename,
