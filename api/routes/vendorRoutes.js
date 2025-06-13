@@ -35,7 +35,7 @@ router.post('/login', [
 ], loginVendor);
 
 // Get all vendors (authorized route)
-router.get('/', authorize, getVendors);
+router.get('/', getVendors);
 
 router.post('/verify-otp', verifyVendorOTP);
 
