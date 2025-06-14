@@ -1,6 +1,7 @@
 import Vendor from "../models/Vendor.js";
 import cloudinary from "cloudinary";
 import dotenv from "dotenv";
+import { uuidv4 } from "uuid"
 
 dotenv.config();
 
