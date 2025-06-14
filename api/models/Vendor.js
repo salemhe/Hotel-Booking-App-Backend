@@ -19,8 +19,7 @@ const VendorSchema = new Schema(
   {
     businessName: { type: String, required: true },
     businessType: { type: String, required: true },
-    businessDescription: { type
-      : String },
+    businessDescription: { type: String },
     email: { type: String, required: true, unique: true },
     openingTime: { type: String },
     closingTime: { type: String },
@@ -66,7 +65,7 @@ const VendorSchema = new Schema(
     isVerified: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now },
     rating: { type: Number, default: 0 },
-    reviews: { type: Number, default: 0}
+    reviews: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
