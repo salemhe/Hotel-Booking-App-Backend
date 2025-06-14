@@ -43,7 +43,7 @@ router.post('/resend-otp', resendVendorOTP);
 
 router.post('/create-menu', upload.single('itemImage'), authenticateVendor, createMenu);
 
-router.get('/menus/', authorize, getMenusByVendor);
+router.get('/menus/', getMenusByVendor);
 
 router.patch('/save-payment', authenticateVendor, createPaymentDetails);
 
