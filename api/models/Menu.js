@@ -9,7 +9,11 @@ const MenuSchema = new Schema(
     },
     addOns: [{ type: String }],
     availabilityStatus: { type: Boolean, required: true },
-    category: { type: String, required: true },
+    category: {
+      type: String,
+      required: true,
+      enum: ["Appetizer", "Main Course", "Dessert", "Drinks"], // example categories
+    },
     cuisineType: { type: String, required: true },
     dietaryInfo: [{ type: String }],
     discountPrice: { type: Number },

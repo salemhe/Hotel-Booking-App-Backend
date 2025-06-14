@@ -1,10 +1,10 @@
 import Vendor from "../models/Vendor.js";
 import dotenv from "dotenv";
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { v4 as uuidv4 } from 'uuid';
-import cloudinary from 'cloudinary';
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import { v4 as uuidv4 } from "uuid";
+import cloudinary from "cloudinary";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,7 +28,7 @@ const uploadToCloudinary = async (filePath) => {
   });
   return {
     id: uniqueId,
-    url: response.secure_url
+    url: response.secure_url,
   };
 };
 
@@ -45,6 +45,13 @@ export const updateVendorProfile = async (req, res) => {
     const {
       businessName,
       businessType,
+      openingTime,
+      closingTime,
+      businessDescription,
+      cuisines,
+      availableSlots,
+      rating,
+      reviews,
       phone,
       address,
       branch,
@@ -71,38 +78,38 @@ export const updateVendorProfile = async (req, res) => {
           typeof services === "string" ? JSON.parse(services) : services;
         if (!Array.isArray(servicesArray)) throw new Error();
       } catch {
-        return res
-          .status(400)
-          .json({
-            message: "Invalid services format. Must be an array or JSON array.",
-          });
+        return res.status(400).json({
+          message: "Invalid services format. Must be an array or JSON array.",
+        });
       }
     }
 
     // Upload profile image to Cloudinary if provided
-if (req.files && Array.isArray(req.files) && req.files.length > 0) {
-  const imageUrls = [];
+    if (req.files && Array.isArray(req.files) && req.files.length > 0) {
+      const imageUrls = [];
 
-  for (const file of req.files) {
-    // Create a temporary path to save buffer
-    const tempFilePath = path.join(__dirname, `${uuidv4()}-${file.originalname}`);
-    
-    // Write the buffer to disk
-    fs.writeFileSync(tempFilePath, file.buffer);
+      for (const file of req.files) {
+        // Create a temporary path to save buffer
+        const tempFilePath = path.join(
+          __dirname,
+          `${uuidv4()}-${file.originalname}`
+        );
 
-    try {
-      // Upload using your existing function
-      const cloudinaryUrl = await uploadToCloudinary(tempFilePath);
-      imageUrls.push(cloudinaryUrl);
-    } finally {
-      // Clean up the temp file
-      fs.unlinkSync(tempFilePath);
+        // Write the buffer to disk
+        fs.writeFileSync(tempFilePath, file.buffer);
+
+        try {
+          // Upload using your existing function
+          const cloudinaryUrl = await uploadToCloudinary(tempFilePath);
+          imageUrls.push(cloudinaryUrl);
+        } finally {
+          // Clean up the temp file
+          fs.unlinkSync(tempFilePath);
+        }
+      }
+
+      vendor.profileImages = imageUrls;
     }
-  }
-
-  vendor.profileImages = imageUrls;
-}
-
 
     // Paystack subaccount update (optional)
     let subaccountUpdateData = null;
@@ -133,12 +140,10 @@ if (req.files && Array.isArray(req.files) && req.files.length > 0) {
 
       const result = await response.json();
       if (!result.status) {
-        return res
-          .status(400)
-          .json({
-            message: "Paystack subaccount update failed",
-            error: result.message,
-          });
+        return res.status(400).json({
+          message: "Paystack subaccount update failed",
+          error: result.message,
+        });
       }
       subaccountUpdateData = result.data;
     }
@@ -146,6 +151,13 @@ if (req.files && Array.isArray(req.files) && req.files.length > 0) {
     // Update fields if provided
     if (businessName) vendor.businessName = businessName;
     if (businessType) vendor.businessType = businessType;
+    if (openingTime) vendor.openingTime = openingTime;
+    if (closingTime) vendor.closingTime = closingTime;
+    if (businessDescription) vendor.businessDescription = businessDescription;
+    if (cuisines) vendor.cuisines = cuisines;
+    if (availableSlots) vendor.availableSlots = availableSlots;
+    if (rating) vendor.rating = rating;
+    if (reviews) vendor.reviews = reviews;
     if (phone) vendor.phone = phone;
     if (address) vendor.address = address;
     if (branch) vendor.branch = branch;

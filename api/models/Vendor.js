@@ -21,6 +21,8 @@ const VendorSchema = new Schema(
     businessType: { type: String, required: true },
     businessDescription: { types: String },
     email: { type: String, required: true, unique: true },
+    openingTime: { type: String },
+    closingTime: { type: String },
     cuisines: [{ type: String }],
     phone: { type: String },
     address: { type: String },
@@ -54,6 +56,7 @@ const VendorSchema = new Schema(
       accountNumber: { type: String },
       recipientCode: { type: String },
     },
+    availableSlots: [{ type: String }],
     percentageCharge: { type: Number, default: 0 },
     balance: { type: Number, default: 0 },
     withdrawals: [withdrawalSchema],
@@ -61,6 +64,8 @@ const VendorSchema = new Schema(
     otpExpires: { type: Date },
     isVerified: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now },
+    rating: { type: Number, default: 0 },
+    reviews: { type: Number, default: 0}
   },
   { timestamps: true }
 );
