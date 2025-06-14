@@ -72,7 +72,7 @@ export const updateVendorProfile = async (req, res) => {
     if (req.files && Array.isArray(req.files) && req.files.length > 0) {
       const imageUrls = [];
       for (const file of req.files) {
-        const cloudinaryUrl = await uploadToCloudinary(file.path);
+        const cloudinaryUrl = await uploadToCloudinary(file.buffer);
         imageUrls.push(cloudinaryUrl);
       }
       vendor.profileImages = imageUrls;

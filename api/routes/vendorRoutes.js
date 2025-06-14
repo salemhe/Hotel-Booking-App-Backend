@@ -53,7 +53,7 @@ router.get('/transactions/', authenticateVendor, getTransactions);
 
 router.get('/balance/', authenticateVendor, getBalance);
 
-router.patch('/update/:id', upload.single('profileImage'), authenticateVendor, updateVendorProfile);
+router.patch('/update/:id', upload.array('profileImage'), authenticateVendor, updateVendorProfile);
 
 router.patch("/bookings/confirm/:bookingId", authenticateVendor, confirmBooking);
 
