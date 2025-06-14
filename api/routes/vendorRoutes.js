@@ -16,6 +16,7 @@ import { getTransactions } from "../payments/getTransaction.js";
 import { updateVendorProfile } from "../vendors/updateVendorProfile.js";
 import { confirmBooking } from "../bookings/updateBooking.js";
 import { getBalance } from "../payments/getBalance.js";
+import { deleteMenu } from "../menus/deleteMenu.js";
 
 const router = express.Router();
 const validation = [
@@ -42,6 +43,8 @@ router.post('/verify-otp', verifyVendorOTP);
 router.post('/resend-otp', resendVendorOTP);
 
 router.post('/create-menu', upload.single('itemImage'), authenticateVendor, createMenu);
+
+router.delete('/menus/:id', authenticateVendor, deleteMenu)
 
 router.get('/menus/', getMenusByVendor);
 
