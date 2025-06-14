@@ -1,7 +1,13 @@
 import Vendor from "../models/Vendor.js";
-import cloudinary from "cloudinary";
 import dotenv from "dotenv";
-import { uuidv4 } from "uuid"
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { v4 as uuidv4 } from 'uuid';
+import cloudinary from 'cloudinary';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
