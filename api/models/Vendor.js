@@ -2,11 +2,15 @@
 import { Schema, model } from "mongoose";
 
 const withdrawalSchema = new Schema({
-  amount: { type: Number, required: true},
-  total: { type: Number, required: true},
-  fee: { type: Number, required: true},
+  amount: { type: Number, required: true },
+  total: { type: Number, required: true },
+  fee: { type: Number, required: true },
   reference: { type: String, required: true },
-  status: { type: String, enum: ["pending", "success", "failed"], default: "pending" },
+  status: {
+    type: String,
+    enum: ["pending", "success", "failed"],
+    default: "pending",
+  },
   createdAt: { type: Date, default: Date.now },
   transactionCode: { type: String, required: true },
 });
@@ -20,19 +24,27 @@ const VendorSchema = new Schema(
     cuisines: [{ type: String }],
     phone: { type: String },
     address: { type: String },
-    branch: { type: String},
+    branch: { type: String },
     password: { type: String },
     role: { type: String },
-    profileImages: [{
-      type: String,
-      validate: {
-        validator: function (value) {
-          return /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|svg))$/.test(value) || value === null;
+    profileImages: [
+      {
+        id: { type: String },
+        url: {
+          type: String,
+          validate: {
+            validator: function (value) {
+              return (
+                /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|svg))$/.test(value) ||
+                value === null
+              );
+            },
+            message: "Profile image must be a valid URL.",
+          },
+          default: null,
         },
-        message: "Profile image must be a valid URL.",
       },
-      default: null,
-    }],
+    ],
     services: { type: [String], default: [] }, // List of services the vendor provides
 
     paymentDetails: {
@@ -54,7 +66,7 @@ const VendorSchema = new Schema(
 );
 
 // Add virtual property to count total withdrawals
-VendorSchema.virtual('withdrawalCount').get(function() {
+VendorSchema.virtual("withdrawalCount").get(function () {
   return this.withdrawals ? this.withdrawals.length : 0;
 });
 

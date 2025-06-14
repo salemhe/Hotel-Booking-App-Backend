@@ -20,12 +20,16 @@ cloudinary.v2.config({
 
 // Helper function: Upload image to Cloudinary
 const uploadToCloudinary = async (filePath) => {
+  const uniqueId = uuidv4();
   const response = await cloudinary.v2.uploader.upload(filePath, {
     folder: "vendor-profiles",
-    public_id: `vendor-${Date.now()}`,
+    public_id: `vendor-${uniqueId}`,
     overwrite: true,
   });
-  return response.secure_url;
+  return {
+    id: uniqueId,
+    url: response.secure_url
+  };
 };
 
 // Vendor Profile Update
