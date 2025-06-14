@@ -69,14 +69,29 @@ export const updateVendorProfile = async (req, res) => {
     }
 
     // Upload profile image to Cloudinary if provided
-    if (req.files && Array.isArray(req.files) && req.files.length > 0) {
-      const imageUrls = [];
-      for (const file of req.files) {
-        const cloudinaryUrl = await uploadToCloudinary(file.buffer);
-        imageUrls.push(cloudinaryUrl);
-      }
-      vendor.profileImages = imageUrls;
+if (req.files && Array.isArray(req.files) && req.files.length > 0) {
+  const imageUrls = [];
+
+  for (const file of req.files) {
+    // Create a temporary path to save buffer
+    const tempFilePath = path.join(__dirname, `${uuidv4()}-${file.originalname}`);
+    
+    // Write the buffer to disk
+    fs.writeFileSync(tempFilePath, file.buffer);
+
+    try {
+      // Upload using your existing function
+      const cloudinaryUrl = await uploadToCloudinary(tempFilePath);
+      imageUrls.push(cloudinaryUrl);
+    } finally {
+      // Clean up the temp file
+      fs.unlinkSync(tempFilePath);
     }
+  }
+
+  vendor.profileImages = imageUrls;
+}
+
 
     // Paystack subaccount update (optional)
     let subaccountUpdateData = null;
