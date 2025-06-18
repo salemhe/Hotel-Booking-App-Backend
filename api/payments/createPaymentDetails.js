@@ -28,13 +28,14 @@ export const createPaymentDetails = async (req, res) => {
     // The recipient is like the vendor's bank account where funds will be transferred
     const recipientPayload = {
       type: "nuban",
-      name: businessName,
+      business_name: businessName,
       account_number: accountNumber,
       bank_code: bankCode,
       currency: "NGN",
+      percentage_charge: 8
     };
 
-    const recipientResponse = await fetch("https://api.paystack.co/transferrecipient", {
+    const recipientResponse = await fetch("https://api.paystack.co/subaccount", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
@@ -104,7 +105,7 @@ export const createPaymentDetails = async (req, res) => {
           bankName: recipientData.data.details.bank_name,
           bankCode: recipientData.data.details.bank_code,
           accountNumber: recipientData.data.details.account_number,
-          recipientCode: recipientData.data.recipient_code,
+          subaccountCode: recipientData.data.subaccount_code,
         },
       },
       { new: true }
@@ -120,7 +121,7 @@ export const createPaymentDetails = async (req, res) => {
         bankName: recipientData.data.details.bank_name,
         bankCode: recipientData.data.details.bank_code,
         accountNumber: recipientData.data.details.account_number,
-        recipientCode: recipientData.data.recipient_code,
+        subaccountCode: recipientData.data.subaccount_code,
       }
     });
 

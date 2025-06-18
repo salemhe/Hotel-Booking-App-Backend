@@ -54,7 +54,7 @@ const VendorSchema = new Schema(
       bankName: { type: String },
       bankCode: { type: String },
       accountNumber: { type: String },
-      recipientCode: { type: String },
+      subaccountCode: { type: String },
     },
     availableSlots: [{ type: String }],
     percentageCharge: { type: Number, default: 0 },
