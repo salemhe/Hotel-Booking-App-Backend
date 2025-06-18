@@ -23,7 +23,12 @@ import vendorRoutes from "./api/routes/vendorRoutes.js";
 import sessionRoutes from "./api/routes/sessionRoutes.js";
 import adminRoutes from "./api/routes/adminRoutes.js";
 import restaurantRoutes from "./api/routes/restaurant.js";
-
+// Import new routes
+import superAdminRoutes from "./api/routes/superAdminRoutes.js";
+import hotelRoutes from "./api/routes/hotelRoutes.js";
+import reservationRoutes from "./api/routes/reservationRoutes.js";
+import locationRoutes from "./api/routes/locationRoutes.js";
+import chainRoutes from "./api/routes/chainRoutes.js";
 
 // Initialize app and server
 const app = express();
@@ -59,10 +64,16 @@ app.use("/api/sessions", sessionRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/restaurant", restaurantRoutes); // ✅ restaurant route registered once
 
+// New routes
+app.use("/api/super-admin", superAdminRoutes);
+app.use("/api/hotels", hotelRoutes);
+app.use("/api/reservations", reservationRoutes);
+app.use("/api/locations", locationRoutes);
+app.use("/api/chains", chainRoutes);
+
 // Socket.IO
 io.on("connection", (socket) => {
   console.log("A user connected");
-
   socket.on("disconnect", () => {
     console.log("User disconnected");
   });
@@ -73,8 +84,7 @@ mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB connected");
-
-    const collections = ["bookings", "menus", "users", "vendors"];
+    const collections = ["bookings", "menus", "users", "vendors", "hotels", "reservations", "locations", "chains"];
     collections.forEach((collection) => {
       mongoose.connection.db
         .collection(collection)
