@@ -102,8 +102,8 @@ export const createPaymentDetails = async (req, res) => {
       vendorId,
       {
         paymentDetails: {
-          bankName: recipientData.data.details.bank_name,
-          bankCode: recipientData.data.details.bank_code,
+          bankName: recipientData.data.details.settlement_bank,
+          bankCode,
           accountNumber: recipientData.data.details.account_number,
           subaccountCode: recipientData.data.subaccount_code,
         },
@@ -118,8 +118,8 @@ export const createPaymentDetails = async (req, res) => {
     res.status(201).json({
       message: "Payment details added successfully.",
       data: {
-        bankName: recipientData.data.details.bank_name,
-        bankCode: recipientData.data.details.bank_code,
+        bankName: recipientData.data.details.settlement_bank,
+        bankCode,
         accountNumber: recipientData.data.details.account_number,
         subaccountCode: recipientData.data.subaccount_code,
       }
