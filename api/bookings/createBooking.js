@@ -12,7 +12,7 @@ export const bookRoomOrTable = async (req, res) => {
     const { vendorId, businessName, customerEmail, customerName, location, partySize, menuId, tableNumber, tableType,  meals, pricePerTable, guests,totalPrice,specialRequest, date } = req.body;
     // const image = req.file ? req.file.filename : req.body.image || null;  
     // Validate required fields
-    if ( !customerName || !customerEmail || !vendorId || !businessName || !location || !partySize || !menuId || !tableType || !meals || !pricePerTable || !totalPrice || !date ) {
+    if ( !customerName || !customerEmail || !vendorId || !businessName || !location || !partySize || !tableType || !meals || !pricePerTable || !totalPrice || !date ) {
       return res.status(400).json({ message: "fill the required fields." });
     }
     // if (type === "restaurant" && !tableNumber) {
