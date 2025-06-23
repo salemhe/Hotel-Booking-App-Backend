@@ -1,4 +1,5 @@
 import { getHotelModel, getReservationModel } from "../../utils/modelAdapter.js";
+import Hotel from "../models/Hotel.js";
 // Get hotel dashboard data
 export const getHotelDashboard = async (req, res) => {
   const hotelId = req.params.hotelId;
