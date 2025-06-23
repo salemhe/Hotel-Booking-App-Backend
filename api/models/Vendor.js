@@ -66,6 +66,9 @@ const VendorSchema = new Schema(
     createdAt: { type: Date, default: Date.now },
     rating: { type: Number, default: 0 },
     reviews: { type: Number, default: 0 },
+    onboardeed: { type: Boolean, default: false },
+    isActive: { type: Boolean, default: true },
+    website: { type: String, trim: true },
   },
   { timestamps: true }
 );
