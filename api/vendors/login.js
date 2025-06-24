@@ -29,6 +29,7 @@ export const loginVendor = (req, res, next) => {
         services: vendor.services,
         paymentDetails: vendor.paymentDetails,
         token: token,
+        onboarded: vendor.onboarded,
       }
       res.status(200).json({ message: "Login successful.", profile: vendorProfile,  });
     }

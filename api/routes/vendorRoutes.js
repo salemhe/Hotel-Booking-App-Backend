@@ -18,6 +18,7 @@ import { confirmBooking } from "../bookings/updateBooking.js";
 import { getBalance } from "../payments/getBalance.js";
 import { deleteMenu } from "../menus/deleteMenu.js";
 import { editMenu } from "../menus/editMenu.js";
+import { onboard } from "../vendors/onboard.js";
 
 const router = express.Router();
 const validation = [
@@ -62,6 +63,8 @@ router.get('/balance/', authenticateVendor, getBalance);
 router.patch('/update/:id', upload.array('profileImage'), authenticateVendor, updateVendorProfile);
 
 router.patch("/bookings/confirm/:bookingId", authenticateVendor, confirmBooking);
+
+router.patch('/onboard/:id', upload.array('profileImage'), authenticateVendor, onboard);
 
 // ======= Added basic CRUD routes for Vendor =======
 
