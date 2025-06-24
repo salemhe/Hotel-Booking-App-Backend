@@ -45,7 +45,6 @@ export const onboard = async (req, res) => {
       accountNumber,
       bankAccountName,
       percentageCharge,
-      paystackSubAccount,
       cuisines,
       businessDescription,
       openingTime,
@@ -61,7 +60,6 @@ export const onboard = async (req, res) => {
       !accountNumber ||
       !bankAccountName ||
       !percentageCharge ||
-      !paystackSubAccount ||
       !cuisines ||
       !businessDescription ||
       !openingTime ||
@@ -106,38 +104,37 @@ export const onboard = async (req, res) => {
 
     let subaccountUpdateData = null;
     if (
-      paystackSubAccount &&
-      (bankCode || accountNumber || percentageCharge || businessName)
+      bankCode &&
+      (bankCode || accountNumber || percentageCharge)
     ) {
-      const payload = {
-        ...(businessName && { business_name: vendor.businessName }),
-        ...(bankCode && { settlement_bank: bankCode }),
-        ...(accountNumber && { account_number: accountNumber }),
-        ...(percentageCharge && {
-          percentage_charge: Number(percentageCharge),
-        }),
-      };
 
-      const response = await fetch(
-        `https://api.paystack.co/subaccount/${paystackSubAccount}`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
+    const recipientPayload = {
+      type: "nuban",
+      business_name: vendor.businessName,
+      account_number: accountNumber,
+      bank_code: bankCode,
+      currency: "NGN",
+      percentage_charge: 8
+    };
 
-      const result = await response.json();
-      if (!result.status) {
-        return res.status(400).json({
-          message: "Paystack subaccount update failed",
-          error: result.message,
-        });
-      }
-      subaccountUpdateData = result.data;
+    const recipientResponse = await fetch("https://api.paystack.co/subaccount", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(recipientPayload),
+    });
+
+    const recipientData = await recipientResponse.json();
+    if (!recipientResponse.ok || recipientData.status === false) {
+      console.error("Recipient Error:", recipientData);
+      return res.status(500).json({
+        message: "Failed to create recipient.",
+        error: recipientData.message || "Unknown error",
+      });
+    }
+      subaccountUpdateData = recipientData.data;
     }
 
     if (cuisines > 0) vendor.cuisines = cuisines;
