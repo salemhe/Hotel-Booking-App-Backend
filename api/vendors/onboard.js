@@ -97,37 +97,43 @@ export const onboard = async (req, res) => {
     }
 
     let subaccountUpdateData = null;
-    if (
-      bankCode &&
-      (bankCode || accountNumber || percentageCharge)
-    ) {
+    if (bankCode && (bankCode || accountNumber)) {
+      const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
 
-    const recipientPayload = {
-      type: "nuban",
-      business_name: vendor.businessName,
-      account_number: accountNumber,
-      bank_code: bankCode,
-      currency: "NGN",
-      percentage_charge: 8
-    };
+      if (!PAYSTACK_SECRET_KEY) {
+        return res
+          .status(500)
+          .json({ message: "Paystack secret key not configured." });
+      }
+      const recipientPayload = {
+        type: "nuban",
+        business_name: vendor.businessName,
+        account_number: accountNumber,
+        bank_code: bankCode,
+        currency: "NGN",
+        percentage_charge: 8,
+      };
 
-    const recipientResponse = await fetch("https://api.paystack.co/subaccount", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(recipientPayload),
-    });
+      const recipientResponse = await fetch(
+        "https://api.paystack.co/subaccount",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(recipientPayload),
+        }
+      );
 
-    const recipientData = await recipientResponse.json();
-    if (!recipientResponse.ok || recipientData.status === false) {
-      console.error("Recipient Error:", recipientData);
-      return res.status(500).json({
-        message: "Failed to create recipient.",
-        error: recipientData.message || "Unknown error",
-      });
-    }
+      const recipientData = await recipientResponse.json();
+      if (!recipientResponse.ok || recipientData.status === false) {
+        console.error("Recipient Error:", recipientData);
+        return res.status(500).json({
+          message: "Failed to create recipient.",
+          error: recipientData.message || "Unknown error",
+        });
+      }
       subaccountUpdateData = recipientData.data;
     }
 
@@ -138,7 +144,7 @@ export const onboard = async (req, res) => {
     if (availableSlots) vendor.availableSlots = availableSlots;
     if (website) vendor.website = website;
     if (priceRange) vendor.priceRange = priceRange;
-    if (percentageCharge) vendor.percentageCharge = 8;
+    vendor.percentageCharge = 8;
 
     vendor.paymentDetails = {
       ...vendor.paymentDetails,
@@ -157,6 +163,7 @@ export const onboard = async (req, res) => {
       vendorId: id,
     });
   } catch (error) {
+    console.error("Error onboarding vendor:", error);
     return res.status(500).json({ message: "Error onBoarding User.", error });
   }
 };
