@@ -44,7 +44,6 @@ export const onboard = async (req, res) => {
       bankCode,
       accountNumber,
       bankAccountName,
-      percentageCharge,
       cuisines,
       businessDescription,
       openingTime,
@@ -59,7 +58,6 @@ export const onboard = async (req, res) => {
       !bankCode ||
       !accountNumber ||
       !bankAccountName ||
-      !percentageCharge ||
       !cuisines ||
       !businessDescription ||
       !openingTime ||
@@ -151,7 +149,7 @@ export const onboard = async (req, res) => {
       ...(bankCode && { bankCode }),
       ...(accountNumber && { accountNumber }),
       ...(bankAccountName && { bankAccountName }),
-      ...(percentageCharge && { percentageCharge: Number(percentageCharge) }),
+      ...(percentageCharge && { percentageCharge: 8 }),
       ...(subaccountUpdateData?.subaccount_code && {
         paystackSubAccount: subaccountUpdateData.subaccount_code,
       }),
