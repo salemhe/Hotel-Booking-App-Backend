@@ -34,16 +34,14 @@ const uploadToCloudinary = async (filePath) => {
 export const onboard = async (req, res) => {
   try {
     const { id } = req.params;
-    const vendorId = req.user.id;
+    const vendorId = req.vendor.id;
     if (id !== vendorId) {
       return res.status(403).json({ message: "Unauthorized: Wrong vendor ID" });
     }
 
     const {
-      bankName,
       bankCode,
       accountNumber,
-      bankAccountName,
       cuisines,
       businessDescription,
       openingTime,
@@ -54,10 +52,8 @@ export const onboard = async (req, res) => {
     } = req.body;
 
     if (
-      !bankName ||
       !bankCode ||
       !accountNumber ||
-      !bankAccountName ||
       !cuisines ||
       !businessDescription ||
       !openingTime ||
@@ -73,7 +69,6 @@ export const onboard = async (req, res) => {
     if (!vendor) {
       return res.status(404).json({ message: "Vendor not found" });
     }
-
     if (req.files && Array.isArray(req.files) && req.files.length > 0) {
       const imageUrls = [];
 
@@ -85,6 +80,7 @@ export const onboard = async (req, res) => {
         );
 
         // Write the buffer to disk
+
         fs.writeFileSync(tempFilePath, file.buffer);
 
         try {
@@ -142,14 +138,12 @@ export const onboard = async (req, res) => {
     if (availableSlots) vendor.availableSlots = availableSlots;
     if (website) vendor.website = website;
     if (priceRange) vendor.priceRange = priceRange;
+    if (percentageCharge) vendor.percentageCharge = 8;
 
     vendor.paymentDetails = {
       ...vendor.paymentDetails,
-      ...(bankName && { bankName }),
       ...(bankCode && { bankCode }),
       ...(accountNumber && { accountNumber }),
-      ...(bankAccountName && { bankAccountName }),
-      ...(percentageCharge && { percentageCharge: 8 }),
       ...(subaccountUpdateData?.subaccount_code && {
         paystackSubAccount: subaccountUpdateData.subaccount_code,
       }),

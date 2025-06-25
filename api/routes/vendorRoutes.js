@@ -64,7 +64,7 @@ router.patch('/update/:id', upload.array('profileImage'), authenticateVendor, up
 
 router.patch("/bookings/confirm/:bookingId", authenticateVendor, confirmBooking);
 
-router.patch('/onboard/:id', upload.array('profileImage'), authenticateVendor, onboard);
+router.patch('/onboard/:id', upload.array('profileImages', 5), authenticateVendor, onboard);
 
 // ======= Added basic CRUD routes for Vendor =======
 

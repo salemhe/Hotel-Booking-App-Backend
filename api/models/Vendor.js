@@ -50,8 +50,6 @@ const VendorSchema = new Schema(
     services: { type: [String], default: [] }, // List of services the vendor provides
 
     paymentDetails: {
-      bankAccountName: { type: String },
-      bankName: { type: String },
       bankCode: { type: String },
       accountNumber: { type: String },
       subaccountCode: { type: String },
