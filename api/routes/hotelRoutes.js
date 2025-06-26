@@ -16,7 +16,7 @@ const router = express.Router();
 
 // Hotel routes with proper authentication
 router.get("/:hotelId/dashboard", authenticateHotelOwner, getHotelDashboard);
-router.get("/:hotelId/rooms", authenticateUser, getAllRooms);
+router.get("/:hotelId/rooms", getAllRooms);
 router.post("/:hotelId/rooms", authenticateHotelOwner, addRoom);
 router.put("/:hotelId/rooms/:roomId", authenticateHotelOwner, updateRoom);
 router.delete("/:hotelId/rooms/:roomId", authenticateHotelOwner, deleteRoom);
