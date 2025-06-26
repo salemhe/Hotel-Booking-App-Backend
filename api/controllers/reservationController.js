@@ -1,4 +1,84 @@
 import { getReservationModel, getHotelModel } from "../../utils/modelAdapter.js";
+import Reservation from "../models/Reservation.js";
+import Hotel from "../models/Hotel.js";
+
+
+//============== Create a new reservation ==============//
+export const createReservation = async (req, res) => {
+  try {
+    const {
+      hotelId,
+      room,
+      guest,
+      checkInDate,
+      checkOutDate,
+      adults,
+      children,
+      specialRequests,
+      paymentMethod
+    } = req.body;
+
+    
+    if (!hotelId || !room?.roomId || !checkInDate || !checkOutDate) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+
+    const hotel = await Hotel.findById(hotelId);
+    if (!hotel) {
+      return res.status(404).json({ message: "Hotel not found" });
+    }
+
+    // Calculate nights
+    const checkIn = new Date(checkInDate);
+    const checkOut = new Date(checkOutDate);
+    const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+
+    if (nights <= 0) {
+      return res.status(400).json({ message: "Check-out must be after check-in" });
+    }
+
+    const totalAmount = room.price * nights;
+
+    const reservation = new Reservation({
+      hotel: hotelId,
+      room: {
+        roomId: room.roomId,
+        roomNumber: room.roomNumber,
+        type: room.type,
+        price: room.price
+      },
+      guest: {
+        user: req.user.id,
+        name: guest.name,
+        email: guest.email,
+        phone: guest.phone
+      },
+      checkInDate,
+      checkOutDate,
+      nights,
+      adults,
+      children,
+      specialRequests,
+      totalAmount,
+      paymentMethod,
+      paymentStatus: 'pending', 
+      status: 'pending'
+    });
+
+    const savedReservation = await reservation.save();
+
+    return res.status(201).json({
+      message: "Reservation successful",
+      data: savedReservation
+    });
+
+  } catch (error) {
+    console.error("Reservation error:", error);
+    return res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 
 // Handle reservation confirmation
 export const confirmReservation = async (req, res) => {

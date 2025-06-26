@@ -6,7 +6,13 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import Restaurant from "../models/Restaurant.js";
 
+
+import { createRestaurant } from "../controllers/restaurantController.js";
+import { authenticateVendor } from "../middlewares/authMiddleware.js";
+
 const router = express.Router();
+
+router.post("/", authenticateVendor, createRestaurant);
 
 // Required for resolving file paths in ES modules
 const __filename = fileURLToPath(import.meta.url);
