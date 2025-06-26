@@ -55,15 +55,20 @@ export const authenticateVendor = async (req, res, next) => {
         .status(401)
         .json({ message: "Unauthorized: No token provided" });
     const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify the token
-    req.vendor = await Vendor.findById(decoded.id).select("_id");
-    if (!req.vendor) {
+    const vendor = await Vendor.findById(decoded.id).select("_id");
+    
+    if (!vendor) {
       return res.status(401).json({ message: "Unauthorized: Vendor not found" });
     }
+    req.vendor = vendor._id;
     next();
   } catch (error) {
     return res.status(403).json({ message: "Invalid or expired token" });
   }
 };
+
+
+
 
 // New middleware for role-based authorization
 export const authorizeRoles = (...roles) => {

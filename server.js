@@ -22,7 +22,7 @@ import userRoutes from "./api/routes/userRoutes.js";
 import vendorRoutes from "./api/routes/vendorRoutes.js";
 import sessionRoutes from "./api/routes/sessionRoutes.js";
 import adminRoutes from "./api/routes/adminRoutes.js";
-import restaurantRoutes from "./api/routes/restaurant.js";
+import restaurantRoutes from "./api/routes/restaurantRoutes.js";
 // Import new routes
 import superAdminRoutes from "./api/routes/superAdminRoutes.js";
 import hotelRoutes from "./api/routes/hotelRoutes.js";
@@ -70,6 +70,9 @@ app.use("/api/hotels", hotelRoutes);
 app.use("/api/reservations", reservationRoutes);
 app.use("/api/locations", locationRoutes);
 app.use("/api/chains", chainRoutes);
+
+
+
 
 // Socket.IO
 io.on("connection", (socket) => {

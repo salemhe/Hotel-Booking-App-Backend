@@ -1,6 +1,61 @@
 import { getHotelModel, getReservationModel } from "../../utils/modelAdapter.js";
 import Hotel from "../models/Hotel.js";
 import Reservation from "../models/Reservation.js"
+
+//============Create Hotel =============//
+export const createHotel = async (req, res) => {
+  try {
+    const {
+      name,
+      description,
+      location,
+      contact,
+      checkInTime,
+      checkOutTime,
+      amenities,
+      images,
+      rooms,         
+      chain,
+      location_id
+    } = req.body;
+
+    const vendorId = req.vendor;
+
+    const newHotel = new Hotel({
+      name,
+      description,
+      owner: vendorId,
+      location,
+      contact,
+      checkInTime,
+      checkOutTime,
+      amenities,
+      images,
+      rooms,        
+      chain,
+      location_id
+    });
+
+    const savedHotel = await newHotel.save();
+
+    return res.status(201).json({
+      message: 'Hotel created successfully',
+      data: savedHotel
+    });
+
+  } catch (error) {
+    console.error('Error creating hotel:', error);
+    return res.status(500).json({
+      message: 'An error occurred while creating the hotel',
+      error: error.message
+    });
+  }
+};
+
+
+
+
+
 // Get hotel dashboard data
 export const getHotelDashboard = async (req, res) => {
   const hotelId = req.params.hotelId;
