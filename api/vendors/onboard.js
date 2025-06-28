@@ -137,7 +137,7 @@ export const onboard = async (req, res) => {
       subaccountUpdateData = recipientData.data;
     }
 
-    if (cuisines) vendor.cuisines = cuisines;
+    if (cuisines > 0) vendor.cuisines = cuisines;
     if (businessDescription) vendor.businessDescription = businessDescription;
     if (openingTime) vendor.openingTime = openingTime;
     if (closingTime) vendor.closingTime = closingTime;

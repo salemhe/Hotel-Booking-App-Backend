@@ -115,4 +115,35 @@ router.delete('/:id', authorize, async (req, res) => {
   }
 });
 
+// Public endpoint to get available rooms for a vendor's business-type hotels
+import Hotel from "../models/Hotel.js";
+import Vendor from "../models/Vendor.js";
+
+router.get('/:vendorId/available-rooms', async (req, res) => {
+  try {
+    const vendorId = req.params.vendorId;
+    // Find the vendor and ensure businessType is 'hotel'
+    const vendor = await Vendor.findById(vendorId);
+    if (!vendor || vendor.businessType.toLowerCase() !== 'hotel') {
+      return res.status(404).json({ message: 'Business-type hotel vendor not found' });
+    }
+    // Find hotels where owner is the vendor's _id
+    const hotels = await Hotel.find({ owner: vendorId, isActive: true });
+    if (!hotels.length) {
+      return res.status(404).json({ message: 'No hotels found for this vendor' });
+    }
+    // Collect available rooms from all hotels
+    const availableRooms = hotels.flatMap(hotel =>
+      hotel.rooms.filter(room => room.isAvailable)
+        .map(room => ({ ...room.toObject(), hotelId: hotel._id, hotelName: hotel.name }))
+    );
+    return res.status(200).json({
+      vendor: vendor.businessName,
+      availableRooms
+    });
+  } catch (error) {
+    return res.status(500).json({ message: 'Error fetching available rooms', error: error.message });
+  }
+});
+
 export default router;
