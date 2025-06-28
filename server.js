@@ -71,9 +71,6 @@ app.use("/api/reservations", reservationRoutes);
 app.use("/api/locations", locationRoutes);
 app.use("/api/chains", chainRoutes);
 
-
-
-
 // Socket.IO
 io.on("connection", (socket) => {
   console.log("A user connected");
