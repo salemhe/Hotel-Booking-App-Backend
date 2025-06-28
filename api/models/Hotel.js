@@ -16,7 +16,7 @@ const RoomSchema = new mongoose.Schema({
     type: Number,
     required: [true, 'Room price is required'],
     min: 0
-  },
+  }, 
   capacity: {
     type: Number,
     required: [true, 'Room capacity is required'],
@@ -50,6 +50,9 @@ const RoomSchema = new mongoose.Schema({
     default: 'available'
   }
 }, { timestamps: true });
+
+
+
 
 const HotelSchema = new mongoose.Schema({
   name: {
