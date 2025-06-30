@@ -1,12 +1,12 @@
-import mongoose from "mongoose";
+import { Schema, model } from "mongoose";
 
-const RoomSchema = new mongoose.Schema({
+const RoomSchema = new Schema({
   roomNumber: {
     type: String,
     required: [true, 'Room number is required'],
     trim: true
   },
-  type: {
+  roomType: {
     type: String,
     required: [true, 'Room type is required'],
     enum: ['single', 'double', 'twin', 'deluxe', 'suite', 'presidential'],
@@ -31,11 +31,11 @@ const RoomSchema = new mongoose.Schema({
     type: String,
     trim: true
   }],
-  images: [{
+  roomImages: [{
     type: String,
     trim: true
   }],
-  description: {
+  roomDescription: {
     type: String,
     required: [true, 'Room description is required'],
     trim: true
@@ -54,18 +54,14 @@ const RoomSchema = new mongoose.Schema({
 
 
 
-const HotelSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'Hotel name is required'],
-    trim: true
-  },
-  owner: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  description: {
+const HotelSchema = new Schema({
+    vendorId: {
+      type: Schema.Types.ObjectId,
+      ref: "User", // adjust if needed
+      required: true,
+      unique: true,
+    },
+  businessDescription: {
     type: String,
     required: [true, 'Hotel description is required'],
     trim: true
@@ -91,57 +87,41 @@ const HotelSchema = new mongoose.Schema({
       required: [true, 'Country is required'],
       trim: true
     },
-    coordinates: {
-      latitude: {
-        type: Number
-      },
-      longitude: {
-        type: Number
-      }
-    }
+    // coordinates: {
+    //   latitude: {
+    //     type: Number
+    //   },
+    //   longitude: {
+    //     type: Number
+    //   }
+    // }
   },
-  contact: {
-    email: {
-      type: String,
-      required: [true, 'Email is required'],
-      trim: true
-    },
-    phone: {
-      type: String,
-      required: [true, 'Phone number is required'],
-      trim: true
-    },
-    website: {
-      type: String,
-      trim: true
-    }
-  },
-  checkInTime: {
-    type: String,
-    default: '14:00'
-  },
-  checkOutTime: {
-    type: String,
-    default: '12:00'
-  },
-  amenities: [{
+  website: {
     type: String,
     trim: true
-  }],
-  images: [{
+  },
+  openTime: {
+    type: String,
+    required: true,
+  },
+  closeTime: {
+    type: String,
+    required: true,
+  },
+  profileImages: [{
     type: String,
     trim: true
   }],
   rooms: [RoomSchema],
   reservations: [{
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'Reservation'
   }],
   reviews: [{
-    type: mongoose.Schema.Types.ObjectId,
+    type:  Schema.Types.ObjectId,
     ref: 'Review'
   }],
-  rating: {
+  stars: {
     type: Number,
     default: 0,
     min: 0,
@@ -152,13 +132,13 @@ const HotelSchema = new mongoose.Schema({
     default: true
   },
   chain: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'Chain'
   },
   location_id: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'Location'
   }
 }, { timestamps: true });
 
-export default mongoose.model('Hotel', HotelSchema);
+export default model('Hotel', HotelSchema);
