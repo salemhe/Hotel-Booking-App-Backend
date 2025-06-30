@@ -60,6 +60,7 @@ export const authenticateVendor = async (req, res, next) => {
       return res.status(401).json({ message: "Unauthorized: Vendor not found" });
     }
     req.vendor = vendor._id;
+ // Debugging
     next();
   } catch (error) {
     return res.status(403).json({ message: "Invalid or expired token" });

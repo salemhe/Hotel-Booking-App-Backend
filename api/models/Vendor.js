@@ -23,7 +23,7 @@ const VendorSchema = new Schema(
     email: { type: String, required: true, unique: true },
     openingTime: { type: String },
     closingTime: { type: String },
-    cuisines: [{ type: String }],
+ 
     phone: { type: String },
     address: { type: String },
     branch: { type: String },
