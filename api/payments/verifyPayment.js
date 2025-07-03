@@ -80,7 +80,6 @@ export const verifyPayment = async (req, res) => {
     const existingTransaction = await Transaction.findOne({ reference });
 
     if (transaction.status === "success" && !existingTransaction) {
-      vendor.balance += transaction.metadata.amount; 
       await vendor.save() 
 
       const newTransactionRecord = new Transaction({
