@@ -38,7 +38,7 @@ export const initializePayment = async (req, res) => {
       amount: amount * 100, 
       currency: "NGN",
       subaccount: vendor.paymentDetails.subaccountCode, // vendor's subaccount
-      callback_url: `https://hotel-booking-application-git-main-salem-hs-projects.vercel.app/confirmation/${bookingId}`,
+      callback_url: `https://hotel-booking-application-git-main-salem-hs-projects.vercel.app/confirmation`,
       metadata: {
         vendorId,
         bookingId
