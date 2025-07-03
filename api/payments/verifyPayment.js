@@ -79,9 +79,9 @@ export const verifyPayment = async (req, res) => {
         vendorId: transaction.metadata.vendorId,
         bookingId: transaction.metadata.bookingId,
         type: "payment",
-        amount: transaction.metadata.amount, 
-        totalAmount: transaction.metadata.total,
-        commision: transaction.metadata.total - transaction.metadata.amount,
+        amount: transaction.amount, 
+        // totalAmount: transaction.metadata.total,
+        // commision: transaction.metadata.total - transaction.metadata.amount,
         reference: reference,
         status: "success",
       });
