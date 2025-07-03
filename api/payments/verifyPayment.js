@@ -70,17 +70,9 @@ export const verifyPayment = async (req, res) => {
         .json({ message: "vendor ID is missing from metadata." });
     }
 
-    const vendor = await Vendor.findById(vendorId);
-    if (!vendor) {
-      return res
-        .status(404)
-        .json({ message: "Vendor or payment details not found." });
-    }
-
     const existingTransaction = await Transaction.findOne({ reference });
 
     if (transaction.status === "success" && !existingTransaction) {
-      await vendor.save() 
 
       const newTransactionRecord = new Transaction({
         userId: transaction.metadata.userId,
