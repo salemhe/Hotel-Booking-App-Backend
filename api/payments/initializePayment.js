@@ -28,7 +28,6 @@ export const initializePayment = async (req, res) => {
     //   email: email,
     //   currency: "NGN",
     // };
-    console.log("Vendor ID:", vendorId);
     const vendor = await Vendor.findById(vendorId);
     if (!vendor || !vendor.paymentDetails || !vendor.paymentDetails.subaccountCode) {
       return res.status(404).json({ message: "Vendor not found." });
