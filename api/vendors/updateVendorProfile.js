@@ -34,11 +34,20 @@ const uploadToCloudinary = async (filePath) => {
 
 // Vendor Profile Update
 export const updateVendorProfile = async (req, res) => {
-  try {
-    const vendorId = req.vendor?._id.toString()
-    const vendorIdFromParams = req.params.id;
+  const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
 
-    if (vendorId !== vendorIdFromParams) {
+  if (!PAYSTACK_SECRET_KEY) {
+    return res
+      .status(500)
+      .json({ message: "Paystack secret key not configured." });
+  }
+  try {
+
+    const { id } = req.params;
+    const vendorId = req.vendor;
+
+
+    if (id !== vendorId.toString()) {
       return res.status(403).json({ message: "Unauthorized: Wrong vendor ID" });
     }
 
@@ -57,12 +66,8 @@ export const updateVendorProfile = async (req, res) => {
       branch,
       role,
       services,
-      bankName,
       bankCode,
       accountNumber,
-      bankAccountName,
-      percentageCharge,
-      paystackSubAccount,
     } = req.body;
 
     const vendor = await Vendor.findById(vendorId);
@@ -111,41 +116,39 @@ export const updateVendorProfile = async (req, res) => {
       vendor.profileImages = imageUrls;
     }
 
-    // Paystack subaccount update (optional)
-    let subaccountUpdateData = null;
-    if (
-      paystackSubAccount &&
-      (bankCode || accountNumber || percentageCharge || businessName)
-    ) {
-      const payload = {
-        ...(businessName && { business_name: businessName }),
-        ...(bankCode && { settlement_bank: bankCode }),
-        ...(accountNumber && { account_number: accountNumber }),
-        ...(percentageCharge && {
-          percentage_charge: Number(percentageCharge),
-        }),
+    let recipientDatas = {};
+
+    if (businessName && bankCode && accountNumber) {
+      const recipientPayload = {
+        type: "nuban",
+        business_name: businessName,
+        account_number: accountNumber,
+        bank_code: bankCode,
+        currency: "NGN",
+        percentage_charge: 8,
       };
 
-      const response = await fetch(
-        `https://api.paystack.co/subaccount/${paystackSubAccount}`,
+      const recipientResponse = await fetch(
+        "https://api.paystack.co/subaccount",
         {
-          method: "PUT",
+          method: "POST",
           headers: {
-            Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+            Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(payload),
+          body: JSON.stringify(recipientPayload),
         }
       );
 
-      const result = await response.json();
-      if (!result.status) {
-        return res.status(400).json({
-          message: "Paystack subaccount update failed",
-          error: result.message,
+      const recipientData = await recipientResponse.json();
+      recipientDatas = recipientData;
+      if (!recipientResponse.ok || recipientData.status === false) {
+        console.error("Recipient Error:", recipientData);
+        return res.status(500).json({
+          message: "Failed to create recipient.",
+          error: recipientData.message || "Unknown error",
         });
       }
-      subaccountUpdateData = result.data;
     }
 
     // Update fields if provided
@@ -165,19 +168,13 @@ export const updateVendorProfile = async (req, res) => {
     if (servicesArray.length > 0) vendor.services = servicesArray;
 
     // Update payment details conditionally
-    vendor.paymentDetails = {
-      ...vendor.paymentDetails,
-      ...(bankName && { bankName }),
-      ...(bankCode && { bankCode }),
-      ...(accountNumber && { accountNumber }),
-      ...(bankAccountName && { bankAccountName }),
-      ...(percentageCharge && { percentageCharge: Number(percentageCharge) }),
-      ...(subaccountUpdateData?.subaccount_code && {
-        paystackSubAccount: subaccountUpdateData.subaccount_code,
+    if (recipientDatas)
+      (vendor.paymentDetails = {
+          bankCode,
+          accountNumber: recipientDatas.data.account_number,
+          subaccountCode: recipientDatas.data.subaccount_code,
       }),
-    };
-
-    await vendor.save();
+        await vendor.save();
 
     res.status(200).json({
       message: "Vendor record updated successfully",

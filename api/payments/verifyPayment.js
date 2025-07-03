@@ -1,5 +1,6 @@
 import Vendor from "../models/Vendor.js";
 import Transaction from "../models/Transaction.js";
+import Booking from "../models/Booking.js";
 
 export const verifyPayment = async (req, res) => {
   const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
@@ -97,6 +98,8 @@ export const verifyPayment = async (req, res) => {
       await newTransactionRecord.save();
     }
 
+    const booking = await Booking.findById(transaction.metadata.bookingId)
+
     // Log or save split details if needed
     return res.status(200).json({
       message: "Transaction verified",
@@ -115,6 +118,7 @@ export const verifyPayment = async (req, res) => {
         email: transaction.customer.email,
         customer_code: transaction.customer.customer_code,
       },
+      booking
     });
   } catch (error) {
     console.error("Error Verifying Payment:", error);
