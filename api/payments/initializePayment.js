@@ -9,9 +9,9 @@ export const initializePayment = async (req, res) => {
         .json({ message: "Unauthorized: No User ID found" });
     }
 
-    const { amount, email, vendorId } = req.body;
+    const { amount, email, vendorId, bookingId } = req.body;
 
-    if (!amount || !email || !vendorId) {
+    if (!amount || !email || !vendorId || !bookingId) {
       return res
         .status(400)
         .json({ message: "Amount and email are required." });
@@ -40,9 +40,10 @@ export const initializePayment = async (req, res) => {
       currency: "NGN",
       subaccount: vendor.paymentDetails.paystackSubAccount, // vendor's subaccount
       percentage_charge: vendor.paymentDetails.percentageCharge,
-      callback_url: "https://hotel-booking-application-git-main-salem-hs-projects.vercel.app/userDashboard/booking",
+      callback_url: `https://hotel-booking-application-git-main-salem-hs-projects.vercel.app/confirmation/${bookingId}`,
       metadata: {
-        vendorId: vendorId
+        vendorId,
+        bookingId
       }
     }
     
