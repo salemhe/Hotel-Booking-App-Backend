@@ -42,7 +42,7 @@
 //     }
 
 //     const {
- 
+
 //       profileImage,
 //       businessDescription,
 //       address,
@@ -55,29 +55,27 @@
 //       bankCode,
 //       website,
 
-
-//       roomNumber, 
+//       roomNumber,
 //       roomType,
 //       price ,
-//       capacity, 
+//       capacity,
 //       feature,
-//       amenities, 
+//       amenities,
 //       roomImage ,
-//       roomDescription, 
+//       roomDescription,
 //       isAvailable,
 //       maintenanceStatus,
 //       stars,
 
-
 //       addOns,
-//       availabilityStatus, 
+//       availabilityStatus,
 //       category,
 //       cuisines,
 //       cuisineType,
 //       dietaryInfo,
 //       discountPrice,
 //       dishName,
-//       description, 
+//       description,
 //       dishImage,
 //       itemImage ,
 //       maxOrderPerCustomer,
@@ -85,16 +83,16 @@
 //       preparationTime,
 //       spiceLevel,
 //       stockQuality,
-      
+
 //     } = req.body;
 
 //     const vendor = await Vendor.findById(vendorId);
-        
+
 //     if (!vendor) {
 //       return res.status(404).json({ message: "Vendor not found" });
 //     }
 
-//     if (      
+//     if (
 //       !businessDescription||
 //       !address||
 //       !city||
@@ -107,9 +105,6 @@
 //     ) {
 //       return res.status(400).json({ message: "Fill all required fields." });
 //     }
-
-   
-
 
 //     if (req.files && Array.isArray(req.files) && req.files.length > 0) {
 //       const imageUrls = [];
@@ -203,14 +198,14 @@
 //     if (Vendor.businessType === "hotel") {
 //           const newHotel = new Hotel({
 //             vendorId: vendorId,
-//             roomNumber, 
+//             roomNumber,
 //             roomType,
 //             price ,
-//             capacity, 
+//             capacity,
 //             feature,
-//             amenities, 
+//             amenities,
 //             roomImage ,
-//             roomDescription, 
+//             roomDescription,
 //             isAvailable,
 //             maintenanceStatus,
 //             stars,
@@ -219,20 +214,18 @@
 //         await newHotel.save()
 //     }
 
-
-
 //     if (vendor.businessType === "restaurant") {
 //           const newRestaurant = new Restaurant({
 //             vendorId: vendorId,
 //             addOns,
-//             availabilityStatus, 
+//             availabilityStatus,
 //             category,
 //             cuisines,
 //             cuisineType,
 //             dietaryInfo,
 //             discountPrice,
 //             dishName,
-//             description, 
+//             description,
 //             dishImage,
 //             itemImage ,
 //             maxOrderPerCustomer,
@@ -247,8 +240,6 @@
 //         await newRestaurant.save()
 //     }
 
-
-
 //     return res.status(200).json({
 //       message: "Vendor onboarded successfully.",
 //       vendorId: id,
@@ -258,9 +249,6 @@
 //     return res.status(500).json({ message: "Error onBoarding User.", error });
 //   }
 // };
-
-
-
 
 import Vendor from "../models/Vendor.js";
 import Hotel from "../models/Hotel.js";
@@ -325,10 +313,16 @@ export const onboard = async (req, res) => {
       accountNumber,
       bankCode,
       website,
+      // menuItems
+    } = req.body;
 
+    const menuItems = JSON.parse(req.body.menuItems);
+    const rooms = JSON.parse(req.body.rooms);
+
+    const {
       roomNumber,
       roomType,
-      price,
+      price: roomPrice,
       capacity,
       features,
       amenities,
@@ -337,7 +331,9 @@ export const onboard = async (req, res) => {
       isAvailable,
       maintenanceStatus,
       stars,
+    } = rooms[0];
 
+    const {
       addOns,
       availabilityStatus,
       category,
@@ -345,6 +341,7 @@ export const onboard = async (req, res) => {
       cuisineType,
       dietaryInfo,
       discountPrice,
+      price,
       dishName,
       description,
       maxOrderPerCustomer,
@@ -352,7 +349,7 @@ export const onboard = async (req, res) => {
       preparationTime,
       spiceLevel,
       stockQuantity,
-    } = req.body;
+    } = menuItems[0];
 
     const vendor = await Vendor.findById(vendorId);
     if (!vendor) return res.status(404).json({ message: "Vendor not found" });
@@ -388,7 +385,8 @@ export const onboard = async (req, res) => {
     }
 
     // Save profile image if provided
-    if (uploadedImages.profileImage) vendor.profileImages = uploadedImages.profileImage;
+    if (uploadedImages.profileImage)
+      vendor.profileImages = uploadedImages.profileImage;
 
     // Payment info via Paystack
     // const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
@@ -438,8 +436,6 @@ export const onboard = async (req, res) => {
 
     if (cuisines?.length) vendor.cuisines = cuisines;
 
-    await vendor.save();
-
     // save to hotel model if businessType is hotel
     if (vendor.businessType === "hotel") {
       const hotel = new Hotel({
@@ -450,26 +446,26 @@ export const onboard = async (req, res) => {
           address,
           city,
           state,
-          country
+          country,
         },
         openTime,
         closeTime,
         website,
-        rooms:[
-            {
-                roomNumber,
-                roomType,
-                price,
-                capacity,
-                features,
-                amenities,
-                roomImages: [uploadedImages.roomImages || null],
-                roomDescription,
-                isAvailable,
-                maintenanceStatus,
-            }
+        rooms: [
+          {
+            roomNumber,
+            roomType,
+            price: roomPrice,
+            capacity,
+            features,
+            amenities,
+            roomImages: [uploadedImages.roomImages || null],
+            roomDescription,
+            isAvailable,
+            maintenanceStatus,
+          },
         ],
-        stars
+        stars,
       });
       await hotel.save();
     }
@@ -484,13 +480,13 @@ export const onboard = async (req, res) => {
           address,
           city,
           state,
-          country
+          country,
         },
         openTime,
         closeTime,
         website,
         cuisines,
-        menus:[
+        menus: [
           {
             addOns,
             availabilityStatus,
@@ -507,7 +503,7 @@ export const onboard = async (req, res) => {
             price,
             spiceLevel,
             stockQuantity,
-          }
+          },
         ],
         stars,
         dishImage: uploadedImages.dishImage || null,
@@ -515,6 +511,8 @@ export const onboard = async (req, res) => {
       });
       await restaurant.save();
     }
+
+    await vendor.save();
 
     return res.status(200).json({
       message: "Vendor onboarded successfully.",
@@ -525,4 +523,3 @@ export const onboard = async (req, res) => {
     return res.status(500).json({ message: "Error onboarding vendor.", error });
   }
 };
-
