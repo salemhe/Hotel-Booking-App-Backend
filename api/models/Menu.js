@@ -12,7 +12,7 @@ const MenuSchema = new Schema(
     category: {
       type: String,
       required: true,
-      enum: ["Appetizer", "Main Course", "Dessert", "Drinks", "mainCourse"], // example categories
+      enum: ["Appetizer", "Main Course", "Dessert", "Drinks"],
     },
     cuisineType: { type: String, required: true },
     dietaryInfo: [{ type: String }],

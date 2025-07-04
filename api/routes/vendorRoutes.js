@@ -65,7 +65,7 @@ router.patch('/update/:id', upload.array('profileImage'), authenticateVendor, up
 router.patch("/bookings/confirm/:bookingId", authenticateVendor, confirmBooking);
 
 router.post('/onboard/:id', upload.fields([
-    { name: "profileImages", maxCount: 1 },
+    { name: "profileImages" },
     { name: "roomImages"},
     { name: "dishImage" },
     { name: "itemImage"}
