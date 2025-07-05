@@ -1,5 +1,6 @@
 import Vendor from "../models/Vendor.js";
 import Transaction from "../models/Transaction.js";
+import Booking from "../models/Booking.js";
 
 export const verifyPayment = async (req, res) => {
   const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
@@ -69,33 +70,26 @@ export const verifyPayment = async (req, res) => {
         .json({ message: "vendor ID is missing from metadata." });
     }
 
-    const vendor = await Vendor.findById(vendorId);
-    if (!vendor) {
-      return res
-        .status(404)
-        .json({ message: "Vendor or payment details not found." });
-    }
-
     const existingTransaction = await Transaction.findOne({ reference });
 
     if (transaction.status === "success" && !existingTransaction) {
-      vendor.balance += transaction.metadata.amount; 
-      await vendor.save() 
 
       const newTransactionRecord = new Transaction({
         userId: transaction.metadata.userId,
         vendorId: transaction.metadata.vendorId,
         bookingId: transaction.metadata.bookingId,
         type: "payment",
-        amount: transaction.metadata.amount, 
-        totalAmount: transaction.metadata.total,
-        commision: transaction.metadata.total - transaction.metadata.amount,
+        amount: transaction.amount, 
+        // totalAmount: transaction.metadata.total,
+        // commision: transaction.metadata.total - transaction.metadata.amount,
         reference: reference,
         status: "success",
       });
 
       await newTransactionRecord.save();
     }
+
+    const booking = await Booking.findById(transaction.metadata.bookingId)
 
     // Log or save split details if needed
     return res.status(200).json({
@@ -115,6 +109,7 @@ export const verifyPayment = async (req, res) => {
         email: transaction.customer.email,
         customer_code: transaction.customer.customer_code,
       },
+      booking
     });
   } catch (error) {
     console.error("Error Verifying Payment:", error);

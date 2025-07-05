@@ -9,10 +9,10 @@ export const bookRoomOrTable = async (req, res) => {
            .json({ message: "Unauthorized: No user ID found" });
        }
 
-    const { vendorId, businessName, customerEmail, customerName, location, partySize, menuId, tableNumber, tableType,  meals, pricePerTable, guests,totalPrice,specialRequest, date } = req.body;
+    const { vendorId, businessName, specialOccasion, seatingPreference, customerEmail, customerName, location, meals, guests,totalPrice,specialRequest, date, time, image } = req.body;
     // const image = req.file ? req.file.filename : req.body.image || null;  
     // Validate required fields
-    if ( !customerName || !customerEmail || !vendorId || !businessName || !location || !partySize || !tableType || !meals || !pricePerTable || !totalPrice || !date ) {
+    if ( !customerName || !customerEmail || !vendorId || !businessName || !location || !meals || !totalPrice || !date || !guests || !time || !image) {
       return res.status(400).json({ message: "fill the required fields." });
     }
     // if (type === "restaurant" && !tableNumber) {
@@ -49,16 +49,22 @@ if (isNaN(parsedDate.getTime()) || isNaN(parsedDate.getTime())) {
       customerEmail,
       businessName, 
       location,
-      partySize,
-      menuId,
-      tableNumber,
-      tableType,
+      image,
+      // partySize,
+      // menuId,
+      // tableNumber,
+      // tableType,
       meals,
-      pricePerTable,
+      // pricePerTable,
       guests,
       totalPrice,
       specialRequest,
       date: parsedDate,
+      specialOccasion,
+      seatingPreference,
+      isPaid: false,
+      status: "pending",
+      time,
 
       // menuId: type === "restaurant"? menuId : null,
       // roomNumber: type === "hotel" ? roomNumber : null,

@@ -9,9 +9,9 @@ export const initializePayment = async (req, res) => {
         .json({ message: "Unauthorized: No User ID found" });
     }
 
-    const { amount, email, vendorId } = req.body;
+    const { amount, email, vendorId, bookingId } = req.body;
 
-    if (!amount || !email || !vendorId) {
+    if (!amount || !email || !vendorId || !bookingId) {
       return res
         .status(400)
         .json({ message: "Amount and email are required." });
@@ -28,9 +28,8 @@ export const initializePayment = async (req, res) => {
     //   email: email,
     //   currency: "NGN",
     // };
-    console.log("Vendor ID:", vendorId);
     const vendor = await Vendor.findById(vendorId);
-    if (!vendor || !vendor.paymentDetails || !vendor.paymentDetails.paystackSubAccount) {
+    if (!vendor || !vendor.paymentDetails || !vendor.paymentDetails.subaccountCode) {
       return res.status(404).json({ message: "Vendor not found." });
     }
 
@@ -38,11 +37,12 @@ export const initializePayment = async (req, res) => {
       email: email,
       amount: amount * 100, 
       currency: "NGN",
-      subaccount: vendor.paymentDetails.paystackSubAccount, // vendor's subaccount
-      percentage_charge: vendor.paymentDetails.percentageCharge,
-      callback_url: "https://hotel-booking-application-git-main-salem-hs-projects.vercel.app/userDashboard/booking",
+      subaccount: vendor.paymentDetails.subaccountCode, // vendor's subaccount
+      callback_url: `https://hotel-booking-application-omega.vercel.app/confirmation`,
       metadata: {
-        vendorId: vendorId
+        vendorId,
+        bookingId,
+        userId: req.user.id
       }
     }
     
