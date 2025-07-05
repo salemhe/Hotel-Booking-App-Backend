@@ -42,8 +42,10 @@ export const updateVendorProfile = async (req, res) => {
       .json({ message: "Paystack secret key not configured." });
   }
   try {
+
     const { id } = req.params;
     const vendorId = req.vendor;
+
 
     if (id !== vendorId.toString()) {
       return res.status(403).json({ message: "Unauthorized: Wrong vendor ID" });

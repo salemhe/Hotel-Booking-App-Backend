@@ -51,8 +51,8 @@ router.patch("/bookings/cancel/:bookingId", authenticateUser, cancleBooking);
 router.patch("/bookings/update/:bookingId", authenticateUser, updateBooking);
 router.post("/make-payment", authenticateUser, initializePayment);
 router.post("/verify-payment", authenticateUser, verifyPayment);
-router.get("/restaurant-search", authorize, getRestaurants);
-router.get("/hotel-search", authorize, getHotels);
+router.get("/restaurant-search", getRestaurants);
+router.get("/hotel-search", getHotels);
 router.get('/transactions/', authorize, getTransactions);
 router.patch('/update/:id', upload.single('profileImage'), authenticateUser, updateUserProfile);
 
