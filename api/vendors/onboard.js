@@ -186,7 +186,7 @@ export const onboard = async (req, res) => {
     if (vendor.businessType === "hotel") {
       const hotel = new Hotel({
         vendorId,
-        profileImages,
+        profileImages: uploadedImages.profileImages || null,
         businessDescription,
         location: {
           address,
