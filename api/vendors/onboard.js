@@ -63,14 +63,8 @@ export const onboard = async (req, res) => {
       accountNumber,
       bankCode,
       website,
-      // menuItems
-    } = req.body;
 
-    const menuItems = JSON.parse(req.body.menuItems);
-    const rooms = JSON.parse(req.body.rooms);
-
-    const {
-      roomNumber,
+            roomNumber,
       roomType,
       price: roomPrice,
       capacity,
@@ -81,10 +75,8 @@ export const onboard = async (req, res) => {
       isAvailable,
       maintenanceStatus,
       stars,
-    } = rooms[0];
 
-    const {
-      addOns,
+            addOns,
       availabilityStatus,
       category,
       cuisines,
@@ -99,10 +91,14 @@ export const onboard = async (req, res) => {
       preparationTime,
       spiceLevel,
       stockQuantity,
-    } = menuItems[0];
+  
+    } = req.body;
+
+
 
     const vendor = await Vendor.findById(vendorId);
     if (!vendor) return res.status(404).json({ message: "Vendor not found" });
+
 
     if (
       !businessDescription ||
