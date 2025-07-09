@@ -3,11 +3,11 @@ import mongoose from "mongoose";
 
 export const getBookings = async (req, res) => {
   try {
-    const { type, vendorId, userId, bookingId } = req.query;
+    const { reservationType, vendorId, userId, bookingId } = req.query;
 
     let query = {};
 
-    if (type) query.type = type;
+    if (reservationType) query.reservationType = reservationType;
     if (vendorId && mongoose.Types.ObjectId.isValid(vendorId)) {
       query.vendorId = new mongoose.Types.ObjectId(vendorId);
     }
@@ -18,7 +18,7 @@ export const getBookings = async (req, res) => {
       query._id = new mongoose.Types.ObjectId(bookingId);
     }
 
-
+  
     const bookings = await Booking.find(query);
     if (!bookings) {
       return res.status(404).json({ message: "No bookings found." });
