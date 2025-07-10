@@ -6,6 +6,7 @@ import {
   getChainModel,
   getLocationModel
 } from "../../utils/modelAdapter.js";
+import Transaction from "../models/Transaction.js";
 
 // Get all locations/chains for super admin dashboard
 export const getAllLocations = async (req, res) => {
@@ -276,6 +277,80 @@ export const getRevenueAnalytics = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: 'Error fetching revenue analytics',
+      error: error.message
+    });
+  }
+};
+
+// Get payments chart data for super admin
+export const getPaymentsChart = async (req, res) => {
+  const { year = new Date().getFullYear() } = req.query;
+  try {
+    // Aggregate transactions by month for the given year
+    const transactions = await Transaction.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`)
+          }
+        }
+      },
+      {
+        $group: {
+          _id: { month: { $month: "$createdAt" } },
+          totalAmount: { $sum: "$amount" },
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $sort: { "_id.month": 1 }
+      }
+    ]);
+
+    // Format for chart
+    const chartData = Array.from({ length: 12 }, (_, i) => {
+      const monthData = transactions.find(t => t._id.month === i + 1);
+      return {
+        month: i + 1,
+        totalAmount: monthData ? monthData.totalAmount : 0,
+        count: monthData ? monthData.count : 0
+      };
+    });
+
+    return res.status(200).json({
+      success: true,
+      year,
+      data: chartData
+    });
+  } catch (error) {
+    console.error('Error fetching payments chart:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error fetching payments chart',
+      error: error.message
+    });
+  }
+};
+
+// Get all transactions for super admin
+export const getPaymentsTransactions = async (req, res) => {
+  try {
+    const transactions = await Transaction.find({})
+      .populate('vendorId', 'businessName')
+      .populate('userId', 'name email')
+      .populate('bookingId', 'confirmationCode reservationType')
+      .sort({ createdAt: -1 });
+    return res.status(200).json({
+      success: true,
+      count: transactions.length,
+      data: transactions
+    });
+  } catch (error) {
+    console.error('Error fetching transactions:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error fetching transactions',
       error: error.message
     });
   }
