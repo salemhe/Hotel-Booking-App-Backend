@@ -1,0 +1,94 @@
+{
+  "info": {
+    "_postman_id": "12345678-9abc-def0-1234-56789abcdef0",
+    "name": "Vendor Onboarding Test",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Onboard Vendor",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "businessDescription",
+              "value": "A modern café with vegan options.",
+              "type": "text"
+            },
+            {
+              "key": "address",
+              "value": "123 Main Street",
+              "type": "text"
+            },
+            {
+              "key": "city",
+              "value": "Los Angeles",
+              "type": "text"
+            },
+            {
+              "key": "state",
+              "value": "CA",
+              "type": "text"
+            },
+            {
+              "key": "country",
+              "value": "USA",
+              "type": "text"
+            },
+            {
+              "key": "openTime",
+              "value": "08:00",
+              "type": "text"
+            },
+            {
+              "key": "closeTime",
+              "value": "22:00",
+              "type": "text"
+            },
+            {
+              "key": "accountNumber",
+              "value": "2262282611",
+              "type": "text"
+            },
+            {
+              "key": "bankCode",
+              "value": "057",
+              "type": "text"
+            },
+            {
+              "key": "website",
+              "value": "https://examplecafe.com",
+              "type": "text"
+            },
+            {
+              "key": "stars",
+              "value": "4.5",
+              "type": "text"
+            },
+            {
+              "key": "menus",
+              "value": "[{\"addOns\": [\"Extra Cheese\", \"Bacon\"], \"availabilityStatus\": true, \"category\": \"Main Course\", \"cuisines\": [\"Italian\", \"American\"], \"cuisineType\": \"Fusion\", \"dietaryInfo\": \"Gluten-Free\", \"discountPrice\": 9.99, \"price\": 12.99, \"dishName\": \"Spaghetti Supreme\", \"description\": \"Delicious spaghetti with homemade sauce.\", \"maxOrderPerCustomer\": 3, \"portionSize\": \"Large\", \"preparationTime\": 15, \"spiceLevel\": \"Medium\", \"stockQuantity\": 25},{\"addOns\": [\"Extra corn\", \"Bacon\"], \"availabilityStatus\": true, \"category\": \"Main Course\", \"cuisines\": [\"Italian\", \"American\"], \"cuisineType\": \"Fusion\", \"dietaryInfo\": \"Gluten-Free\", \"discountPrice\": 9.99, \"price\": 12.99, \"dishName\": \"corn soup\", \"description\": \"Delicious corn soup with homemade broth.\", \"maxOrderPerCustomer\": 3, \"portionSize\": \"Large\", \"preparationTime\": 15, \"spiceLevel\": \"Medium\", \"stockQuantity\": 25}]",
+              "type": "text"
+            },
+            {
+              "key": "profileImages",
+              "type": "file",
+              "src": "C:/Users/emeka/Pictures/restaurant.jpg"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/vendors/onboard/:id",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "vendors", "onboard", ":id"]
+        }
+      },
+      "response": []
+    }
+  ]
+}

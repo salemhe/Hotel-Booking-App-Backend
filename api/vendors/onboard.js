@@ -51,6 +51,57 @@ export const onboard = async (req, res) => {
       return res.status(403).json({ message: "Unauthorized: Wrong vendor ID" });
     }
 
+    // const {
+    //   profileImages,
+    //   businessDescription,
+    //   address,
+    //   city,
+    //   state,
+    //   country,
+    //   openTime,
+    //   closeTime,
+    //   accountNumber,
+    //   bankCode,
+    //   website,
+    //   stars,
+    //   rooms: [
+    //     {
+    //       roomNumber,
+    //       roomType,
+    //       price: roomPrice,
+    //       capacity,
+    //       features,
+    //       amenities,
+    //       roomImages,
+    //       roomDescription,
+    //       isAvailable,
+    //       maintenanceStatus,
+    //     },
+    //   ],
+
+    //   menus: [
+    //     {
+    //       addOns,
+    //       availabilityStatus,
+    //       category,
+    //       cuisines,
+    //       cuisineType,
+    //       dietaryInfo,
+    //       discountPrice,
+    //       price,
+    //       dishName,
+    //       description,
+    //       maxOrderPerCustomer,
+    //       portionSize,
+    //       preparationTime,
+    //       spiceLevel,
+    //       stockQuantity,
+    //     }
+    // ]
+      
+  
+    // } = req.body;
+
     const {
       profileImages,
       businessDescription,
@@ -63,41 +114,16 @@ export const onboard = async (req, res) => {
       accountNumber,
       bankCode,
       website,
-
-            roomNumber,
-      roomType,
-      price: roomPrice,
-      capacity,
-      features,
-      amenities,
-      roomImages,
-      roomDescription,
-      isAvailable,
-      maintenanceStatus,
       stars,
-
-            addOns,
-      availabilityStatus,
-      category,
       cuisines,
-      cuisineType,
-      dietaryInfo,
-      discountPrice,
-      price,
-      dishName,
-      description,
-      maxOrderPerCustomer,
-      portionSize,
-      preparationTime,
-      spiceLevel,
-      stockQuantity,
-  
+      rooms,
+      menus
     } = req.body;
-
 
 
     const vendor = await Vendor.findById(vendorId);
     if (!vendor) return res.status(404).json({ message: "Vendor not found" });
+    console.log("Vendor found:", vendor.businessType);
 
 
     if (
@@ -113,6 +139,31 @@ export const onboard = async (req, res) => {
     ) {
       return res.status(400).json({ message: "Missing required fields." });
     }
+
+    let ParsedRooms = [];
+    let ParsedMenus = [];
+
+    if (typeof rooms === 'string') {
+      try {
+        ParsedRooms = JSON.parse(rooms);
+      } catch (err) {
+        return res.status(400).json({ message: "Invalid JSON in 'rooms' field" });
+      }
+    } else if (Array.isArray(rooms)) {
+      ParsedRooms = rooms;
+    }
+    
+
+    if (typeof menus === 'string') {
+      try {
+        ParsedMenus = JSON.parse(menus);
+      } catch (err) {
+        return res.status(400).json({ message: "Invalid JSON in 'menus' field" });
+      }
+    } else if (Array.isArray(menus)) {
+      ParsedMenus = menus;
+    }
+
 
     // Upload and assign images
     const uploadedImages = {};
@@ -183,40 +234,29 @@ export const onboard = async (req, res) => {
     if (cuisines?.length) vendor.cuisines = cuisines;
 
     // save to hotel model if businessType is hotel
+
+
+
     if (vendor.businessType === "hotel") {
-      const hotel = new Hotel({
-        vendorId,
-        profileImages: uploadedImages.profileImages || null,
-        businessDescription,
-        location: {
-          address,
-          city,
-          state,
-          country,
-        },
-        openTime,
-        closeTime,
-        website,
-        rooms: [
-          {
-            roomNumber,
-            roomType,
-            price: roomPrice,
-            capacity,
-            features,
-            amenities,
-            roomImages: [uploadedImages.roomImages || null],
-            roomDescription,
-            isAvailable,
-            maintenanceStatus,
+        const hotel = new Hotel({
+          vendorId,
+          profileImages: uploadedImages.profileImages || null,
+          businessDescription,
+          location: {
+            address,
+            city,
+            state,
+            country,
           },
-        ],
-        stars,
-      });
+          openTime,
+          closeTime,
+          website,
+          rooms: ParsedRooms,
+          stars,
+        });
       await hotel.save();
     }
 
-    // save to restaurant model if businessType is restaurant
     if (vendor.businessType === "restaurant") {
       const restaurant = new Restaurant({
         vendorId,
@@ -232,25 +272,8 @@ export const onboard = async (req, res) => {
         closeTime,
         website,
         cuisines,
-        menus: [
-          {
-            addOns,
-            availabilityStatus,
-            category,
-            cuisines,
-            cuisineType,
-            dietaryInfo,
-            discountPrice,
-            dishName,
-            description,
-            maxOrderPerCustomer,
-            portionSize,
-            preparationTime,
-            price,
-            spiceLevel,
-            stockQuantity,
-          },
-        ],
+        menus: ParsedMenus,
+
         stars,
         dishImage: uploadedImages.dishImage || null,
         itemImage: uploadedImages.itemImage || null,

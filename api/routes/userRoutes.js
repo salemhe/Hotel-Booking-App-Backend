@@ -47,8 +47,8 @@ router.post("/resend-otp", resendUserOTP);
 
 router.post("/bookings", authenticateUser, bookRoomOrTable);
 router.get("/bookings", authorize, getBookings);
-router.patch("/bookings/cancel/:bookingId", authenticateUser, cancleBooking);
-router.patch("/bookings/update/:bookingId", authenticateUser, updateBooking);
+router.put("/bookings/cancel/:bookingId", authenticateUser, cancleBooking);
+router.put("/bookings/update/:bookingId", authenticateUser, updateBooking);
 router.post("/make-payment", authenticateUser, initializePayment);
 router.post("/verify-payment", authenticateUser, verifyPayment);
 router.get("/restaurant-search", getRestaurants);

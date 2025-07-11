@@ -62,7 +62,7 @@ router.get('/balance/', authenticateVendor, getBalance);
 
 router.patch('/update/:id', upload.array('profileImage'), authenticateVendor, updateVendorProfile);
 
-router.patch("/bookings/confirm/:bookingId", authenticateVendor, confirmBooking);
+router.put("/bookings/confirm/:bookingId", authenticateVendor, confirmBooking);
 
 router.post('/onboard/:id', upload.fields([
     { name: "profileImages" },
