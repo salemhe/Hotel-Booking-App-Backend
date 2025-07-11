@@ -289,6 +289,6 @@ export const onboard = async (req, res) => {
     });
   } catch (error) {
     console.error("Onboarding Error:", error);
-    return res.status(500).json({ message: "Error onboarding vendor.", error });
+    return res.status(500).json({ message: "Error onboarding vendor. Can only onboard vendor once.", error });
   }
 };

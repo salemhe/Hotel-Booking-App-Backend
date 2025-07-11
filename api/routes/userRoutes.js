@@ -56,9 +56,7 @@ router.get("/hotel-search", getHotels);
 router.get('/transactions/', authorize, getTransactions);
 router.patch('/update/:id', upload.single('profileImage'), authenticateUser, updateUserProfile);
 
-// ======= Added basic CRUD routes for User =======
 
-// Create a new user (if needed separately from register)
 router.post('/create', async (req, res) => {
   try {
     const User = (await import('../models/User.js')).default;
