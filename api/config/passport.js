@@ -30,14 +30,14 @@ export default (passport) => {
   passport.use(
     "vendor-login",
     new LocalStrategy(
-      { usernameField: "email" },
+      { usernameField: "email", passwordField: "password", },
       async (email, password, done) => {
         try {
           const vendor = await Vendor.findOne({ email });
-          if (!vendor)
+          if (!vendor) {
             return done(null, false, { message: "Vendor not found." });
-
-          const isMatch = bcrypt.compare(password, vendor.password);
+          }
+          const isMatch = await vendor.comparePassword(password);
           if (!isMatch)
             return done(null, false, { message: "Invalid credentials." });
 
