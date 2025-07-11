@@ -3,7 +3,8 @@ import { Strategy as LocalStrategy } from "passport-local";
 import User from "../models/User.js"; // Adjust the path as per your folder structure
 import Vendor from "../models/Vendor.js";
 
-export default (passport) => {
+export default function configurePassport(passport) {
+// export default (passport) => {
   // User Login Strategy
   passport.use(
     "user-login",
@@ -27,6 +28,7 @@ export default (passport) => {
   );
 
   // Vendor Login Strategy
+  
   passport.use(
     "vendor-login",
     new LocalStrategy(

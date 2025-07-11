@@ -6,9 +6,12 @@ import passport from "passport";
 import session from "express-session";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import initializePassport from "./api/config/passport.js";
+import configurePassport from "./api/config/passport.js"; 
 import path from "path";
 import { fileURLToPath } from "url";
+
+
+configurePassport(passport);
 
 // Support __dirname in ES module
 const __filename = fileURLToPath(import.meta.url);
@@ -46,7 +49,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Session
 app.use(
   session({
-    secret: "your-session-secret",
+    secret: process.env.JWT_SECRET || "your-session-secret",
     resave: false,
     saveUninitialized: false,
   })
@@ -55,7 +58,7 @@ app.use(
 // Passport
 app.use(passport.initialize());
 app.use(passport.session());
-initializePassport(passport);
+
 
 // Routes
 app.use("/api/users", userRoutes);
@@ -100,5 +103,5 @@ mongoose
   .catch((err) => console.error("MongoDB connection error:", err));
 
 // Start server
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
