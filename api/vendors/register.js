@@ -59,7 +59,7 @@ export const registerVendor = async (req, res) => {
 
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
-
+    console.log("Hashed Password:", hashedPassword);
     //  OTP
     const otp = generateOTP();
     const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
