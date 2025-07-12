@@ -231,6 +231,6 @@ export const sendBookingCancelEmail = async (email, firstName, bookingId, guestC
 
     await transporter.sendMail(mailOptions);
   } catch (error) {
-    throw new Error("Failed to send cancel email");
+    throw new Error("Failed to send cancel email", error);
   }
 };
