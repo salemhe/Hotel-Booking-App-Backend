@@ -26,12 +26,12 @@ const bookingSchema = new Schema(
     meals: [
       {
         restaurantId: { type: Schema.Types.ObjectId, ref: "Restaurant", required: function () { return this.reservationType === "restaurant"; } },
-        menuId: { type: Schema.Types.ObjectId, ref: "Menu", required: function () { return this.reservationType === "restaurant"; } },
-        mealName: { type: String, required: function () { return this.reservationType === "restaurant"; } },
-        mealPrice: { type: Number, required: function () { return this.reservationType === "restaurant"; } },
+        id: { type: Schema.Types.ObjectId, ref: "Menu", required: function () { return this.reservationType === "restaurant"; } },
+        name: { type: String, required: function () { return this.reservationType === "restaurant"; } },
+        price: { type: Number, required: function () { return this.reservationType === "restaurant"; } },
         quantity: { type: Number, required: function () { return this.reservationType === "restaurant"; } },
         category: {type: String, required: function () { return this.reservationType === "restaurant"; },
-          enum: ["appetizer", "main course", "dessert", "drinks"],
+          enum: ["Appetizer", "Main Course", "Dessert", "Drinks"],
         },
       },
     ],
