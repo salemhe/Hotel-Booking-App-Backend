@@ -8,6 +8,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 
+
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -49,6 +50,8 @@ export const registerVendor = async (req, res) => {
     // no duplicate email allowed
     const existingVendor = await Vendor.findOne({ email });
     if (existingVendor) {
+      //       const hashedPassword = await bcrypt.hash(password, 10);
+      // console.log("Hashed Password:", hashedPassword); // FOR TEST REHASING OLD PASSWORDS THAT DON'T LOGIN: WILL REMOVE LATER
       return res.status(409).json({ message: "Vendor with this email already exists." });
     }
 
@@ -58,8 +61,7 @@ export const registerVendor = async (req, res) => {
     }
 
     // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
-    console.log("Hashed Password:", hashedPassword);
+   
     //  OTP
     const otp = generateOTP();
     const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
@@ -73,7 +75,7 @@ export const registerVendor = async (req, res) => {
       phone,
       address,
       branch,
-      password: hashedPassword,
+      password,
       role,
       profileImage, 
       services,
@@ -96,9 +98,11 @@ export const registerVendor = async (req, res) => {
   } catch (error) {
     console.error(error);
     if (error.code === 11000) {
+
       return res.status(409).json({ message: "Duplicate email error." });
     }
     res.status(500).json({
+      
       message: "Error adding vendor.",
       error: error.message,
     });

@@ -3,8 +3,6 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 
-
-
 export const loginVendor = (req, res, next) => {
   passport.authenticate("vendor-login",{ session: false },
     (err, vendor, info) => {
@@ -14,6 +12,7 @@ export const loginVendor = (req, res, next) => {
           .json({ message: info ? info.message : "Login failed." });
       }
 
+  
       const token = jwt.sign({ id: vendor.id }, process.env.JWT_SECRET, {
         expiresIn: "1h",
       });

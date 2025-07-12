@@ -28,24 +28,24 @@ export const cancleBooking = async (req, res) => {
         .json({ message: "Booking not found" });
     }
 
-    if (booking.status === "cancelled") {
-      return res.status(400).json({ message: "Booking is already cancelled" });
+    if (booking.reservationStatus === "cancelled") {
+      return res.status(400).json({ message: "Reservation is already cancelled" });
     }
 
     // Updates booking status
-    booking.status = "cancelled";
+    booking.reservationStatus = "cancelled"; 
     await booking.save();
 
     const user = await User.findById(userId);
     if (user) {
 
-      await sendBookingCancelEmail(user.email, user.firstName, booking._id, booking.guests, booking.date)
+      await sendBookingCancelEmail(user.email, user.firstName, booking._id, booking.guests, booking.reservationDate)
 
     }
 
-    res.json({ message: "Booking canceled successfully", booking });
+    res.json({ message: "Reservation canceled successfully", booking });
   } catch (error) {
-    console.error("Error canceling booking:", error);
+    console.error("Error canceling reservation:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -59,7 +59,12 @@ export const confirmBooking = async (req, res) => {
         .json({ message: "Unauthorized: No vendor ID found" });
     }
     const { bookingId } = req.params;
-    const vendorId = req.vendor.id; 
+    const vendorId = req.vendor; 
+
+    if (id !== vendorId.toString()) {
+      return res.status(403).json({ message: "Unauthorized: Wrong vendor ID" });
+    }
+
 
 
     const booking = await Booking.findOne({ _id: bookingId, vendorId: vendorId });
@@ -67,15 +72,15 @@ export const confirmBooking = async (req, res) => {
     if (!booking) {
       return res
         .status(404)
-        .json({ message: "Booking not found" });
+        .json({ message: "Reservation not found" });
     }
 
-    if (booking.status === "confirmed") {
-      return res.status(400).json({ message: "Booking is already confirmed" });
+    if (booking.reservationStatus === "confirmed") {
+      return res.status(400).json({ message: "Reservation is already confirmed" });
     }
 
     // Updates booking status
-    booking.status = "confirmed";
+    booking.reservationStatus = "confirmed";
     await booking.save();
 
     const user = await User.findById(booking.userId);
@@ -83,13 +88,13 @@ export const confirmBooking = async (req, res) => {
       const qrText = `Booking ID: ${booking._id}\nName: ${user.firstName} ${user.lastName}`;
       const qrCodeUrl = await generateQRCode(qrText);
 
-      await sendBookingConfirmationEmail(user.email, user.firstName, qrCodeUrl, booking._id, booking.guests, booking.date )
+      await sendBookingConfirmationEmail(user.email, user.firstName, qrCodeUrl, booking._id, booking.guests, booking.reservationDate )
 
     }
 
-    res.json({ message: "Booking confirmed successfully", booking });
+    res.json({ message: "Reservation confirmed successfully", booking });
   } catch (error) {
-    console.error("Error confirming booking:", error);
+    console.error("Error confirming reservation:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

@@ -9,7 +9,7 @@ export default function configurePassport(passport) {
   passport.use(
     "user-login",
     new LocalStrategy(
-      { usernameField: "email" },
+      { usernameField: "email", passwordField: "password" },
       async (email, password, done) => {
         try {
           const user = await User.findOne({ email });
@@ -40,6 +40,7 @@ export default function configurePassport(passport) {
             return done(null, false, { message: "Vendor not found." });
           }
           const isMatch = await vendor.comparePassword(password);
+
           if (!isMatch)
             return done(null, false, { message: "Invalid credentials." });
 
