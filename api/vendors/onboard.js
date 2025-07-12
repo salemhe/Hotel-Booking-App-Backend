@@ -1,5 +1,3 @@
-
-
 import Vendor from "../models/Vendor.js";
 import Hotel from "../models/Hotel.js";
 import Restaurant from "../models/Restaurant.js";
@@ -36,7 +34,10 @@ const uploadToCloudinary = async (fileBuffer, filename) => {
       unique_filename: false,
       overwrite: true,
     });
-    return result.secure_url;
+    return {
+      url: result.secure_url,
+      id: result.public_id,
+    };
   } finally {
     fs.unlinkSync(tempFilePath);
   }
@@ -98,8 +99,7 @@ export const onboard = async (req, res) => {
     //       stockQuantity,
     //     }
     // ]
-      
-  
+
     // } = req.body;
 
     const {
@@ -117,14 +117,12 @@ export const onboard = async (req, res) => {
       stars,
       cuisines,
       rooms,
-      menus
+      menus,
     } = req.body;
-
 
     const vendor = await Vendor.findById(vendorId);
     if (!vendor) return res.status(404).json({ message: "Vendor not found" });
     console.log("Vendor found:", vendor.businessType);
-
 
     if (
       !businessDescription ||
@@ -143,27 +141,29 @@ export const onboard = async (req, res) => {
     let ParsedRooms = [];
     let ParsedMenus = [];
 
-    if (typeof rooms === 'string') {
+    if (typeof rooms === "string") {
       try {
         ParsedRooms = JSON.parse(rooms);
       } catch (err) {
-        return res.status(400).json({ message: "Invalid JSON in 'rooms' field" });
+        return res
+          .status(400)
+          .json({ message: "Invalid JSON in 'rooms' field" });
       }
     } else if (Array.isArray(rooms)) {
       ParsedRooms = rooms;
     }
-    
 
-    if (typeof menus === 'string') {
+    if (typeof menus === "string") {
       try {
         ParsedMenus = JSON.parse(menus);
       } catch (err) {
-        return res.status(400).json({ message: "Invalid JSON in 'menus' field" });
+        return res
+          .status(400)
+          .json({ message: "Invalid JSON in 'menus' field" });
       }
     } else if (Array.isArray(menus)) {
       ParsedMenus = menus;
     }
-
 
     // Upload and assign images
     const uploadedImages = {};
@@ -171,19 +171,29 @@ export const onboard = async (req, res) => {
     if (req.files) {
       for (const [key, files] of Object.entries(req.files)) {
         if (!Array.isArray(files)) continue;
-        const imageFile = files[0]; // Take only the first image for each key
-        if (imageFile?.buffer && imageFile?.originalname) {
-          uploadedImages[key] = await uploadToCloudinary(
-            imageFile.buffer,
-            imageFile.originalname
-          );
+
+        for (const imageFile of files) {
+          if (imageFile?.buffer && imageFile?.originalname) {
+            const uploaded = await uploadToCloudinary(
+              imageFile.buffer,
+              imageFile.originalname
+            );
+
+            // Initialize the array if it doesn't exist
+            if (!uploadedImages[key]) {
+              uploadedImages[key] = [];
+            }
+
+            uploadedImages[key].push({
+              url: uploaded.url,
+              id: uploaded.id,
+            });
+          }
         }
       }
     }
-
     // Save profile image if provided
-    if (uploadedImages.profileImage)
-      vendor.profileImages = uploadedImages.profileImage;
+    if (uploadedImages.profileImages) vendor.profileImages = uploadedImages.profileImages;
 
     //Payment info via Paystack
     const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
@@ -195,65 +205,71 @@ export const onboard = async (req, res) => {
       type: "nuban",
       business_name: vendor.businessName,
       account_number: accountNumber,
-      bank_code: bankCode,
+      settlement_bank: bankCode,
       currency: "NGN",
       percentage_charge: 8,
     };
 
-    const recipientResponse = await fetch("https://api.paystack.co/subaccount", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(recipientPayload),
-    });
-
+    const recipientResponse = await fetch(
+      "https://api.paystack.co/subaccount",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(recipientPayload),
+      }
+    );
+      
+    
+    
     const recipientData = await recipientResponse.json();
     if (!recipientResponse.ok || !recipientData.status) {
-      return res.status(500).json({ message: "Paystack error", error: recipientData.message });
+      return res
+        .status(500)
+        .json({ message: "Paystack error", error: recipientData.message });
     }
 
     // Update the vendor details
     vendor.businessDescription = businessDescription;
-    vendor.openTime = openTime;
-    vendor.closeTime = closeTime;
+    vendor.openingTime = openTime;
+    vendor.closingTime = closeTime;
     vendor.address = address;
-    vendor.city = city;
-    vendor.state = state;
-    vendor.country = country;
+    // vendor.profileImages = uploadedImages.profileImages || null,
+    vendor.branch = city;
+    // vendor.state = state;
+    // vendor.country = country;
     vendor.website = website;
     vendor.percentageCharge = 8;
     vendor.onboarded = true;
     vendor.paymentDetails = {
       bankCode,
       accountNumber,
-      paystackSubAccount: recipientData.data.subaccount_code,
+      subaccountCode: recipientData.data.subaccount_code,
     };
 
     if (cuisines?.length) vendor.cuisines = cuisines;
 
     // save to hotel model if businessType is hotel
 
-
-
     if (vendor.businessType === "hotel") {
-        const hotel = new Hotel({
-          vendorId,
-          profileImages: uploadedImages.profileImages || null,
-          businessDescription,
-          location: {
-            address,
-            city,
-            state,
-            country,
-          },
-          openTime,
-          closeTime,
-          website,
-          rooms: ParsedRooms,
-          stars,
-        });
+      const hotel = new Hotel({
+        vendorId,
+        profileImages: uploadedImages.profileImages || null,
+        businessDescription,
+        location: {
+          address,
+          city,
+          state,
+          country,
+        },
+        openTime,
+        closeTime,
+        website,
+        rooms: ParsedRooms,
+        stars,
+      });
       await hotel.save();
     }
 
@@ -289,6 +305,9 @@ export const onboard = async (req, res) => {
     });
   } catch (error) {
     console.error("Onboarding Error:", error);
-    return res.status(500).json({ message: "Error onboarding vendor. Can only onboard vendor once.", error });
+    return res.status(500).json({
+      message: "Error onboarding vendor. Can only onboard vendor once.",
+      error,
+    });
   }
 };
