@@ -40,9 +40,10 @@ export default function configurePassport(passport) {
             return done(null, false, { message: "Vendor not found." });
           }
           const isMatch = await vendor.comparePassword(password);
+          console.log(isMatch)
 
           if (!isMatch)
-            return done(null, false, { message: "Invalid credentials." });
+            return done(null, false, { message: "Invalid credentialsy." });
 
           return done(null, vendor);
         } catch (err) {

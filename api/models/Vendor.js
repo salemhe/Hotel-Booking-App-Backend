@@ -56,6 +56,7 @@ const VendorSchema = new Schema(
       accountNumber: { type: String },
       subaccountCode: { type: String },
     },
+    cuisines: [{ type: String }],
     availableSlots: [{ type: String }],
     percentageCharge: { type: Number, default: 0 },
     balance: { type: Number, default: 0 },
@@ -75,13 +76,13 @@ const VendorSchema = new Schema(
 );
 
 VendorSchema.methods.comparePassword = async function (enteredPassword) {
-  return bcrypt.compare(enteredPassword, this.password);
+  return await bcrypt.compare(enteredPassword, this.password);
 };
 VendorSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
   const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
+  this.password = bcrypt.hash(this.password, salt);
   next();
 });
 
