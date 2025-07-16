@@ -103,7 +103,6 @@ export const onboard = async (req, res) => {
     // } = req.body;
 
     const {
-      profileImages,
       businessDescription,
       address,
       city,
@@ -116,6 +115,7 @@ export const onboard = async (req, res) => {
       website,
       stars,
       cuisines,
+      availableSlots,
       rooms,
       menus,
     } = req.body;
@@ -140,6 +140,8 @@ export const onboard = async (req, res) => {
 
     let ParsedRooms = [];
     let ParsedMenus = [];
+    let ParsedCuisines = [];
+    let ParsedAvailablSlots = [];
 
     if (typeof rooms === "string") {
       try {
@@ -151,6 +153,30 @@ export const onboard = async (req, res) => {
       }
     } else if (Array.isArray(rooms)) {
       ParsedRooms = rooms;
+    }
+
+    if (typeof cuisines === "string") {
+      try {
+        ParsedCuisines = JSON.parse(cuisines);
+      } catch (err) {
+        return res
+          .status(400)
+          .json({ message: "Invalid JSON in 'cuisines' field" });
+      }
+    } else if (Array.isArray(cuisines)) {
+      ParsedCuisines = cuisines;
+    }
+
+    if (typeof availableSlots === "string") {
+      try {
+        ParsedAvailablSlots = JSON.parse(availableSlots);
+      } catch (err) {
+        return res
+          .status(400)
+          .json({ message: "Invalid JSON in 'availableSlots' field" });
+      }
+    } else if (Array.isArray(availableSlots)) {
+      ParsedAvailablSlots = availableSlots;
     }
 
     if (typeof menus === "string") {
@@ -249,7 +275,8 @@ export const onboard = async (req, res) => {
       subaccountCode: recipientData.data.subaccount_code,
     };
 
-    if (cuisines?.length) vendor.cuisines = cuisines;
+    if (ParsedCuisines?.length) vendor.cuisines = ParsedCuisines;
+    if (ParsedAvailablSlots?.length) vendor.availableSlots = ParsedAvailablSlots;
 
     // save to hotel model if businessType is hotel
 
