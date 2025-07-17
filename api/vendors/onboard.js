@@ -283,7 +283,7 @@ export const onboard = async (req, res) => {
     if (vendor.businessType === "hotel") {
       const hotel = new Hotel({
         vendorId,
-        profileImages: uploadedImages.profileImages || null,
+        profileImages: uploadedImages.profileImages.map(image => (image.url)) || null,
         businessDescription,
         location: {
           address,
@@ -303,7 +303,7 @@ export const onboard = async (req, res) => {
     if (vendor.businessType === "restaurant") {
       const restaurant = new Restaurant({
         vendorId,
-        profileImages: uploadedImages.profileImages || null,
+        profileImages: uploadedImages.profileImages.map(image => (image.url))  || null,
         businessDescription,
         location: {
           address,

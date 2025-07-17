@@ -9,8 +9,8 @@ const RoomSchema = new Schema({
   roomType: {
     type: String,
     required: [true, 'Room type is required'],
-    enum: ['single', 'double', 'twin', 'deluxe', 'suite', 'presidential'],
-    default: 'single'
+    enum: ['Single', 'Double', 'Twin', 'Deluxe', 'Suite', 'Presidential'],
+    default: 'Single'
   },
   price: {
     type: Number,
@@ -46,7 +46,7 @@ const RoomSchema = new Schema({
   },
   maintenanceStatus: {
     type: String,
-    enum: ['available', 'occupied', 'maintenance', 'cleaning'],
+    enum: ['available', 'occupied', 'maintenance', 'cleaning', 'Good'],
     default: 'available'
   }
 }, { timestamps: true });
