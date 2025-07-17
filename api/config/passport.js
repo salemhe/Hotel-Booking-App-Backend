@@ -43,7 +43,7 @@ export default function configurePassport(passport) {
           console.log(isMatch)
 
           if (!isMatch)
-            return done(null, false, { message: "Invalid credentialsy." });
+            return done(null, false, { message: "Invalid credentials." });
 
           return done(null, vendor);
         } catch (err) {
