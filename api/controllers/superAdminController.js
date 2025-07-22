@@ -6,6 +6,48 @@ import {
   getChainModel,
   getLocationModel
 } from "../../utils/modelAdapter.js";
+import User from "../models/User.js";
+import Restaurant from "../models/Restaurant.js";
+import bcrypt from "bcryptjs";
+
+// Create a new branch (restaurant)
+export const createBranch = async (req, res) => {
+  try {
+    const { email, password, businessType, ...rest } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: "Email and password are required" });
+    }
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ success: false, message: "Email already in use" });
+    }
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+    // Create user with businessType 'restaurant'
+    const user = await User.create({
+      email,
+      password: hashedPassword,
+      businessType: businessType || "restaurant",
+      ...rest
+    });
+    // Optionally, create a Restaurant document linked to this user
+    // await Restaurant.create({ vendorId: user._id, ...rest });
+    return res.status(201).json({ success: true, message: "Branch created successfully", user });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Error creating branch", error: error.message });
+  }
+};
+
+// Get all branches (users with businessType 'restaurant')
+export const getBranches = async (req, res) => {
+  try {
+    const branches = await User.find({ businessType: "restaurant" }).select("-password");
+    return res.status(200).json({ success: true, data: branches });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Error fetching branches", error: error.message });
+  }
+};
 
 // Get all locations/chains for super admin dashboard
 export const getAllLocations = async (req, res) => {

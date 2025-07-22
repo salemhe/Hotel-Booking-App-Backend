@@ -4,7 +4,9 @@ import {
   getAllChains,
   getVendorAnalytics,
   getVendorDetails,
-  getRevenueAnalytics
+  getRevenueAnalytics,
+  createBranch,
+  getBranches
 } from "../controllers/superAdminController.js";
 import { authenticateSuperAdmin } from "../middlewares/authMiddleware.js";
 
@@ -16,5 +18,9 @@ router.get("/chains", authenticateSuperAdmin, getAllChains);
 router.get("/analytics/vendors", authenticateSuperAdmin, getVendorAnalytics);
 router.get("/analytics/vendor/:vendorId", authenticateSuperAdmin, getVendorDetails);
 router.get("/analytics/revenue", authenticateSuperAdmin, getRevenueAnalytics);
+
+// Branch management
+router.post("/branches", authenticateSuperAdmin, createBranch);
+router.get("/branches", authenticateSuperAdmin, getBranches);
 
 export default router;
