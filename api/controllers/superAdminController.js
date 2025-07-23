@@ -42,10 +42,63 @@ export const createBranch = async (req, res) => {
 // Get all branches (users with businessType 'restaurant')
 export const getBranches = async (req, res) => {
   try {
-    const branches = await User.find({ businessType: "restaurant" }).select("-password");
-    return res.status(200).json({ success: true, data: branches });
+    const { page = 1, limit = 10 } = req.query;
+    const query = { businessType: "restaurant" };
+    const branches = await User.find(query)
+      .select("-password")
+      .skip((page - 1) * limit)
+      .limit(Number(limit));
+    const total = await User.countDocuments(query);
+    return res.status(200).json({ success: true, data: branches, total, page: Number(page), limit: Number(limit) });
   } catch (error) {
     return res.status(500).json({ success: false, message: "Error fetching branches", error: error.message });
+  }
+};
+
+// Get a single branch by ID
+export const getBranchById = async (req, res) => {
+  try {
+    const branch = await User.findOne({ _id: req.params.id, businessType: "restaurant" }).select("-password");
+    if (!branch) {
+      return res.status(404).json({ success: false, message: "Branch not found" });
+    }
+    return res.status(200).json({ success: true, data: branch });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Error fetching branch", error: error.message });
+  }
+};
+
+// Update a branch by ID
+export const updateBranch = async (req, res) => {
+  try {
+    const { password, ...updateData } = req.body;
+    if (password) {
+      updateData.password = await bcrypt.hash(password, 10);
+    }
+    const branch = await User.findOneAndUpdate(
+      { _id: req.params.id, businessType: "restaurant" },
+      updateData,
+      { new: true }
+    ).select("-password");
+    if (!branch) {
+      return res.status(404).json({ success: false, message: "Branch not found" });
+    }
+    return res.status(200).json({ success: true, message: "Branch updated successfully", data: branch });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Error updating branch", error: error.message });
+  }
+};
+
+// Delete a branch by ID
+export const deleteBranch = async (req, res) => {
+  try {
+    const branch = await User.findOneAndDelete({ _id: req.params.id, businessType: "restaurant" });
+    if (!branch) {
+      return res.status(404).json({ success: false, message: "Branch not found" });
+    }
+    return res.status(200).json({ success: true, message: "Branch deleted successfully" });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Error deleting branch", error: error.message });
   }
 };
 

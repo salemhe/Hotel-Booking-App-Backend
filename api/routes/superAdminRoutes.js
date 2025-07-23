@@ -8,6 +8,11 @@ import {
   createBranch,
   getBranches
 } from "../controllers/superAdminController.js";
+import {
+  getBranchReservations,
+  getBranchProfits,
+  getBranchDashboard
+} from "../controllers/branchDataController.js";
 import { authenticateSuperAdmin } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
@@ -22,5 +27,11 @@ router.get("/analytics/revenue", authenticateSuperAdmin, getRevenueAnalytics);
 // Branch management
 router.post("/branches", authenticateSuperAdmin, createBranch);
 router.get("/branches", authenticateSuperAdmin, getBranches);
+router.get("/branches/:id", authenticateSuperAdmin, getBranchById);
+router.put("/branches/:id", authenticateSuperAdmin, updateBranch);
+router.delete("/branches/:id", authenticateSuperAdmin, deleteBranch);
+router.get("/branches/:id/reservations", authenticateSuperAdmin, getBranchReservations);
+router.get("/branches/:id/profits", authenticateSuperAdmin, getBranchProfits);
+router.get("/branches/:id/dashboard", authenticateSuperAdmin, getBranchDashboard);
 
 export default router;
