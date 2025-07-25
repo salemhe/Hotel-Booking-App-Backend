@@ -40,7 +40,7 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 
-// Middleware
+// CORS must be the very first middleware
 const allowedOrigins = [
   'http://localhost:3000',
   'https://hotel-booking-application-omega.vercel.app'
@@ -57,9 +57,11 @@ app.use(cors({
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 }));
+
+// Parse cookies and JSON before any routes
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 
 // Static file serving
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
