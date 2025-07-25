@@ -6,12 +6,14 @@ export const setVendorToken = (req, res) => {
   if (!token) {
     return res.status(400).json({ message: "Token is required" });
   }
+  // Always set Path=/, HttpOnly, SameSite=Lax, and Secure if HTTPS
   res.cookie("vendor-token", token, {
     httpOnly: true,
     path: "/",
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    // domain: can be set if you want to restrict to a specific domain
   });
   return res.json({ message: "vendor-token cookie set" });
 };
