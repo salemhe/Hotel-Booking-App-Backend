@@ -6,7 +6,6 @@ export const setVendorToken = (req, res) => {
   if (!token) {
     return res.status(400).json({ message: "Token is required" });
   }
-  // Set cookie (httpOnly for security, adjust options as needed)
   res.cookie("vendor-token", token, {
     httpOnly: true,
     path: "/",

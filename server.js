@@ -42,8 +42,9 @@ const io = new Server(server, { cors: { origin: "*" } });
 
 // Middleware
 app.use(cors({
-  origin: 'https://hotel-booking-application-omega.vercel.app',
-  credentials: true
+  origin: 'http://localhost:3000', // Change to your frontend domain in production
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
