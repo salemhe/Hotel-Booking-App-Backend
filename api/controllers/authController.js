@@ -9,8 +9,9 @@ export const setVendorToken = (req, res) => {
   // Set cookie (httpOnly for security, adjust options as needed)
   res.cookie("vendor-token", token, {
     httpOnly: true,
+    path: "/",
+    sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
   return res.json({ message: "vendor-token cookie set" });
@@ -18,9 +19,6 @@ export const setVendorToken = (req, res) => {
 
 // Get vendor-token cookie
 export const getVendorToken = (req, res) => {
-  const token = req.cookies["vendor-token"];
-  if (!token) {
-    return res.status(404).json({ message: "vendor-token cookie not found" });
-  }
+  const token = req.cookies["vendor-token"] || null;
   return res.json({ token });
 };

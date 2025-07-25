@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import passport from "passport";
 import session from "express-session";
+import cookieParser from "cookie-parser";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import configurePassport from "./api/config/passport.js"; 
@@ -43,6 +44,7 @@ const io = new Server(server, { cors: { origin: "*" } });
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Static file serving
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
