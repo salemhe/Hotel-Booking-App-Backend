@@ -26,6 +26,7 @@ import vendorRoutes from "./api/routes/vendorRoutes.js";
 import sessionRoutes from "./api/routes/sessionRoutes.js";
 import adminRoutes from "./api/routes/adminRoutes.js";
 import restaurantRoutes from "./api/routes/restaurantRoutes.js";
+import authRoutes from "./api/routes/authRoutes.js";
 // Import new routes
 import superAdminRoutes from "./api/routes/superAdminRoutes.js";
 import hotelRoutes from "./api/routes/hotelRoutes.js";
@@ -66,6 +67,7 @@ app.use("/api/vendors", vendorRoutes);
 app.use("/api/sessions", sessionRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/restaurant", restaurantRoutes); // ✅ restaurant route registered once
+app.use("/api/auth", authRoutes);
 
 // New routes
 app.use("/api/super-admin", superAdminRoutes);
