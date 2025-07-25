@@ -41,8 +41,19 @@ const server = createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 
 // Middleware
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://hotel-booking-application-omega.vercel.app'
+];
+
 app.use(cors({
-  origin: 'http://localhost:3000', // Change to your frontend domain in production
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 }));
