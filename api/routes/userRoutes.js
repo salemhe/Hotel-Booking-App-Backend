@@ -40,6 +40,8 @@ router.post(
   ],
   loginUser
 );
+import { getCurrentUserProfile } from "../users/profile.js";
+router.get("/profile", authorize, getCurrentUserProfile);
 router.get("/profile/:id", authorize, getUserProfile);
 
 router.post("/verify-otp", verifyUserOTP);
