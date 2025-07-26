@@ -250,4 +250,8 @@ router.get('/branches/:id/reservations', authenticateVendor, async (req, res) =>
   }
 });
 
+// Vendor Dashboard (protected by vendor-token cookie)
+import { vendorDashboard } from "../controllers/authController.js";
+router.get("/vendorDashboard", vendorDashboard);
+
 export default router;

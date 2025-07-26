@@ -104,4 +104,8 @@ router.delete('/:id', authorize, async (req, res) => {
   }
 });
 
+// User Dashboard (protected by user-token cookie)
+import { userDashboard } from "../controllers/authController.js";
+router.get("/userDashboard", userDashboard);
+
 export default router;
