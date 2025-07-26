@@ -84,13 +84,15 @@ router.post('/create', async (req, res) => {
   }
 });
 
-// Get vendor by ID
+// Get vendor by ID (always include status field)
 router.get('/:id', authorize, async (req, res) => {
   try {
     const Vendor = (await import('../models/Vendor.js')).default;
     const vendor = await Vendor.findById(req.params.id);
     if (!vendor) return res.status(404).json({ message: 'Vendor not found' });
-    res.json(vendor);
+    const vendorObj = vendor.toObject();
+    vendorObj.status = vendorObj.status || (vendorObj.isActive ? 'active' : 'inactive');
+    res.json(vendorObj);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -148,6 +150,103 @@ router.get('/:vendorId/available-rooms', async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({ message: 'Error fetching available rooms', error: error.message });
+  }
+});
+
+// Vendor-accessible: List all branches for the current vendor (restaurant users owned by vendor)
+router.get('/branches', authenticateVendor, async (req, res) => {
+  try {
+    const User = (await import('../models/User.js')).default;
+    // Assuming vendor's branches are users with businessType: 'restaurant' and owner/vendorId = req.user._id
+    const branches = await User.find({ businessType: 'restaurant', owner: req.user._id }).select('-password');
+    const branchList = branches.map(branch => {
+      const obj = branch.toObject();
+      obj.status = obj.status || (obj.isActive ? 'active' : 'inactive');
+      obj.active = obj.isActive;
+      return obj;
+    });
+    return res.status(200).json(branchList);
+  } catch (error) {
+    return res.status(500).json({ message: 'Error fetching branches', error: error.message });
+  }
+});
+
+// Vendor-accessible: Get branch by ID (restaurant user) with analytics for hotel branches
+router.get('/branches/:id', authenticateVendor, async (req, res) => {
+  try {
+    const User = (await import('../models/User.js')).default;
+    const Reservation = (await import('../models/Reservation.js')).default;
+    const branch = await User.findOne({ _id: req.params.id, businessType: 'restaurant' }).select('-password');
+    if (!branch) {
+      return res.status(404).json({ message: 'Branch not found' });
+    }
+    // Ensure status and isActive are present in the response
+    const branchObj = branch.toObject();
+    branchObj.status = branchObj.status || (branchObj.isActive ? 'active' : 'inactive');
+    branchObj.active = branchObj.isActive;
+
+    // If this branch is a hotel, add analytics
+    let analytics = {};
+    if (branch.businessType === 'hotel') {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+      // Reservations for today
+      const reservationsToday = await Reservation.countDocuments({
+        hotel: branch._id,
+        checkInDate: { $gte: today, $lt: tomorrow }
+      });
+      // Repeat reservations (guests with more than one reservation at this hotel)
+      const repeatReservations = await Reservation.aggregate([
+        { $match: { hotel: branch._id } },
+        { $group: { _id: "$guest.user", count: { $sum: 1 } } },
+        { $match: { count: { $gt: 1 } } },
+        { $count: "repeatCount" }
+      ]);
+      // Confirmed guests today
+      const confirmedGuestsToday = await Reservation.aggregate([
+        { $match: { hotel: branch._id, status: "confirmed", checkInDate: { $gte: today, $lt: tomorrow } } },
+        { $group: { _id: null, total: { $sum: "$adults" } } }
+      ]);
+      // Total revenue
+      const totalRevenueAgg = await Reservation.aggregate([
+        { $match: { hotel: branch._id } },
+        { $group: { _id: null, total: { $sum: "$totalAmount" } } }
+      ]);
+      analytics = {
+        reservationsToday,
+        repeatReservations: repeatReservations[0]?.repeatCount || 0,
+        confirmedGuestsToday: confirmedGuestsToday[0]?.total || 0,
+        totalRevenue: totalRevenueAgg[0]?.total || 0,
+        menuCategoryData: [] // Not available for hotels
+      };
+    }
+    return res.status(200).json({ success: true, data: { ...branchObj, ...analytics } });
+  } catch (error) {
+    return res.status(500).json({ message: 'Error fetching branch', error: error.message });
+  }
+});
+
+// Vendor-accessible: Get all reservations for a branch (hotel)
+router.get('/branches/:id/reservations', authenticateVendor, async (req, res) => {
+  try {
+    const Reservation = (await import('../models/Reservation.js')).default;
+    // Find all reservations for this hotel branch
+    const reservations = await Reservation.find({ hotel: req.params.id });
+    // Format as required
+    const formatted = reservations.map(r => ({
+      id: r._id,
+      name: r.guest?.name,
+      email: r.guest?.email,
+      date: r.checkInDate,
+      time: r.checkInDate ? new Date(r.checkInDate).toLocaleTimeString() : undefined,
+      guests: r.adults,
+      status: r.status
+    }));
+    return res.status(200).json(formatted);
+  } catch (error) {
+    return res.status(500).json({ message: 'Error fetching reservations', error: error.message });
   }
 });
 

@@ -80,6 +80,18 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
+// Debug endpoint to check CORS config in production
+app.get('/cors-debug', (req, res) => {
+  res.json({
+    env: process.env.NODE_ENV,
+    allowedOrigins: [
+      'http://localhost:3000',
+      'https://hotel-booking-application-omega.vercel.app'
+    ],
+    originHeader: req.headers.origin
+  });
+});
+
 // Routes
 app.use("/api/users", userRoutes);
 app.use("/api/vendors", vendorRoutes);
