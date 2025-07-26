@@ -38,7 +38,8 @@ router.post('/login', [
 ], loginVendor);
 
 // Get all vendors (authorized route)
-router.get('/', getVendors);
+import { getAllVendors } from "../vendors/getvendors.js";
+router.get('/', getAllVendors);
 
 router.post('/verify-otp', verifyVendorOTP);
 
