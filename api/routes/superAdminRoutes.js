@@ -6,7 +6,10 @@ import {
   getVendorDetails,
   getRevenueAnalytics,
   createBranch,
-  getBranches
+  getBranches,
+  getBranchById,
+  updateBranch,
+  deleteBranch
 } from "../controllers/superAdminController.js";
 import {
   getBranchReservations,

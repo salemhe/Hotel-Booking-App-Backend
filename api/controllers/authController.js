@@ -11,7 +11,7 @@ export const setVendorToken = (req, res) => {
     httpOnly: true,
     path: "/",
     sameSite: "lax",
-    secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
+    secure: req.secure || req.headers['x-forwarded-proto'] === 'https' || process.env.NODE_ENV === "production",
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     // domain: can be set if you want to restrict to a specific domain
   });
