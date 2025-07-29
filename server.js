@@ -35,6 +35,7 @@ import hotelRoutes from "./api/routes/hotelRoutes.js";
 import reservationRoutes from "./api/routes/reservationRoutes.js";
 import locationRoutes from "./api/routes/locationRoutes.js";
 import chainRoutes from "./api/routes/chainRoutes.js";
+import dashboardRoutes from "./api/routes/dashboardRoutes.js";
 
 // Initialize app and server
 const app = express();
@@ -112,6 +113,7 @@ app.use("/api/hotels", hotelRoutes);
 app.use("/api/reservations", reservationRoutes);
 app.use("/api/locations", locationRoutes);
 app.use("/api/chains", chainRoutes);
+app.use("/api", dashboardRoutes);
 
 // Socket.IO
 io.on("connection", (socket) => {

@@ -42,14 +42,24 @@ export const createBranch = async (req, res) => {
 // Get all branches (users with businessType 'restaurant')
 export const getBranches = async (req, res) => {
   try {
-    const { page = 1, limit = 10 } = req.query;
+    const { page = 1, limit = 10, vendorId } = req.query;
     const query = { businessType: "restaurant" };
+    if (vendorId) {
+      query.vendor = vendorId;
+    }
     const branches = await User.find(query)
       .select("-password")
       .skip((page - 1) * limit)
       .limit(Number(limit));
     const total = await User.countDocuments(query);
-    return res.status(200).json({ success: true, data: branches, total, page: Number(page), limit: Number(limit) });
+    // Format response to match example
+    const formatted = branches.map(b => ({
+      id: b._id,
+      name: b.name || b.email || "-",
+      location: b.location || "-",
+      status: b.status || "Active"
+    }));
+    return res.status(200).json({ success: true, data: formatted, total, page: Number(page), limit: Number(limit) });
   } catch (error) {
     return res.status(500).json({ success: false, message: "Error fetching branches", error: error.message });
   }
