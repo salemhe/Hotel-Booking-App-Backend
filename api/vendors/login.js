@@ -3,36 +3,63 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 
-export const loginVendor = (req, res, next) => {
-  passport.authenticate("vendor-login",{ session: false },
-    (err, vendor, info) => {
-      if (err || !vendor) {
-        return res
-          .status(400)
-          .json({ message: info ? info.message : "Login failed." });
-      }
+import Vendor from "../models/Vendor.js";
+import User from "../models/User.js";
+import bcrypt from "bcryptjs";
 
-  
-      const token = jwt.sign({ id: vendor.id }, process.env.JWT_SECRET, {
-        expiresIn: "1h",
-      });
-      const vendorProfile = {
-        id: vendor.id,
-        businessName: vendor.businessName,
-        businessType: vendor.businessType,
-        email: vendor.email,
-        address: vendor.address,
-        branch: vendor.branch,
-        profileImage: vendor.profileImage,
-        role: vendor.role,
-        services: vendor.services,
-        paymentDetails: vendor.paymentDetails,
-        token: token,
-        onboarded: vendor.onboarded,
-      }
-      res.status(200).json({ message: "Login successful.", profile: vendorProfile,  });
+export const loginVendor = async (req, res, next) => {
+  const { email, password } = req.body;
+  // Try vendor login first
+  let vendor = await Vendor.findOne({ email });
+  if (vendor) {
+    const isMatch = await bcrypt.compare(password, vendor.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid email or password." });
     }
-  )(req, res, next);
+    const token = jwt.sign({ id: vendor.id, type: "vendor" }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+    const vendorProfile = {
+      id: vendor.id,
+      businessName: vendor.businessName,
+      businessType: vendor.businessType,
+      email: vendor.email,
+      address: vendor.address,
+      branch: vendor.branch,
+      profileImage: vendor.profileImage,
+      role: vendor.role,
+      services: vendor.services,
+      paymentDetails: vendor.paymentDetails,
+      token: token,
+      onboarded: vendor.onboarded,
+      type: "vendor"
+    };
+    return res.status(200).json({ message: "Login successful.", profile: vendorProfile });
+  }
+  // Try branch login (User with businessType: "restaurant" or "hotel")
+  let branch = await User.findOne({ email, businessType: { $in: ["restaurant", "hotel"] } });
+  if (branch) {
+    const isMatch = await bcrypt.compare(password, branch.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid email or password." });
+    }
+    const token = jwt.sign({ id: branch.id, type: "branch" }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+    const branchProfile = {
+      id: branch.id,
+      email: branch.email,
+      businessType: branch.businessType,
+      firstName: branch.firstName,
+      lastName: branch.lastName,
+      phone: branch.phone,
+      token: token,
+      type: "branch"
+    };
+    return res.status(200).json({ message: "Login successful.", profile: branchProfile });
+  }
+  // If neither found
+  return res.status(400).json({ message: "Invalid email or password." });
 };
 
 
