@@ -30,7 +30,9 @@ export const authenticateUser = async (req, res, next) => {
     try {
       token = req.headers.authorization.split(" ")[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      console.log("Decoded token:", decoded); // Log decoded token
       req.user = await User.findById(decoded.id).select("_id role"); // Add role to selection
+      console.log("User found in DB:", req.user); // Log user found
       if (!req.user) {
         return res.status(401).json({ message: "Unauthorized: User not found" });
       }
@@ -108,7 +110,7 @@ export const authenticateSuperAdmin = async (req, res, next) => {
     await authenticateUser(req, res, async () => {
       // Then check if they have super-admin role
       const user = await User.findById(req.user._id).select("role");
-      
+      console.log("Super-admin check, user from DB:", user); // Log user for super-admin check
       if (!user || user.role !== 'super-admin') {
         return res.status(403).json({ 
           message: "Forbidden: Super Admin access required" 
