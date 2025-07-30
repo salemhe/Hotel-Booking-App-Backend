@@ -44,22 +44,24 @@ const io = new Server(server, { cors: { origin: "*" } });
 
 // CORS must be the very first middleware
 const allowedOrigins = [
-  'http://localhost:3000',
-  'https://hotel-booking-application-omega.vercel.app'
+  "https://hotel-booking-application-omega.vercel.app",
+  // add other allowed origins if needed
 ];
 
-app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Authorization', 'Content-Type', 'X-Requested-With', 'Accept'],
-}));
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization", "x-api-secret"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  })
+);
 
 // Parse cookies and JSON before any routes
 app.use(cookieParser());
