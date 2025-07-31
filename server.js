@@ -71,19 +71,19 @@ app.use(express.urlencoded({ extended: true }));
 // Static file serving
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Session
-app.use(
-  session({
-    secret: process.env.JWT_SECRET || "your-session-secret",
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
-      mongoUrl: process.env.MONGO_URI,
-      collectionName: "sessions",
-      ttl: 14 * 24 * 60 * 60 // 14 days
-    })
-  })
-);
+// Session configuration with memory store (no MongoDB dependency)
+const sessionConfig = {
+  secret: process.env.JWT_SECRET || "your-session-secret",
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: false, // Set to true if using HTTPS
+    maxAge: 14 * 24 * 60 * 60 * 1000 // 14 days in milliseconds
+  }
+};
+
+console.log("Using memory-based session store for development");
+app.use(session(sessionConfig));
 
 // Passport
 app.use(passport.initialize());
@@ -126,25 +126,43 @@ io.on("connection", (socket) => {
   });
 });
 
-// MongoDB
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("MongoDB connected");
-    const collections = ["bookings", "menus", "users", "vendors", "hotels", "reservations", "locations", "chains"];
-    collections.forEach((collection) => {
-      mongoose.connection.db
-        .collection(collection)
-        .watch()
-        .on("change", (change) => {
-          io.emit(`${collection}Update`, {
-            type: change.operationType,
-            data: change.fullDocument,
+// MongoDB connection - disabled for development without database
+// To enable MongoDB, ensure MongoDB is running and set MONGO_URI environment variable
+console.log("MongoDB connection disabled for development");
+console.log("To enable database features:");
+console.log("1. Install and start MongoDB locally");
+console.log("2. Or set MONGO_URI to a cloud MongoDB connection string");
+console.log("3. Uncomment the MongoDB connection code in server.js");
+
+// Uncomment below when MongoDB is available:
+/*
+if (process.env.MONGO_URI) {
+  mongoose
+    .connect(process.env.MONGO_URI)
+    .then(() => {
+      console.log("MongoDB connected successfully");
+      const collections = ["bookings", "menus", "users", "vendors", "hotels", "reservations", "locations", "chains"];
+      collections.forEach((collection) => {
+        mongoose.connection.db
+          .collection(collection)
+          .watch()
+          .on("change", (change) => {
+            io.emit(`${collection}Update`, {
+              type: change.operationType,
+              data: change.fullDocument,
+            });
           });
-        });
+      });
+    })
+    .catch((err) => {
+      console.error("MongoDB connection error:", err.message);
+      console.warn("Application will continue without MongoDB. Some features may not work properly.");
     });
-  })
-  .catch((err) => console.error("MongoDB connection error:", err));
+} else {
+  console.warn("MONGO_URI not configured. Application will run without database connection.");
+  console.warn("Please set MONGO_URI environment variable to enable database features.");
+}
+*/
 
 // Start server
 const PORT = process.env.PORT || 5000;
