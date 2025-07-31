@@ -141,25 +141,33 @@ io.on("connection", (socket) => {
   });
 });
 
-// MongoDB
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("MongoDB connected");
-    const collections = ["bookings", "menus", "users", "vendors", "hotels", "reservations", "locations", "chains"];
-    collections.forEach((collection) => {
-      mongoose.connection.db
-        .collection(collection)
-        .watch()
-        .on("change", (change) => {
-          io.emit(`${collection}Update`, {
-            type: change.operationType,
-            data: change.fullDocument,
+// MongoDB connection with better error handling
+if (process.env.MONGO_URI) {
+  mongoose
+    .connect(process.env.MONGO_URI)
+    .then(() => {
+      console.log("MongoDB connected successfully");
+      const collections = ["bookings", "menus", "users", "vendors", "hotels", "reservations", "locations", "chains"];
+      collections.forEach((collection) => {
+        mongoose.connection.db
+          .collection(collection)
+          .watch()
+          .on("change", (change) => {
+            io.emit(`${collection}Update`, {
+              type: change.operationType,
+              data: change.fullDocument,
+            });
           });
-        });
+      });
+    })
+    .catch((err) => {
+      console.error("MongoDB connection error:", err.message);
+      console.warn("Application will continue without MongoDB. Some features may not work properly.");
     });
-  })
-  .catch((err) => console.error("MongoDB connection error:", err));
+} else {
+  console.warn("MONGO_URI not configured. Application will run without database connection.");
+  console.warn("Please set MONGO_URI environment variable to enable database features.");
+}
 
 // Start server
 const PORT = process.env.PORT || 5000;
