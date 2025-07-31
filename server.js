@@ -71,19 +71,34 @@ app.use(express.urlencoded({ extended: true }));
 // Static file serving
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Session
-app.use(
-  session({
-    secret: process.env.JWT_SECRET || "your-session-secret",
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
+// Session configuration with fallback
+const sessionConfig = {
+  secret: process.env.JWT_SECRET || "your-session-secret",
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: false, // Set to true if using HTTPS
+    maxAge: 14 * 24 * 60 * 60 * 1000 // 14 days in milliseconds
+  }
+};
+
+// Add MongoStore only if MONGO_URI is available
+if (process.env.MONGO_URI) {
+  try {
+    sessionConfig.store = MongoStore.create({
       mongoUrl: process.env.MONGO_URI,
       collectionName: "sessions",
       ttl: 14 * 24 * 60 * 60 // 14 days
-    })
-  })
-);
+    });
+    console.log("Using MongoDB session store");
+  } catch (error) {
+    console.warn("MongoDB session store failed, using memory store:", error.message);
+  }
+} else {
+  console.warn("MONGO_URI not found, using memory-based session store (not recommended for production)");
+}
+
+app.use(session(sessionConfig));
 
 // Passport
 app.use(passport.initialize());
