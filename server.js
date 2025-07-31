@@ -71,7 +71,7 @@ app.use(express.urlencoded({ extended: true }));
 // Static file serving
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Session configuration with fallback
+// Session configuration with memory store (no MongoDB dependency)
 const sessionConfig = {
   secret: process.env.JWT_SECRET || "your-session-secret",
   resave: false,
@@ -82,22 +82,7 @@ const sessionConfig = {
   }
 };
 
-// Add MongoStore only if MONGO_URI is available
-if (process.env.MONGO_URI) {
-  try {
-    sessionConfig.store = MongoStore.create({
-      mongoUrl: process.env.MONGO_URI,
-      collectionName: "sessions",
-      ttl: 14 * 24 * 60 * 60 // 14 days
-    });
-    console.log("Using MongoDB session store");
-  } catch (error) {
-    console.warn("MongoDB session store failed, using memory store:", error.message);
-  }
-} else {
-  console.warn("MONGO_URI not found, using memory-based session store (not recommended for production)");
-}
-
+console.log("Using memory-based session store for development");
 app.use(session(sessionConfig));
 
 // Passport
