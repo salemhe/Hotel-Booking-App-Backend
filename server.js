@@ -133,24 +133,32 @@ io.on("connection", (socket) => {
 
 // MongoDB
 console.log("MONGO_URI:", process.env.MONGO_URI);
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("MongoDB connected");
-    const collections = ["bookings", "menus", "users", "vendors", "hotels", "reservations", "locations", "chains"];
-    collections.forEach((collection) => {
-      mongoose.connection.db
-        .collection(collection)
-        .watch()
-        .on("change", (change) => {
-          io.emit(`${collection}Update`, {
-            type: change.operationType,
-            data: change.fullDocument,
+if (process.env.MONGO_URI) {
+  mongoose
+    .connect(process.env.MONGO_URI)
+    .then(() => {
+      console.log("MongoDB connected");
+      const collections = ["bookings", "menus", "users", "vendors", "hotels", "reservations", "locations", "chains"];
+      collections.forEach((collection) => {
+        mongoose.connection.db
+          .collection(collection)
+          .watch()
+          .on("change", (change) => {
+            io.emit(`${collection}Update`, {
+              type: change.operationType,
+              data: change.fullDocument,
+            });
           });
-        });
-    });
-  })
-  .catch((err) => console.error("MongoDB connection error:", err));
+      });
+    })
+    .catch((err) => console.error("MongoDB connection error:", err));
+} else {
+  console.log("MongoDB connection disabled for development");
+  console.log("To enable database features:");
+  console.log("1. Install and start MongoDB locally");
+  console.log("2. Or set MONGO_URI to a cloud MongoDB connection string");
+  console.log("3. Uncomment the MongoDB connection code in server.js");
+}
 
 // Start server
 const PORT = process.env.PORT || 5000;
