@@ -47,6 +47,7 @@ const io = new Server(server, { cors: { origin: "*" } });
 // CORS must be the very first middleware
 const allowedOrigins = [
   "https://hotel-booking-application-omega.vercel.app",
+  "http://localhost:3000",
   // add other allowed origins if needed
 ];
 
