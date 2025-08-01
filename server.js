@@ -92,7 +92,6 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-
 // Debug endpoint to check CORS config in production
 app.get('/cors-debug', (req, res) => {
   res.json({
@@ -112,7 +111,6 @@ app.use("/api/sessions", sessionRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/restaurant", restaurantRoutes); // ✅ restaurant route registered once
 app.use("/api/auth", authRoutes);
-
 // New routes
 app.use("/api/super-admin", superAdminRoutes);
 app.use("/api/hotels", hotelRoutes);
