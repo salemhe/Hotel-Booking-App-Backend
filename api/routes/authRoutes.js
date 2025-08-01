@@ -12,7 +12,7 @@ router.post("/set-user-token", setUserToken);
 // Get user-token cookie
 router.get("/get-user-token", getUserToken);
 
-// Clear user-token cookie
+// Clear user-token cookie 
 router.get("/clear-token", clearToken);
 
 // Get vendor-token cookie
