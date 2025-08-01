@@ -1,7 +1,10 @@
 import express from "express";
-import { setVendorToken, getVendorToken, setUserToken, getUserToken, clearToken } from "../controllers/authController.js";
+import { setVendorToken, getVendorToken, setUserToken, getUserToken, clearToken, loginUser } from "../controllers/authController.js";
 
 const router = express.Router();
+
+// User login
+router.post("/login", loginUser);
 
 // Set vendor-token cookie
 router.post("/set-vendor-token", setVendorToken);
