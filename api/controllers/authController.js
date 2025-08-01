@@ -1,4 +1,5 @@
 // Controller for vendor-token cookie endpoints
+export { loginUser } from "../users/login.js";
 
 // Set vendor-token cookie
 export const setVendorToken = (req, res) => {
