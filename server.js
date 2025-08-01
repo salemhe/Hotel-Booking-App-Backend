@@ -36,6 +36,8 @@ import reservationRoutes from "./api/routes/reservationRoutes.js";
 import locationRoutes from "./api/routes/locationRoutes.js";
 import chainRoutes from "./api/routes/chainRoutes.js";
 import dashboardRoutes from "./api/routes/dashboardRoutes.js";
+import hotelVendorRoutes from "./api/routes/hotelVendorRoutes.js";
+import hotelBranchesRoutes from "./api/routes/hotelBranchesRoutes.js";
 
 // Initialize app and server
 const app = express();
@@ -117,6 +119,8 @@ app.use("/api/reservations", reservationRoutes);
 app.use("/api/locations", locationRoutes);
 app.use("/api/chains", chainRoutes);
 app.use("/api", dashboardRoutes);
+app.use("/api/vendor", hotelVendorRoutes);
+app.use("/api/hotel-branches", hotelBranchesRoutes);
 
 // Socket.IO
 io.on("connection", (socket) => {
