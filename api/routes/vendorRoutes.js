@@ -19,6 +19,7 @@ import { getBalance } from "../payments/getBalance.js";
 import { deleteMenu } from "../menus/deleteMenu.js";
 import { editMenu } from "../menus/editMenu.js";
 import { onboard } from "../vendors/onboard.js";
+import { verifyBankAccount } from "../controllers/hotelVendorController.js";
 
 const router = express.Router();
 const validation = [
@@ -71,6 +72,9 @@ router.post('/onboard/:id', upload.fields([
     { name: "dishImage" },
     { name: "itemImage"}
   ]), authenticateVendor, onboard);
+
+// Bank account verification endpoint
+router.post('/accounts/verify', verifyBankAccount);
 
 // ======= Added basic CRUD routes for Vendor =======
 
