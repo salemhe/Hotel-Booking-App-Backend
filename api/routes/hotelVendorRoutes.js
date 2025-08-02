@@ -1,5 +1,7 @@
 import express from "express";
 import * as hotelVendorController from "../controllers/hotelVendorController.js";
+import upload from "../middlewares/uploadMiddleware.js";
+import path from "path";
 const router = express.Router();
 
 // Dashboard
@@ -33,5 +35,8 @@ router.get("/hotel-rooms", hotelVendorController.getHotelRooms);
 router.post("/hotel-rooms", hotelVendorController.createHotelRoom);
 router.put("/hotel-rooms/:id", hotelVendorController.updateHotelRoom);
 router.delete("/hotel-rooms/:id", hotelVendorController.deleteHotelRoom);
+
+// Upload multiple images for a room
+router.post("/hotel-rooms/images", upload.array("images", 10), hotelVendorController.uploadRoomImages);
 
 export default router;
