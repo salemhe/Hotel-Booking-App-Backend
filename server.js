@@ -48,6 +48,7 @@ const io = new Server(server, { cors: { origin: "*" } });
 const allowedOrigins = [
   "https://hotel-booking-application-omega.vercel.app",
   "http://localhost:3000",
+  "https://hotel-booking-app-backend-30q1.onrender.com",
   // add other allowed origins if needed
 ];
 
