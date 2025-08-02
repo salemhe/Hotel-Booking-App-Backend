@@ -4,6 +4,31 @@ import path from "path";
 import fetch from "node-fetch";
 import { PAYSTACK_SECRET_KEY, PAYSTACK_BASE_URL } from "../config/paystackConfig.js";
 
+// Dashboard
+export const getHotelDashboardOverview = async (req, res) => res.json({ message: "Dashboard overview (placeholder)" });
+export const getHotelBookingsRecent = async (req, res) => res.json({ message: "Recent bookings (placeholder)" });
+export const getHotelPaymentsRecent = async (req, res) => res.json({ message: "Recent payments (placeholder)" });
+export const getHotelBranches = async (req, res) => res.json({ message: "Hotel branches (placeholder)" });
+export const getHotelStaffList = async (req, res) => res.json({ message: "Hotel staff list (placeholder)" });
+
+// Payments
+export const getHotelAccounts = async (req, res) => res.json({ message: "Hotel accounts (placeholder)" });
+export const verifyHotelAccount = async (req, res) => res.json({ message: "Verify hotel account (placeholder)" });
+export const createHotelAccount = async (req, res) => res.json({ message: "Create hotel account (placeholder)" });
+export const updateHotelAccount = async (req, res) => res.json({ message: "Update hotel account (placeholder)" });
+export const getHotelPaymentsStats = async (req, res) => res.json({ message: "Hotel payments stats (placeholder)" });
+export const getHotelPaymentsTransactions = async (req, res) => res.json({ message: "Hotel payments transactions (placeholder)" });
+
+// Staff
+export const createHotelStaff = async (req, res) => res.json({ message: "Create hotel staff (placeholder)" });
+export const updateHotelStaff = async (req, res) => res.json({ message: "Update hotel staff (placeholder)" });
+export const deleteHotelStaff = async (req, res) => res.json({ message: "Delete hotel staff (placeholder)" });
+
+// Settings
+export const getHotelProfile = async (req, res) => res.json({ message: "Get hotel profile (placeholder)" });
+export const updateHotelProfile = async (req, res) => res.json({ message: "Update hotel profile (placeholder)" });
+export const updateHotelProfilePassword = async (req, res) => res.json({ message: "Update hotel profile password (placeholder)" });
+
 // GET /api/vendor/hotel-rooms
 export const getHotelRooms = async (req, res) => {
   try {
