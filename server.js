@@ -111,6 +111,7 @@ app.use("/api/vendors", vendorRoutes);
 app.use("/api/sessions", sessionRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/restaurant", restaurantRoutes); // ✅ restaurant route registered once
+app.use("/api", restaurantRoutes); // Also register for /api/top/restaurants
 app.use("/api/auth", authRoutes);
 // New routes
 app.use("/api/super-admin", superAdminRoutes);
