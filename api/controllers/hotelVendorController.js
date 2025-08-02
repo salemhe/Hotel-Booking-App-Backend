@@ -1,6 +1,8 @@
 import Hotel from "../models/Hotel.js";
 import fs from "fs";
 import path from "path";
+import fetch from "node-fetch";
+import { PAYSTACK_SECRET_KEY, PAYSTACK_BASE_URL } from "../config/paystackConfig.js";
 
 // GET /api/vendor/hotel-rooms
 export const getHotelRooms = async (req, res) => {
@@ -75,5 +77,34 @@ export const uploadRoomImages = async (req, res) => {
     return res.status(200).json({ success: true, urls });
   } catch (error) {
     return res.status(500).json({ success: false, message: "Error uploading images", error: error.message });
+  }
+};
+
+// POST /api/vendor/verify-bank-account
+export const verifyBankAccount = async (req, res) => {
+  const { accountNumber, bankCode } = req.body;
+  if (!accountNumber || !bankCode) {
+    return res.status(400).json({ success: false, message: "accountNumber and bankCode are required" });
+  }
+  if (!PAYSTACK_SECRET_KEY) {
+    return res.status(500).json({ success: false, message: "Paystack secret key not configured." });
+  }
+  try {
+    const response = await fetch(
+      `${PAYSTACK_BASE_URL}/bank/resolve?account_number=${accountNumber}&bank_code=${bankCode}`,
+      {
+        headers: {
+          Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data = await response.json();
+    if (!data.status) {
+      return res.status(400).json({ success: false, message: data.message || "Bank account verification failed" });
+    }
+    return res.status(200).json({ success: true, account_name: data.data.account_name, account_number: data.data.account_number, bank_id: data.data.bank_id });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Error verifying bank account", error: error.message });
   }
 };
