@@ -50,7 +50,10 @@ export const authenticateUser = async (req, res, next) => {
 
 export const authenticateVendor = async (req, res, next) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1]; // Get token from Authorization header
+    let token = req.headers.authorization?.split(" ")[1]; // Try Authorization header first
+    if (!token && req.cookies && req.cookies['vendor-token']) {
+      token = req.cookies['vendor-token']; // Fallback to vendor-token cookie
+    }
     if (!token)
       return res
         .status(401)
@@ -62,7 +65,6 @@ export const authenticateVendor = async (req, res, next) => {
       return res.status(401).json({ message: "Unauthorized: Vendor not found" });
     }
     req.vendor = vendor._id;
- // Debugging
     next();
   } catch (error) {
     return res.status(403).json({ message: "Invalid or expired token" });
