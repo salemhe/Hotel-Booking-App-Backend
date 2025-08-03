@@ -13,6 +13,8 @@ const UserSchema = new Schema(
     otpExpires: Date,
     isVerified: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now },
+    vendor: { type: Schema.Types.ObjectId, ref: 'Vendor' }, // Reference to Vendor
+    role: { type: String, enum: ['staff', 'customer', 'admin', 'vendor'], default: 'customer' },
   },
   { timestamps: true } 
 );

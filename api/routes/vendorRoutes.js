@@ -255,6 +255,18 @@ router.get('/branches/:id/reservations', authenticateVendor, async (req, res) =>
   }
 });
 
+// Vendor-accessible: Get all staff for the current vendor
+router.get('/staff', authenticateVendor, async (req, res) => {
+  try {
+    const User = (await import('../models/User.js')).default;
+    // Find all users with role 'staff' and vendor equal to the authenticated vendor
+    const staff = await User.find({ role: 'staff', vendor: req.vendor }).select('-password');
+    return res.status(200).json(staff);
+  } catch (error) {
+    return res.status(500).json({ message: 'Error fetching staff', error: error.message });
+  }
+});
+
 // Vendor Dashboard (protected by vendor-token cookie)
 import { vendorDashboard } from "../controllers/authController.js";
 router.get("/vendorDashboard", vendorDashboard);
