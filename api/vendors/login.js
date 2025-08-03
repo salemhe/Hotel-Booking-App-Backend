@@ -34,6 +34,13 @@ export const loginVendor = async (req, res, next) => {
       onboarded: vendor.onboarded,
       type: "vendor"
     };
+    // Set vendor-token cookie for cross-origin authentication
+    res.cookie("vendor-token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+      maxAge: 60 * 60 * 1000 // 1 hour
+    });
     return res.status(200).json({ message: "Login successful.", profile: vendorProfile });
   }
   // Try branch login (User with businessType: "restaurant" or "hotel")
@@ -56,6 +63,13 @@ export const loginVendor = async (req, res, next) => {
       token: token,
       type: "branch"
     };
+    // Set vendor-token cookie for cross-origin authentication
+    res.cookie("vendor-token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+      maxAge: 60 * 60 * 1000 // 1 hour
+    });
     return res.status(200).json({ message: "Login successful.", profile: branchProfile });
   }
   // If neither found
