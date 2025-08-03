@@ -286,6 +286,14 @@ router.get('/accounts', authenticateVendor, async (req, res) => {
   }
 });
 
+// Vendor-accessible: Get the authenticated vendor's payment transactions
+import { getTransactions } from "../payments/getTransaction.js";
+router.get('/payments/transactions', authenticateVendor, getTransactions);
+
+// Vendor-accessible: Get payment stats and analytics for the authenticated vendor
+import { getVendorPaymentStats } from "../payments/getStats.js";
+router.get('/payments/stats', authenticateVendor, getVendorPaymentStats);
+
 // Vendor Dashboard (protected by vendor-token cookie)
 import { vendorDashboard } from "../controllers/authController.js";
 router.get("/vendorDashboard", vendorDashboard);
