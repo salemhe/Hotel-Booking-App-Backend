@@ -287,7 +287,6 @@ router.get('/accounts', authenticateVendor, async (req, res) => {
 });
 
 // Vendor-accessible: Get the authenticated vendor's payment transactions
-import { getTransactions } from "../payments/getTransaction.js";
 router.get('/payments/transactions', authenticateVendor, getTransactions);
 
 // Vendor-accessible: Get payment stats and analytics for the authenticated vendor
