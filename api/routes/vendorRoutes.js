@@ -267,6 +267,25 @@ router.get('/staff', authenticateVendor, async (req, res) => {
   }
 });
 
+// Vendor-accessible: Get the authenticated vendor's account/payment details
+router.get('/accounts', authenticateVendor, async (req, res) => {
+  try {
+    const Vendor = (await import('../models/Vendor.js')).default;
+    const vendor = await Vendor.findById(req.vendor).select('paymentDetails businessName businessType email');
+    if (!vendor) {
+      return res.status(404).json({ message: 'Vendor not found' });
+    }
+    return res.status(200).json({
+      paymentDetails: vendor.paymentDetails,
+      businessName: vendor.businessName,
+      businessType: vendor.businessType,
+      email: vendor.email
+    });
+  } catch (error) {
+    return res.status(500).json({ message: 'Error fetching account details', error: error.message });
+  }
+});
+
 // Vendor Dashboard (protected by vendor-token cookie)
 import { vendorDashboard } from "../controllers/authController.js";
 router.get("/vendorDashboard", vendorDashboard);
