@@ -45,11 +45,12 @@ const server = createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 
 // CORS must be the very first middleware
+// Allowed origins for CORS (include your frontend's deployed URL below)
 const allowedOrigins = [
-  "https://hotel-booking-application-omega.vercel.app",
-  "http://localhost:3000",
-  "https://hotel-booking-app-backend-30q1.onrender.com",
-  // add other allowed origins if needed
+  "https://hotel-booking-application-omega.vercel.app", // Vercel frontend
+  "http://localhost:3000", // Local development
+  "https://hotel-booking-app-backend-30q1.onrender.com" // Backend self-origin
+  // Add any other allowed origins if needed
 ];
 
 app.use(
