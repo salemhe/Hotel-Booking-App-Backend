@@ -20,6 +20,7 @@ import { deleteMenu } from "../menus/deleteMenu.js";
 import { editMenu } from "../menus/editMenu.js";
 import { onboard } from "../vendors/onboard.js";
 import { verifyBankAccount } from "../controllers/hotelVendorController.js";
+import {getVendorDashboardStats} from "../bookings/getBooking.js"
 
 const router = express.Router();
 const validation = [
@@ -65,6 +66,8 @@ router.get('/balance/', authenticateVendor, getBalance);
 router.patch('/update/:id', upload.array('profileImage'), authenticateVendor, updateVendorProfile);
 
 router.put("/bookings/confirm/:bookingId", authenticateVendor, confirmBooking);
+
+router.get("/bookings/stats/:vendorId", authenticateVendor, getVendorDashboardStats);
 
 router.post('/onboard/:id', upload.fields([
     { name: "profileImages" },

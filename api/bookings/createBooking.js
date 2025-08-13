@@ -56,7 +56,7 @@ export const bookRoomOrTable = async (req, res) => {
     ) {
       return res.status(400).json({ message: "fill the required fields." });
     }
-    meals.map((meal) => {
+    meals?.map((meal) => {
       if (
         reservationType === "restaurant" &&
         (!meal.id ||
@@ -70,7 +70,7 @@ export const bookRoomOrTable = async (req, res) => {
           .json({
             message: "All meal details are required for restaurant bookings.",
           });
-      } // WHY DOES THIS BLOCK OF CODE RUN EVEN WHEN THE RESERVATION TYPE IS HOTEL ON POSTMAN?
+      } 
     });
 
     if (
@@ -151,8 +151,7 @@ export const bookRoomOrTable = async (req, res) => {
       specialRequest,
       date: parsedDate,
       specialOccasion,
-      seatingPreference:
-        reservationType === "restaurant" ? seatingPreference : null,
+      seatingPreference: reservationType === "restaurant" ? seatingPreference : null,
       time: reservationType === "restaurant" ? parsedTime : null,
 
       date: reservationType === "restaurant" ? parsedDate : null,
