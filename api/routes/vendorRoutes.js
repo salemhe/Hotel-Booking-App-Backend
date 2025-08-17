@@ -143,7 +143,7 @@ router.get('/:vendorId/available-rooms', async (req, res) => {
       return res.status(404).json({ message: 'Business-type hotel vendor not found' });
     }
     // Find hotels where owner is the vendor's _id
-    const hotels = await Hotel.find({ owner: vendorId, isActive: true });
+    const hotels = await Hotel.find({ vendorId: vendorId, isActive: true });
     if (!hotels.length) {
       return res.status(404).json({ message: 'No hotels found for this vendor' });
     }
