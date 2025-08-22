@@ -70,6 +70,7 @@ export const createStaff = async (req, res) => {
       email,
       phone,
       staffId,
+      vendorId: req.vendor._id,
       branch,
       jobRole,
       jobTitle,
@@ -93,6 +94,7 @@ export const createStaff = async (req, res) => {
       message: "Staff created successfully. Verification OTP sent to email.",
       staff: {
         id: newStaff._id,
+        vendorId: newStaff.vendorId,
         staffName: newStaff.staffName,
         email: newStaff.email,
         phone: newStaff.phone,
@@ -199,3 +201,24 @@ export const getStaffByVendor = async (req, res) => {
     return res.status(500).json({ message: "Error fetching staff", error: err.message });
   }
 };
+
+export const getStaff = async (req, res) => {
+  try {
+    if (!req.vendor || !req.vendor._id) {
+      return res.status(403).json({ message: "Unauthorized: No vendor ID found" });
+    }
+    const staffs = await Staff.find({ vendorId: req.vendor._id }).select(
+      "-password -otp -otpExpiry -__v" // exclude sensitive fields
+    );
+
+    return res.status(200).json({
+      message: "Staff list fetched successfully.",
+      count: staffs.length,
+      staffs,
+    });
+  } catch (error) {
+    console.error("Error fetching staff list:", error);
+    return res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+};
+

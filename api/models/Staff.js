@@ -9,6 +9,7 @@ const StaffSchema = new Schema(
     email: { type: String, required: true, unique: true },
     phone: { type: String },
     staffId: { type: String },
+    vendorId: { type: Schema.Types.ObjectId, ref: "Vendor", required: true },
     branch: { type: String },
     jobTitle: { type: String },
     jobRole: { type: String },
