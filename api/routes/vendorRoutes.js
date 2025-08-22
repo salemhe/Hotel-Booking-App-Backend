@@ -21,6 +21,8 @@ import { editMenu } from "../menus/editMenu.js";
 import { onboard } from "../vendors/onboard.js";
 import { verifyBankAccount } from "../controllers/hotelVendorController.js";
 import {getVendorDashboardStats} from "../bookings/getBooking.js"
+import {createStaff} from "../controllers/staffController.js"
+import {verifyStaff} from "../controllers/staffController.js"
 
 const router = express.Router();
 const validation = [
@@ -75,6 +77,10 @@ router.post('/onboard/:id', upload.fields([
     { name: "dishImage" },
     { name: "itemImage"}
   ]), authenticateVendor, onboard);
+
+router.post('/staff', upload.single('image'), authenticateVendor, createStaff);
+
+router.post('/staff/verify', authenticateVendor, verifyStaff);
 
 // Bank account verification endpoint
 router.post('/accounts/verify', verifyBankAccount);
