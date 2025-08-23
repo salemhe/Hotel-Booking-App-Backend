@@ -34,10 +34,15 @@ const StaffSchema = new Schema(
     ],
     customPermissions: [{ permissionModule: {type: String}, permissions: [String] }],
     isVerified: { type: Boolean, default: false },
+    status: { 
+        type: String, 
+        enum: ["active", "inactive", "no-show"], 
+        default: "inactive" 
+    },
     otp: { type: String },
     otpExpiry: { type: Date },
     createdAt: { type: Date, default: Date.now },
-    isActive: { type: Boolean, default: true },
+   
   },
   { timestamps: true }
 );

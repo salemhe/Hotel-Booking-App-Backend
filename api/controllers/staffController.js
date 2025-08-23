@@ -103,6 +103,7 @@ export const createStaff = async (req, res) => {
         jobRole: newStaff.jobRole,
         profileImage: newStaff.profileImage,
         isVerified: newStaff.isVerified,
+        status: newStaff.status,
       },
     });
   } catch (error) {
@@ -173,35 +174,6 @@ export const verifyStaff = async (req, res) => {
 
 
 
-export const getStaffByVendor = async (req, res) => {
-  try {
-    const { vendorId } = req.query;
-    if (!vendorId) {
-      return res.status(400).json({ message: "vendorId query parameter is required" });
-    }
-    // Optionally, check if vendor exists
-    const vendor = await Vendor.findById(vendorId);
-    if (!vendor) {
-      return res.status(404).json({ message: "Vendor not found" });
-    }
-    // Assuming staff are users with a reference to vendorId
-    const staff = await User.find({ vendor: vendorId })
-      .select("_id name role branch status")
-      .lean();
-    // Format response to match example
-    const formatted = staff.map(s => ({
-      id: s._id,
-      name: s.name,
-      role: s.role,
-      branch: s.branch || "-",
-      status: s.status || "Active"
-    }));
-    return res.json(formatted);
-  } catch (err) {
-    return res.status(500).json({ message: "Error fetching staff", error: err.message });
-  }
-};
-
 export const getStaff = async (req, res) => {
   try {
     if (!req.vendor || !req.vendor._id) {
@@ -221,4 +193,63 @@ export const getStaff = async (req, res) => {
     return res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
+
+
+
+
+export const getStaffStats = async (req, res) => {
+  try {
+    if (!req.vendor || !req.vendor._id) {
+      return res.status(403).json({ message: "Unauthorized: No vendor ID found" });
+    }
+    const now = new Date();
+    const lastWeek = new Date();
+    lastWeek.setDate(now.getDate() - 7);
+
+    // Current totals
+    const totalStaff = await Staff.countDocuments({ vendorId: req.vendor._id });
+    const activeStaff = await Staff.countDocuments({ status: "active", vendorId: req.vendor._id });
+    const inactiveStaff = await Staff.countDocuments({ status: "inactive", vendorId: req.vendor._id });
+    const noShowStaff = await Staff.countDocuments({ status: "no-show", vendorId: req.vendor._id });
+
+    // Last week's totals (staff created before today but after last week)
+    const lastWeekTotal = await Staff.countDocuments({ createdAt: { $lt: lastWeek }, vendorId: req.vendor._id });
+    const lastWeekActive = await Staff.countDocuments({ status: "active", createdAt: { $lt: lastWeek }, vendorId: req.vendor._id });
+    const lastWeekInactive = await Staff.countDocuments({ status: "inactive", createdAt: { $lt: lastWeek }, vendorId: req.vendor._id });
+    const lastWeekNoShow = await Staff.countDocuments({ status: "no-show", createdAt: { $lt: lastWeek }, vendorId: req.vendor._id });
+
+    // Utility fn to calculate % change
+    const getChange = (current, previous) => {
+      if (previous === 0 && current > 0) return 100;
+      if (previous === 0 && current === 0) return 0;
+      return (((current - previous) / previous) * 100).toFixed(2);
+    };
+
+    return res.status(200).json({
+      message: "Staff stats fetched successfully.",
+      stats: {
+        totalStaff: {
+          count: totalStaff,
+          change: getChange(totalStaff, lastWeekTotal)
+        },
+        activeStaff: {
+          count: activeStaff,
+          change: getChange(activeStaff, lastWeekActive)
+        },
+        inactiveStaff: {
+          count: inactiveStaff,
+          change: getChange(inactiveStaff, lastWeekInactive)
+        },
+        noShowStaff: {
+          count: noShowStaff,
+          change: getChange(noShowStaff, lastWeekNoShow)
+        }
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching staff stats:", error);
+    return res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+};
+
 

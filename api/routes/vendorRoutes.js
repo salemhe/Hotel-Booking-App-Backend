@@ -24,6 +24,7 @@ import {getVendorDashboardStats} from "../bookings/getBooking.js"
 import {createStaff} from "../controllers/staffController.js"
 import {verifyStaff} from "../controllers/staffController.js"
 import {getStaff} from "../controllers/staffController.js"
+import {getStaffStats} from "../controllers/staffController.js";
 
 const router = express.Router();
 const validation = [
@@ -80,9 +81,9 @@ router.post('/onboard/:id', upload.fields([
   ]), authenticateVendor, onboard);
 
 router.post('/staff', upload.single('image'), authenticateVendor, createStaff);
-
 router.post('/staff/verify', verifyStaff);
 router.get('/staff', authenticateVendor, getStaff);
+router.get('/staff/stats', authenticateVendor, getStaffStats);
 
 // Bank account verification endpoint
 router.post('/accounts/verify', verifyBankAccount);
