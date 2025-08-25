@@ -14,10 +14,7 @@ const StaffSchema = new Schema(
     jobTitle: { type: String },
     jobRole: { type: String },
     password: { type: String },
-    profileImages: [
-      {
-        id: { type: String },
-        url: {
+    profileImage: {
           type: String,
           validate: {
             validator: function (value) {
@@ -29,9 +26,7 @@ const StaffSchema = new Schema(
             message: "Profile image must be a valid URL.",
           },
           default: null,
-        },
-      },
-    ],
+    },
     customPermissions: [{ permissionModule: {type: String}, permissions: [String] }],
     isVerified: { type: Boolean, default: false },
     status: { 

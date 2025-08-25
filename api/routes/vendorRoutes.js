@@ -80,7 +80,7 @@ router.post('/onboard/:id', upload.fields([
     { name: "itemImage"}
   ]), authenticateVendor, onboard);
 
-router.post('/staff', upload.single('image'), authenticateVendor, createStaff);
+router.post('/staff', upload.single('file'), authenticateVendor, createStaff);
 router.post('/staff/verify', verifyStaff);
 router.get('/staff', authenticateVendor, getStaff);
 router.get('/staff/stats', authenticateVendor, getStaffStats);

@@ -28,26 +28,55 @@ export const createStaff = async (req, res) => {
       branch,
       jobTitle,
       jobRole,
-      image,
-      customPermissions,
-      password, // you missed this earlier
+      customPermissions
     } = req.body;
 
-    let profileImage = image || null;
+    let profileImage = "" || null;
 
     if (!req.vendor || !req.vendor._id) {
       return res.status(403).json({ message: "Unauthorized: No vendor ID found" });
     }
 
+    if (!req.file) {
+      return res.status(400).json({message: "nO file"})
+    }
+
     // If file uploaded, push to cloudinary
+    // if (req.file) {
+    //   const cloudinaryResponse = await cloudinary.v2.uploader.upload(req.file.path, {
+    //     folder: "vendor-profiles",
+    //     public_id: `staff-${Date.now()}`,
+    //     overwrite: true,
+    //   });
+    //   profileImage = cloudinaryResponse.secure_url;
+    //   console.log("Uploaded image to Cloudinary:", profileImage);
+    // }
+
     if (req.file) {
-      const cloudinaryResponse = await cloudinary.v2.uploader.upload(req.file.path, {
-        folder: "vendor-profiles",
-        public_id: `staff-${Date.now()}`,
-        overwrite: true,
-      });
+      const streamUpload = (fileBuffer) => {
+        return new Promise((resolve, reject) => {
+          const stream = cloudinary.v2.uploader.upload_stream(
+            {
+              folder: "vendor-profiles",
+              public_id: `staff-${Date.now()}`,
+              overwrite: true,
+            },
+            (error, result) => {
+              if (result) {
+                resolve(result);
+              } else {
+                reject(error);
+              }
+            }
+          );
+          stream.end(fileBuffer); // ⬅️ send buffer instead of path
+        });
+      };
+
+      const cloudinaryResponse = await streamUpload(req.file.buffer);
       profileImage = cloudinaryResponse.secure_url;
     }
+
 
     // Validate required fields
     if (!staffName || !staffId || !email || !phone || !branch || !jobRole) {
@@ -60,6 +89,15 @@ export const createStaff = async (req, res) => {
       return res.status(409).json({ message: "Staff with this email already exists." });
     }
 
+
+    let parsedPermissions = [];
+    if (customPermissions) {
+      try {
+        parsedPermissions = JSON.parse(customPermissions);
+      } catch (err) {
+        console.error("Invalid customPermissions JSON:", err);
+      }
+    }
 
     // Generate OTP
     const otp = generateOTP();
@@ -74,11 +112,11 @@ export const createStaff = async (req, res) => {
       branch,
       jobRole,
       jobTitle,
-      password,
-      customPermissions: customPermissions ? customPermissions.map((permission) => ({
-        permissionModule: permission.permissionModule,
-        permissions: permission.permissions || [],
-      })) : [],
+      customPermissions: parsedPermissions.map((p) => ({
+        permissionModule: p.permissionModule,
+        permissions: p.permissions || [],
+      })),
+
       profileImage,
       isVerified: false,
       otp,
@@ -136,7 +174,7 @@ export const verifyStaff = async (req, res) => {
 
     // Check OTP validity
     if (staff.otp !== otp) {
-      console.log("Invalid OTP provided:", otp, "Expected:", staff.otp);
+     
       return res.status(400).json({ message: "Invalid OTP." });
     }
 
@@ -174,13 +212,33 @@ export const verifyStaff = async (req, res) => {
 
 
 
+
+// GET /api/staff?search=John
+
+
 export const getStaff = async (req, res) => {
   try {
     if (!req.vendor || !req.vendor._id) {
       return res.status(403).json({ message: "Unauthorized: No vendor ID found" });
     }
-    const staffs = await Staff.find({ vendorId: req.vendor._id }).select(
-      "-password -otp -otpExpiry -__v" // exclude sensitive fields
+    const { search } = req.query;
+
+    let query = {};
+
+    if (search) {
+      const regex = new RegExp(search, "i"); // case-insensitive match
+      query = {
+        $or: [
+          { staffName: regex },
+          { email: regex },
+          { jobRole: regex },
+          { staffId: regex },
+        ],
+      };
+    }
+
+    const staffs = await Staff.find({ vendorId: req.vendor._id, ...query }).select(
+      "-password -otp -otpExpiry -__v"
     );
 
     return res.status(200).json({
@@ -196,12 +254,12 @@ export const getStaff = async (req, res) => {
 
 
 
-
 export const getStaffStats = async (req, res) => {
   try {
     if (!req.vendor || !req.vendor._id) {
       return res.status(403).json({ message: "Unauthorized: No vendor ID found" });
     }
+
     const now = new Date();
     const lastWeek = new Date();
     lastWeek.setDate(now.getDate() - 7);
@@ -212,17 +270,23 @@ export const getStaffStats = async (req, res) => {
     const inactiveStaff = await Staff.countDocuments({ status: "inactive", vendorId: req.vendor._id });
     const noShowStaff = await Staff.countDocuments({ status: "no-show", vendorId: req.vendor._id });
 
-    // Last week's totals (staff created before today but after last week)
+    // Last week's totals
     const lastWeekTotal = await Staff.countDocuments({ createdAt: { $lt: lastWeek }, vendorId: req.vendor._id });
     const lastWeekActive = await Staff.countDocuments({ status: "active", createdAt: { $lt: lastWeek }, vendorId: req.vendor._id });
     const lastWeekInactive = await Staff.countDocuments({ status: "inactive", createdAt: { $lt: lastWeek }, vendorId: req.vendor._id });
     const lastWeekNoShow = await Staff.countDocuments({ status: "no-show", createdAt: { $lt: lastWeek }, vendorId: req.vendor._id });
 
-    // Utility fn to calculate % change
+    // Utility fn to calculate % change + trend direction
     const getChange = (current, previous) => {
-      if (previous === 0 && current > 0) return 100;
-      if (previous === 0 && current === 0) return 0;
-      return (((current - previous) / previous) * 100).toFixed(2);
+      if (previous === 0 && current > 0) return { change: 100, trend: "up" };
+      if (previous === 0 && current === 0) return { change: 0, trend: "neutral" };
+
+      const diff = current - previous;
+      const percent = ((diff / previous) * 100).toFixed(2);
+      return {
+        change: percent,
+        trend: diff > 0 ? "up" : diff < 0 ? "down" : "neutral"
+      };
     };
 
     return res.status(200).json({
@@ -230,19 +294,19 @@ export const getStaffStats = async (req, res) => {
       stats: {
         totalStaff: {
           count: totalStaff,
-          change: getChange(totalStaff, lastWeekTotal)
+          ...getChange(totalStaff, lastWeekTotal)
         },
         activeStaff: {
           count: activeStaff,
-          change: getChange(activeStaff, lastWeekActive)
+          ...getChange(activeStaff, lastWeekActive)
         },
         inactiveStaff: {
           count: inactiveStaff,
-          change: getChange(inactiveStaff, lastWeekInactive)
+          ...getChange(inactiveStaff, lastWeekInactive)
         },
         noShowStaff: {
           count: noShowStaff,
-          change: getChange(noShowStaff, lastWeekNoShow)
+          ...getChange(noShowStaff, lastWeekNoShow)
         }
       }
     });
