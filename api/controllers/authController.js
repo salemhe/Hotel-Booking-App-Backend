@@ -58,6 +58,22 @@ export const clearToken = (req, res) => {
   return res.json({ success: true });
 };
 
+// Set admin-token cookie
+export const setAdminToken = (req, res) => {
+  const { token } = req.body;
+  if (!token) {
+    return res.status(400).json({ message: "Token is required" });
+  }
+  res.cookie("admin-token", token, {
+    httpOnly: true,
+    path: "/",
+    sameSite: "lax",
+    secure: req.secure || req.headers['x-forwarded-proto'] === 'https' || process.env.NODE_ENV === "production",
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days, same as vendor-token
+  });
+  return res.json({ message: "admin-token cookie set" });
+};
+
 // Vendor Dashboard (protected)
 export const vendorDashboard = (req, res) => {
   // Check for vendor-token cookie

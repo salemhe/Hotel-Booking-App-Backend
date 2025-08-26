@@ -1,5 +1,5 @@
 import express from "express";
-import { setVendorToken, getVendorToken, setUserToken, getUserToken, clearToken, loginUser } from "../controllers/authController.js";
+import { setVendorToken, getVendorToken, setUserToken, getUserToken, clearToken, loginUser, setAdminToken } from "../controllers/authController.js";
 
 const router = express.Router();
 
@@ -18,7 +18,11 @@ router.get("/get-user-token", getUserToken);
 // Clear user-token cookie 
 router.get("/clear-token", clearToken);
 
+// Set admin-token cookie
+router.post("/set-admin-token", setAdminToken);
+
 // Get vendor-token cookie
 router.get("/get-vendor-token", getVendorToken);
 
 export default router;
+
