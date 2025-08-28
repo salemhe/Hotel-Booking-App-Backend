@@ -3,6 +3,7 @@ import { body } from "express-validator";
 import upload from "../middlewares/uploadMiddleware.js";
 import { registerVendor } from "../vendors/register.js";
 import { loginVendor } from "../vendors/login.js";
+import { loginStaff } from "../vendors/staffLogin.js";
 import { getVendors } from "../vendors/getvendors.js";
 import { authorize } from "../middlewares/authMiddleware.js";
 import { verifyVendorOTP } from "../otp/verifyOTP.js";
@@ -42,6 +43,13 @@ router.post('/login', [
     .isLength({ min: 6 })
     .withMessage('Password must be at least 6 characters long.'),
 ], loginVendor);
+
+router.post('/staff-login', [
+  body('email').isEmail().withMessage('Valid email is required.'),
+  body('password')
+    .isLength({ min: 6 })
+    .withMessage('Password must be at least 6 characters long.'),
+], loginStaff);
 
 // Get all vendors (authorized route)
 import { getAllVendors } from "../vendors/getvendors.js";

@@ -1,7 +1,7 @@
 import User from "../models/User.js";
 import Staff from "../models/Staff.js";
 import { generateOTP } from "../../utils/otpUtils.js";
-import { sendOTPEmail } from "../../utils/emailService.js";
+import { sendOTPEmail, sendStaffOTPEmail} from "../../utils/emailService.js";
 import bcrypt from "bcryptjs";
 import cloudinary from "cloudinary";
 import dotenv from "dotenv";
@@ -126,8 +126,8 @@ export const createStaff = async (req, res) => {
     await newStaff.save();
 
     // Send OTP email
-    await sendOTPEmail(email, otp);
-
+    await sendStaffOTPEmail(email, otp);
+    
     return res.status(201).json({
       message: "Staff created successfully. Verification OTP sent to email.",
       staff: {
@@ -156,7 +156,7 @@ export const createStaff = async (req, res) => {
 
 export const verifyStaff = async (req, res) => {
   try {
-    const { email, otp } = req.body;
+    const { email, otp, password } = req.body;
 
     if (!email || !otp) {
       return res.status(400).json({ message: "Email and OTP are required." });
@@ -185,7 +185,9 @@ export const verifyStaff = async (req, res) => {
 
     // Update staff verification
     staff.isVerified = true;
-    // staff.otp = undefined; // clear OTP
+    staff.password = password;
+    staff.status = "active";
+    staff.otp = undefined;
     // staff.otpExpiry = undefined;
 
     await staff.save();
@@ -202,6 +204,7 @@ export const verifyStaff = async (req, res) => {
         jobTitle: staff.jobTitle,
         profileImage: staff.profileImage,
         isVerified: staff.isVerified,
+        status: staff.status,
       },
     });
   } catch (error) {
