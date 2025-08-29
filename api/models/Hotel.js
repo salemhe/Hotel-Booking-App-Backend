@@ -75,7 +75,7 @@ const RoomSchema = new Schema({
     enum: ['available', 'occupied', 'maintenance', 'cleaning', 'Good'],
     default: 'available'
   },
-  customPolicy{
+  customPolicy: {
     type: String,
   },
   paymentOption: [
