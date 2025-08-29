@@ -234,3 +234,67 @@ export const sendBookingCancelEmail = async (email, firstName, bookingId, guestC
     throw new Error("Failed to send cancel email", error);
   }
 };
+
+export const sendStaffOTPEmail = async (email, otp, minutesLeft) => {
+  try {
+    const mailOptions = {
+      from: `"Hotel Booking App" <${process.env.SMTP_USER}>`,
+      to: email,
+      subject: "Your OTP Code",
+       html: `<div style="font-family: 'Inter', 'Segoe UI', sans-serif; background-color: white; max-width: 500px; margin: 40px auto; padding: 36px; border-radius: 16px; border: 1px solid #f0f0f0; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.03); color: #1A1A1A;">
+      
+      <!-- Logo -->
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+        <div style="width: 16px; height: 16px; background-color: #5BA8FF; border-radius: 50%;"></div>
+        <span style="font-size: 22px; font-weight: 700;">Bookies</span>
+      </div>
+
+      <hr style="margin: 16px 0; border: none; border-top: 1px solid #eee;" />
+
+      <p style="font-size: 16px; margin-bottom: 18px;">
+        Hello,
+      </p>
+
+      <p style="font-size: 15px; line-height: 1.6; margin-bottom: 22px;">
+        A one-time password (OTP) for your Bookies account has been generated. Use the code below to complete your verification:
+      </p>
+
+      <!-- OTP -->
+      <div style="margin: 30px auto; text-align: center;">
+        <span style="display: inline-block; padding: 16px 60px; font-size: 24px; letter-spacing: 4px; font-weight: 600; color: #000000; background-color: #F2F9FF; border: 2px solid #5BA8FF; border-radius: 12px;">
+          ${otp}
+        </span>
+      </div> 
+
+      <p style="font-size: 14px; margin-top: 28px;">
+        This code will expire in <strong>${minutesLeft} minutes</strong>. 
+      </p>
+
+
+      <a href="http://localhost:3000/verify-staff?otp=${otp}&email=${email}"
+        style={{ display: "inline-block", padding: "10px 40px", fontSize: "15px", letterSpacing: "3px", fontWeight: 700, color: "#000000", backgroundColor: "#F2F9FF", border: "2px solid #5BA8FF", borderRadius: "12px", textAlign: "center", textDecoration: "none", margin: "30px auto", }}
+      >
+        Verify Your Account
+      </a>
+
+      <p style="font-size: 14px; margin-top: 8px;">
+        Thank you for choosing <strong>Bookies</strong>.
+      </p>
+
+      <hr style="margin: 32px 0; border: none; border-top: 1px solid #f0f0f0;" />
+
+      <p style="font-size: 12px; color: #999; text-align: center;">
+        &copy; ${new Date().getFullYear()} Bookies. All rights reserved.
+      </p>
+
+      <p style="font-size: 11px; color: #aaa; text-align: center;">
+        This OTP was requested for you by your superior.
+      </p>
+    </div>`,
+  };
+
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    throw new Error("Failed to send OTP");
+  }
+};

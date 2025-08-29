@@ -3,6 +3,7 @@ import { body } from "express-validator";
 import upload from "../middlewares/uploadMiddleware.js";
 import { registerVendor } from "../vendors/register.js";
 import { loginVendor } from "../vendors/login.js";
+import { loginStaff } from "../vendors/staffLogin.js";
 import { getVendors } from "../vendors/getvendors.js";
 import { authorize } from "../middlewares/authMiddleware.js";
 import { verifyVendorOTP } from "../otp/verifyOTP.js";
@@ -21,6 +22,10 @@ import { editMenu } from "../menus/editMenu.js";
 import { onboard } from "../vendors/onboard.js";
 import { verifyBankAccount } from "../controllers/hotelVendorController.js";
 import {getVendorDashboardStats} from "../bookings/getBooking.js"
+import {createStaff} from "../controllers/staffController.js"
+import {verifyStaff} from "../controllers/staffController.js"
+import {getStaff} from "../controllers/staffController.js"
+import {getStaffStats} from "../controllers/staffController.js";
 
 const router = express.Router();
 const validation = [
@@ -38,6 +43,13 @@ router.post('/login', [
     .isLength({ min: 6 })
     .withMessage('Password must be at least 6 characters long.'),
 ], loginVendor);
+
+router.post('/staff-login', [
+  body('email').isEmail().withMessage('Valid email is required.'),
+  body('password')
+    .isLength({ min: 6 })
+    .withMessage('Password must be at least 6 characters long.'),
+], loginStaff);
 
 // Get all vendors (authorized route)
 import { getAllVendors } from "../vendors/getvendors.js";
@@ -75,6 +87,11 @@ router.post('/onboard/:id', upload.fields([
     { name: "dishImage" },
     { name: "itemImage"}
   ]), authenticateVendor, onboard);
+
+router.post('/staff', upload.single('file'), authenticateVendor, createStaff);
+router.post('/staff/verify', verifyStaff);
+router.get('/staff', authenticateVendor, getStaff);
+router.get('/staff/stats', authenticateVendor, getStaffStats);
 
 // Bank account verification endpoint
 router.post('/accounts/verify', verifyBankAccount);

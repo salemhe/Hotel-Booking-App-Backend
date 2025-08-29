@@ -1,7 +1,7 @@
 import express from "express";
 import { getPaymentsByVendor } from "../controllers/paymentsController.js";
 import { getBranches } from "../controllers/superAdminController.js";
-import { getStaffByVendor } from "../controllers/staffController.js";
+import { getStaff } from "../controllers/staffController.js";
 import { 
   getStats, 
   getTodayReservations, 
@@ -20,7 +20,7 @@ router.get("/payments", authenticateSuperAdmin, getPaymentsByVendor);
 
 // Branches endpoint
 router.get("/branches", authenticateSuperAdmin, getBranches);// Staff endpoint
-router.get("/staff", authenticateSuperAdmin, getStaffByVendor);
+router.get("/staff", authenticateSuperAdmin, getStaff);
 
 // Dashboard Statistics
 router.get("/stats", authenticateVendor, getStats);

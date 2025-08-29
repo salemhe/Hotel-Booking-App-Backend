@@ -30,15 +30,15 @@ export const authenticateUser = async (req, res, next) => {
     try {
       token = req.headers.authorization.split(" ")[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      console.log("Decoded token:", decoded); // Log decoded token
+
       req.user = await User.findById(decoded.id).select("_id role"); // Add role to selection
-      console.log("User found in DB:", req.user); // Log user found
+    
       if (!req.user) {
         return res.status(401).json({ message: "Unauthorized: User not found" });
       }
       next();
     } catch (error) {
-      console.error("JWT Verification Error:", error.message); // Debugging
+      
       res.status(401).json({ message: "Invalid or expired token." });
     }
   } else {
@@ -67,6 +67,7 @@ export const authenticateVendor = async (req, res, next) => {
     req.vendor = vendor._id;
     next();
   } catch (error) {
+    console.error("New JWT Verification Error:", error.message); // Debugging
     return res.status(403).json({ message: "Invalid or expired token" });
   }
 };
