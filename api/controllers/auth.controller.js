@@ -79,7 +79,7 @@ export const loginVendor = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    return res.status(200).json({ message: "Login successful.", vendor });
+    return res.status(200).json({ message: "Login successful.", vendor, token });
   } catch (err) {
     console.error(err);
     return res.status(500).json({
@@ -182,6 +182,7 @@ export const registerVendor = async (req, res) => {
     return res.status(201).json({
       message: "Vendor created successfully",
       vendor: vendorWithoutSensitiveData,
+      token
     });
   } catch (error) {
     console.error(error);
@@ -498,7 +499,7 @@ export const registerUser = async (req, res) => {
 
     return res
       .status(201)
-      .json({ message: "User registered successfully.", user: newUser });
+      .json({ message: "User registered successfully.", user: newUser, token });
   } catch (error) {
     return res.status(500).json({ message: "Error registering user.", error });
   }
@@ -531,6 +532,6 @@ export const loginUser = (req, res, next) => {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
     
-    return res.status(200).json({ message: "Login successful.", user });
+    return res.status(200).json({ message: "Login successful.", user, token });
   })(req, res, next);
 };
