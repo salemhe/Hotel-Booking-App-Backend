@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
 
 import Staff from "../models/Staff.js";
-import Vendor from "../models/Vendor.js";
+import { Vendor } from "../models/Vendor.js";
 
 dotenv.config();
 

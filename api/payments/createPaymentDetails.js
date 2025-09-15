@@ -1,5 +1,5 @@
 import { CursorTimeoutMode } from "mongodb";
-import Vendor from "../models/Vendor.js";
+import { Vendor } from "../models/Vendor.js";
 import fetch from "node-fetch";
 
 export const createPaymentDetails = async (req, res) => {

@@ -1,6 +1,6 @@
-import Vendor from "../models/Vendor.js";
-import { generateOTP } from "../../utils/otpUtils.js";
-import { sendOTPEmail } from "../../utils/emailService.js";
+import { Vendor } from "../models/Vendor.js";
+import { generateOTP } from "../utils/otpUtils.js";
+import { sendOTPEmail } from "../utils/emailService.js";
 import bcrypt from "bcryptjs";
 import cloudinary from "cloudinary";
 import dotenv from "dotenv";

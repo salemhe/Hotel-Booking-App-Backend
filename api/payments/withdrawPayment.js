@@ -1,4 +1,4 @@
-import Vendor from "../models/Vendor.js";
+import { Vendor } from "../models/Vendor.js";
 import Transaction from "../models/Transaction.js";
 import { v4 as uuidv4 } from "uuid";
 

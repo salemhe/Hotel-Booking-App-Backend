@@ -1,4 +1,4 @@
-import Vendor from "../models/Vendor.js";
+import { Vendor } from "../models/Vendor.js";
 import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";

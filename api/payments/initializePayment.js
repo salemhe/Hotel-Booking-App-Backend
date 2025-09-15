@@ -1,4 +1,4 @@
-import Vendor from "../models/Vendor.js";
+import { Vendor } from "../models/Vendor.js";
 
 export const initializePayment = async (req, res) => {
   const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;

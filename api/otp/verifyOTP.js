@@ -1,5 +1,5 @@
 import User from "../models/User.js";
-import Vendor from "../models/Vendor.js";
+import { Vendor } from "../models/Vendor.js";
 
 export const verifyUserOTP = async (req, res) => {
   try {

@@ -4,14 +4,16 @@ import dotenv from "dotenv";
 import cors from "cors";
 import passport from "passport";
 import session from "express-session";
-import MongoStore from "connect-mongo";
 import cookieParser from "cookie-parser";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import configurePassport from "./api/config/passport.js"; 
 import path from "path";
 import { fileURLToPath } from "url";
-
+import userRoutes from "./api/routes/userRoutes.js";
+import vendorRoutes from "./api/routes/vendorRoutes.js";
+import sessionRoutes from "./api/routes/sessionRoutes.js";
+import adminRoutes from "./api/routes/adminRoutes.js";
 
 configurePassport(passport);
 
@@ -23,21 +25,6 @@ const __dirname = path.dirname(__filename);
 dotenv.config();
 
 // Import routes
-import userRoutes from "./api/routes/userRoutes.js";
-import vendorRoutes from "./api/routes/vendorRoutes.js";
-import sessionRoutes from "./api/routes/sessionRoutes.js";
-import adminRoutes from "./api/routes/adminRoutes.js";
-import restaurantRoutes from "./api/routes/restaurantRoutes.js";
-import authRoutes from "./api/routes/authRoutes.js";
-// Import new routes
-import superAdminRoutes from "./api/routes/superAdminRoutes.js";
-import hotelRoutes from "./api/routes/hotelRoutes.js";
-import reservationRoutes from "./api/routes/reservationRoutes.js";
-import locationRoutes from "./api/routes/locationRoutes.js";
-import chainRoutes from "./api/routes/chainRoutes.js";
-import dashboardRoutes from "./api/routes/dashboardRoutes.js";
-import hotelVendorRoutes from "./api/routes/hotelVendorRoutes.js";
-import hotelBranchesRoutes from "./api/routes/hotelBranchesRoutes.js";
 
 // Initialize app and server
 const app = express();
@@ -82,11 +69,6 @@ app.use(
     secret: process.env.JWT_SECRET || "your-session-secret",
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({
-      mongoUrl: process.env.MONGO_URI,
-      collectionName: "sessions",
-      ttl: 14 * 24 * 60 * 60 // 14 days
-    })
   })
 );
 
@@ -111,18 +93,6 @@ app.use("/api/users", userRoutes);
 app.use("/api/vendors", vendorRoutes);
 app.use("/api/sessions", sessionRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("/api/restaurant", restaurantRoutes); // ✅ restaurant route registered once
-app.use("/api", restaurantRoutes); // Also register for /api/top/restaurants
-app.use("/api/auth", authRoutes);
-// New routes
-app.use("/api/super-admin", superAdminRoutes);
-app.use("/api/hotels", hotelRoutes);
-app.use("/api/reservations", reservationRoutes);
-app.use("/api/locations", locationRoutes);
-app.use("/api/chains", chainRoutes);
-app.use("/api", dashboardRoutes);
-app.use("/api/vendor", hotelVendorRoutes);
-app.use("/api/hotel-branches", hotelBranchesRoutes);
 
 // Socket.IO
 io.on("connection", (socket) => {

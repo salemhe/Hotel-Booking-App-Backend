@@ -1,5 +1,5 @@
 // controllers/withdrawalHistory.js
-import Vendor from "../models/Vendor.js";
+import { Vendor } from "../models/Vendor.js";
 
 export const getWithdrawalHistory = async (req, res) => {
   try {

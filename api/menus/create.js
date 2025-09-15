@@ -1,6 +1,6 @@
 import cloudinary from 'cloudinary';
 import Menu from "../models/Menu.js";
-import Vendor from "../models/Vendor.js";
+import { Vendor } from "../models/Vendor.js";
 
 export const createMenu = async (req, res) => {
 

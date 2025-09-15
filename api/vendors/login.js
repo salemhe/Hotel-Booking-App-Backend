@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 
-import Vendor from "../models/Vendor.js";
+import { Vendor } from "../models/Vendor.js";
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 

@@ -1,4 +1,4 @@
-import Vendor from "../models/Vendor.js";
+import { Vendor } from "../models/Vendor.js";
 import Hotel from "../models/Hotel.js";
 import Restaurant from "../models/Restaurant.js";
 import dotenv from "dotenv";
@@ -51,57 +51,6 @@ export const onboard = async (req, res) => {
     if (id !== vendorId.toString()) {
       return res.status(403).json({ message: "Unauthorized: Wrong vendor ID" });
     }
-
-    // const {
-    //   profileImages,
-    //   businessDescription,
-    //   address,
-    //   city,
-    //   state,
-    //   country,
-    //   openTime,
-    //   closeTime,
-    //   accountNumber,
-    //   bankCode,
-    //   website,
-    //   stars,
-    //   rooms: [
-    //     {
-    //       roomNumber,
-    //       roomType,
-    //       price: roomPrice,
-    //       capacity,
-    //       features,
-    //       amenities,
-    //       roomImages,
-    //       roomDescription,
-    //       isAvailable,
-    //       maintenanceStatus,
-    //     },
-    //   ],
-
-    //   menus: [
-    //     {
-    //       addOns,
-    //       availabilityStatus,
-    //       category,
-    //       cuisines,
-    //       cuisineType,
-    //       dietaryInfo,
-    //       discountPrice,
-    //       price,
-    //       dishName,
-    //       description,
-    //       maxOrderPerCustomer,
-    //       portionSize,
-    //       preparationTime,
-    //       spiceLevel,
-    //       stockQuantity,
-    //     }
-    // ]
-
-    // } = req.body;
-
     const {
       businessDescription,
       address,

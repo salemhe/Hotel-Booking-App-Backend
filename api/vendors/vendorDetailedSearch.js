@@ -1,4 +1,4 @@
-import Vendor from "../models/Vendor.js";
+import { Vendor } from "../models/Vendor.js";
 
 import Hotel from "../models/Hotel.js";
 

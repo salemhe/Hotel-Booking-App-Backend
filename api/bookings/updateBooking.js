@@ -1,9 +1,9 @@
 
 import Booking from "../models/Booking.js"; 
 import User from "../models/User.js";
-import {generateQRCode} from "../../utils/generateQRCode.js";
-import {sendBookingConfirmationEmail} from "../../utils/emailService.js"
-import {sendBookingCancelEmail} from "../../utils/emailService.js"
+import {generateQRCode} from "../utils/generateQRCode.js";
+import {sendBookingConfirmationEmail} from "../utils/emailService.js"
+import {sendBookingCancelEmail} from "../utils/emailService.js"
 import  dotenv from "dotenv";
 
 dotenv.config();

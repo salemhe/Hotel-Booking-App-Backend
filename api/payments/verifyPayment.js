@@ -1,4 +1,3 @@
-import Vendor from "../models/Vendor.js";
 import Transaction from "../models/Transaction.js";
 import Booking from "../models/Booking.js";
 

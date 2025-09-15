@@ -1,5 +1,5 @@
 import Transaction from '../models/Transaction.js';
-import Vendor from '../models/Vendor.js';
+import { Vendor } from '../models/Vendor.js';
 
 export const getVendorPaymentStats = async (req, res) => {
   try {

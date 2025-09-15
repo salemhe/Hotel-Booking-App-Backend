@@ -1,12 +1,12 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import User from "../models/User.js";
-import Vendor from "../models/Vendor.js";
+import { Vendor } from "../models/Vendor.js";
 
 dotenv.config();
 
 export const authorize = (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1];
+  const token = req.cookies.token;
   if (!token) {
     return res
       .status(401)
@@ -22,13 +22,8 @@ export const authorize = (req, res, next) => {
 };
 
 export const authenticateUser = async (req, res, next) => {
-  let token;
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
     try {
-      token = req.headers.authorization.split(" ")[1];
+      const token = req.cookies.token;
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
       req.user = await User.findById(decoded.id).select("_id role"); // Add role to selection
@@ -41,19 +36,11 @@ export const authenticateUser = async (req, res, next) => {
       
       res.status(401).json({ message: "Invalid or expired token." });
     }
-  } else {
-    return res
-      .status(401)
-      .json({ message: "Not authorized, no token provided." });
-  }
 };
 
 export const authenticateVendor = async (req, res, next) => {
   try {
-    let token = req.headers.authorization?.split(" ")[1]; // Try Authorization header first
-    if (!token && req.cookies && req.cookies['vendor-token']) {
-      token = req.cookies['vendor-token']; // Fallback to vendor-token cookie
-    }
+    const token = req.cookies.token;
     if (!token)
       return res
         .status(401)

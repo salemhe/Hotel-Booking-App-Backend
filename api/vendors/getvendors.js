@@ -1,4 +1,4 @@
-import Vendor from "../models/Vendor.js";
+import { Vendor } from "../models/Vendor.js";
 
 // Get all vendors with optional filtering by type (restaurant/hotel)
 export const getAllVendors = async (req, res) => {

@@ -1,7 +1,7 @@
 import User from "../models/User.js";
-import Vendor from "../models/Vendor.js";
-import { generateOTP } from "../../utils/otpUtils.js";
-import {sendOTPEmail} from "../../utils/emailService.js";
+import { Vendor } from "../models/Vendor.js";
+import { generateOTP } from "../utils/otpUtils.js";
+import {sendOTPEmail} from "../utils/emailService.js";
 
 export const resendUserOTP = async (req, res) => {
   try {

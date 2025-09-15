@@ -1,8 +1,8 @@
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import { validationResult } from "express-validator";
-import { generateOTP } from "../../utils/otpUtils.js";
-import { sendOTPEmail } from "../../utils/emailService.js";
+import { generateOTP } from "../utils/otpUtils.js";
+import { sendOTPEmail } from "../utils/emailService.js";
 
 export const registerUser = async (req, res) => {
   const errors = validationResult(req);
