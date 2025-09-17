@@ -69,6 +69,19 @@ router.get("/bookings/stats/:vendorId", authenticateVendor, getVendorDashboardSt
 
 router.post('/onboard/:id', upload.array("profileImages"), authenticateVendor, onboardVendor);
 
+router.get('/:id', authorize, async (req, res) => {
+  try {
+    const Vendor = (await import('../models/Vendor.js')).default;
+    const vendor = await Vendor.findById(req.params.id);
+    if (!vendor) return res.status(404).json({ message: 'Vendor not found' });
+    const vendorObj = vendor.toObject();
+    vendorObj.status = vendorObj.status || (vendorObj.isActive ? 'active' : 'inactive');
+    res.json(vendorObj);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // router.post('/staff', upload.single('file'), authenticateVendor, createStaff);
 // router.post('/staff/verify', verifyStaff);
 // router.get('/staff', authenticateVendor, getStaff);
